@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "CafePOS (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "CafePOS (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

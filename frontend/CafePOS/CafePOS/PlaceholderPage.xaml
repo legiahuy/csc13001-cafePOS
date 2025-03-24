@@ -1,0 +1,48 @@
+<Page
+    x:Class="CafePOS.PlaceholderPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CafePOS"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="Transparent">
+
+    <Grid>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+            <!-- Icon indicating page under construction -->
+            <FontIcon Glyph="&#xE8CE;" FontFamily="Segoe MDL2 Assets" FontSize="64" Foreground="#0D6EFD" />
+
+            <!-- Page title -->
+            <TextBlock x:Name="PageNameText" 
+                       Text="Trang đang được phát triển" 
+                       FontSize="24" 
+                       FontWeight="SemiBold" 
+                       TextAlignment="Center"
+                       Foreground="#2E3D49"/>
+
+            <!-- Page description -->
+            <TextBlock Text="Chức năng này đang trong quá trình phát triển và sẽ sớm được hoàn thiện."
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       MaxWidth="600"
+                       Foreground="#6C757D"/>
+
+            <!-- Decorative progress ring -->
+            <ProgressRing IsActive="True" 
+                          Width="32" 
+                          Height="32"
+                          Foreground="#0D6EFD"
+                          Margin="0,10,0,0"/>
+        </StackPanel>
+
+        <!-- Semi-transparent background for page content -->
+        <Border Background="White" 
+                Opacity="0.1" 
+                CornerRadius="8" 
+                Width="700" 
+                Height="400"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"/>
+    </Grid>
+</Page>
