@@ -1,0 +1,102 @@
+CREATE DB CafePOS
+GO
+USE CafePOS
+GO
+
+CREATE TABLE CafeTable (
+	id INT IDENTITY PRIMARY KEY,
+    name NVARCHAR(100) NOT NULL DEFAULT N'Bàn mới',
+    status NVARCHAR(100) NOT NULL DEFAULT N'Trống',
+    location NVARCHAR(200)
+)
+GO
+
+CREATE TABLE Account (
+    userName NVARCHAR(100) PRIMARY KEY,
+    displayName NVARCHAR(100) NOT NULL,
+    password NVARCHAR(1000) NOT NULL DEFAULT 0,
+    type INT DEFAULT 0
+)
+GO
+
+CREATE TABLE Category (
+	id INT IDENTITY PRIMARY KEY,
+    name NVARCHAR(100) DEFAULT N'Chưa phân loại',
+    description NVARCHAR(500)
+)
+GO
+
+CREATE TABLE Material (
+    id INT IDENTITY PRIMARY KEY,
+    name NVARCHAR(100) NOT NULL,
+    unit NVARCHAR(50) NOT NULL,
+    currentStock FLOAT NOT NULL DEFAULT 0,
+    minStock FLOAT NOT NULL DEFAULT 0,
+    price FLOAT NOT NULL DEFAULT 0,
+    description NVARCHAR(500)
+)
+GO
+
+CREATE TABLE Product (
+	id INT IDENTITY PRIMARY KEY,
+    name NVARCHAR(100) NOT NULL DEFAULT N'Món mới',
+    idCategory INT NOT NULL,
+    price FLOAT NOT NULL DEFAULT 0,
+    description NVARCHAR(500),
+    isAvailable BIT NOT NULL DEFAULT 1,
+
+    FOREIGN KEY (idCategory) REFERENCES dbo.Category(id)
+)
+GO
+
+CREATE TABLE ProductMaterial (
+    id INT IDENTITY PRIMARY KEY,
+    idProduct INT NOT NULL,
+    idMaterial INT NOT NULL,
+    quantity FLOAT NOT NULL,
+    
+    FOREIGN KEY (idProduct) REFERENCES dbo.Product(id),
+    FOREIGN KEY (idMaterial) REFERENCES dbo.Material(id)
+)
+GO
+
+CREATE TABLE Bill (
+    id INT IDENTITY PRIMARY KEY,
+    dateCheckIn DATETIME NOT NULL DEFAULT GETDATE(),
+    dateCheckOut DATETIME,
+    idTable INT NOT NULL,
+    status INT NOT NULL DEFAULT 0,
+    totalAmount FLOAT NOT NULL DEFAULT 0,
+    paymentMethod NVARCHAR(50),
+    discount FLOAT DEFAULT 0,
+    finalAmount FLOAT NOT NULL DEFAULT 0,
+
+    FOREIGN KEY (idTable) REFERENCES dbo.CafeTable(id)
+)
+GO
+
+CREATE TABLE BillInfo (
+    id INT IDENTITY PRIMARY KEY,
+    idBill INT NOT NULL,
+    idProduct INT NOT NULL,
+    count INT NOT NULL DEFAULT 0,
+    unitPrice FLOAT NOT NULL,
+    totalPrice FLOAT NOT NULL,
+
+    FOREIGN KEY (idBill) REFERENCES dbo.Bill(id),
+    FOREIGN KEY (idProduct) REFERENCES dbo.Product(id)
+)
+GO
+
+CREATE TABLE MaterialItem (
+    id INT IDENTITY PRIMARY KEY,
+    idMaterial INT NOT NULL,
+    type NVARCHAR(50) NOT NULL, -- 'Import', 'Export', 'Consume'
+    quantity FLOAT NOT NULL,
+    unitPrice FLOAT NOT NULL,
+    date DATETIME NOT NULL DEFAULT GETDATE(),
+    note NVARCHAR(500),
+
+    FOREIGN KEY (idMaterial) REFERENCES dbo.Material(id)
+)
+GO

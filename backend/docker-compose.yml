@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:latest
+    container_name: cafe_db
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: cafe_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  postgraphile:
+    image: graphile/postgraphile
+    container_name: cafe_graphql
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "5001:5000"
+    environment:
+      DATABASE_URL: postgres://admin:1234@db:5432/cafe_db
+    command: ["--watch", "--enhance-graphiql", "--dynamic-json"]
+
+volumes:
+  pgdata:
