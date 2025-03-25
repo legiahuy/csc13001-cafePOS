@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using CafePOS.DAO;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -27,23 +29,38 @@ namespace CafePOS
         {
             this.InitializeComponent();
         }
-        private void LoginButton_Click(object sender, RoutedEventArgs e)
+        private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             string username = UsernameBox.Text;
             string password = PasswordBox.Password;
 
-            if (username == "admin" && password == "123")
+            try
             {
-                if (this.Parent is Frame frame)
+                bool isLoginSuccessful = await AccountDAO.Instance.LoginAsync(username, password);
+
+                if (!isLoginSuccessful)
                 {
-                    frame.Navigate(typeof(MainPage)); // Chuyển sang màn hình chính
-                    //Console.WriteLine("Login Thanh Cong");
+                    ErrorMessage.Text = "Sai tài khoản hoặc mật khẩu!";
+                    ErrorMessage.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    ErrorMessage.Visibility = Visibility.Collapsed;
+                    if (this.Parent is Frame frame)
+                    {
+                        frame.Navigate(typeof(MainPage));
+                    }
                 }
             }
-            else
+            catch (Exception ex)
             {
-                ErrorMessage.Text = "Sai tài khoản hoặc mật khẩu!";
+                ErrorMessage.Text = "Đã xảy ra lỗi. Vui lòng thử lại.";
                 ErrorMessage.Visibility = Visibility.Visible;
+            }
+            finally
+            {
+                // Re-enable the login button
+                //LoginButton.IsEnabled = true;
             }
         }
     }

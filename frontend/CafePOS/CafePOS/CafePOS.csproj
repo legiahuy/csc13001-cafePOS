@@ -13,6 +13,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <GraphQL Remove="queries.graphql" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="LoginPage.xaml" />
     <None Remove="MainPage.xaml" />
     <None Remove="PlaceholderPage.xaml" />
@@ -43,6 +46,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250310001" />
+    <PackageReference Include="StrawberryShake.Server" Version="15.1.1" />
   </ItemGroup>
   <ItemGroup>
     <Page Update="PlaceholderPage.xaml">

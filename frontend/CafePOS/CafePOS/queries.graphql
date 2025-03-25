@@ -1,0 +1,29 @@
+﻿query getallAccounts {
+  allAccounts {
+    edges {
+      node {
+        type
+        password
+        displayName
+        userName
+      }
+    }
+  }
+}
+
+query Login($userName: String, $password: String) {
+  allAccounts(
+    condition: {
+      userName: $userName
+      password: $password
+    }
+  ) {
+    edges {
+      node {
+        userName
+        displayName
+        type
+      }
+    }
+  }
+}

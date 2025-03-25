@@ -1,0 +1,2022 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+"The root query type which gives access points into the data universe."
+type Query implements Node {
+  "Exposes the root query type nested one level down. This is helpful for Relay 1\nwhich can only query top level fields if they are in a particular form."
+  query: Query!
+  "The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`."
+  nodeId: ID!
+  "Fetches an object given its globally unique `ID`."
+  node("The globally unique `ID`." nodeId: ID!): Node
+  "Reads and enables pagination through a set of `Account`."
+  allAccounts("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `Account`." orderBy: [AccountsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: AccountCondition): AccountsConnection
+  "Reads and enables pagination through a set of `Bill`."
+  allBills("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `Bill`." orderBy: [BillsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: BillCondition): BillsConnection
+  "Reads and enables pagination through a set of `BillInfo`."
+  allBillInfos("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `BillInfo`." orderBy: [BillInfosOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: BillInfoCondition): BillInfosConnection
+  "Reads and enables pagination through a set of `CafeTable`."
+  allCafeTables("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `CafeTable`." orderBy: [CafeTablesOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: CafeTableCondition): CafeTablesConnection
+  "Reads and enables pagination through a set of `Category`."
+  allCategories("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `Category`." orderBy: [CategoriesOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: CategoryCondition): CategoriesConnection
+  "Reads and enables pagination through a set of `Material`."
+  allMaterials("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `Material`." orderBy: [MaterialsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: MaterialCondition): MaterialsConnection
+  "Reads and enables pagination through a set of `MaterialItem`."
+  allMaterialItems("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `MaterialItem`." orderBy: [MaterialItemsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: MaterialItemCondition): MaterialItemsConnection
+  "Reads and enables pagination through a set of `Product`."
+  allProducts("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `Product`." orderBy: [ProductsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: ProductCondition): ProductsConnection
+  "Reads and enables pagination through a set of `ProductMaterial`."
+  allProductMaterials("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `ProductMaterial`." orderBy: [ProductMaterialsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: ProductMaterialCondition): ProductMaterialsConnection
+  "Reads and enables pagination through a set of `KnexMigration`."
+  allKnexMigrations("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `KnexMigration`." orderBy: [KnexMigrationsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: KnexMigrationCondition): KnexMigrationsConnection
+  "Reads and enables pagination through a set of `KnexMigrationsLock`."
+  allKnexMigrationsLocks("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `KnexMigrationsLock`." orderBy: [KnexMigrationsLocksOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: KnexMigrationsLockCondition): KnexMigrationsLocksConnection
+  accountByUserName(userName: String!): Account
+  billById(id: Int!): Bill
+  billInfoById(id: Int!): BillInfo
+  cafeTableById(id: Int!): CafeTable
+  categoryById(id: Int!): Category
+  materialById(id: Int!): Material
+  materialItemById(id: Int!): MaterialItem
+  productById(id: Int!): Product
+  productMaterialById(id: Int!): ProductMaterial
+  knexMigrationById(id: Int!): KnexMigration
+  knexMigrationsLockByIndex(index: Int!): KnexMigrationsLock
+  "Reads a single `Account` using its globally unique `ID`."
+  account("The globally unique `ID` to be used in selecting a single `Account`." nodeId: ID!): Account
+  "Reads a single `Bill` using its globally unique `ID`."
+  bill("The globally unique `ID` to be used in selecting a single `Bill`." nodeId: ID!): Bill
+  "Reads a single `BillInfo` using its globally unique `ID`."
+  billInfo("The globally unique `ID` to be used in selecting a single `BillInfo`." nodeId: ID!): BillInfo
+  "Reads a single `CafeTable` using its globally unique `ID`."
+  cafeTable("The globally unique `ID` to be used in selecting a single `CafeTable`." nodeId: ID!): CafeTable
+  "Reads a single `Category` using its globally unique `ID`."
+  category("The globally unique `ID` to be used in selecting a single `Category`." nodeId: ID!): Category
+  "Reads a single `Material` using its globally unique `ID`."
+  material("The globally unique `ID` to be used in selecting a single `Material`." nodeId: ID!): Material
+  "Reads a single `MaterialItem` using its globally unique `ID`."
+  materialItem("The globally unique `ID` to be used in selecting a single `MaterialItem`." nodeId: ID!): MaterialItem
+  "Reads a single `Product` using its globally unique `ID`."
+  product("The globally unique `ID` to be used in selecting a single `Product`." nodeId: ID!): Product
+  "Reads a single `ProductMaterial` using its globally unique `ID`."
+  productMaterial("The globally unique `ID` to be used in selecting a single `ProductMaterial`." nodeId: ID!): ProductMaterial
+  "Reads a single `KnexMigration` using its globally unique `ID`."
+  knexMigration("The globally unique `ID` to be used in selecting a single `KnexMigration`." nodeId: ID!): KnexMigration
+  "Reads a single `KnexMigrationsLock` using its globally unique `ID`."
+  knexMigrationsLock("The globally unique `ID` to be used in selecting a single `KnexMigrationsLock`." nodeId: ID!): KnexMigrationsLock
+}
+
+"An object with a globally unique `ID`."
+interface Node {
+  "A globally unique identifier. Can be used in various places throughout the system to identify this single value."
+  nodeId: ID!
+}
+
+"A connection to a list of `Account` values."
+type AccountsConnection {
+  "A list of `Account` objects."
+  nodes: [Account]!
+  "A list of edges which contains the `Account` and cursor to aid in pagination."
+  edges: [AccountsEdge!]!
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "The count of *all* `Account` you could get from the connection."
+  totalCount: Int!
+}
+
+type Account implements Node {
+  "A globally unique identifier. Can be used in various places throughout the system to identify this single value."
+  nodeId: ID!
+  userName: String!
+  displayName: String!
+  password: String!
+  type: Int
+}
+
+"A `Account` edge in the connection."
+type AccountsEdge {
+  "A cursor for use in pagination."
+  cursor: Cursor
+  "The `Account` at the end of the edge."
+  node: Account
+}
+
+"A location in a connection that can be used for resuming pagination."
+scalar Cursor
+
+"Information about pagination in a connection."
+type PageInfo {
+  "When paginating forwards, are there more items?"
+  hasNextPage: Boolean!
+  "When paginating backwards, are there more items?"
+  hasPreviousPage: Boolean!
+  "When paginating backwards, the cursor to continue."
+  startCursor: Cursor
+  "When paginating forwards, the cursor to continue."
+  endCursor: Cursor
+}
+
+"Methods to use when ordering `Account`."
+enum AccountsOrderBy {
+  NATURAL
+  USER_NAME_ASC
+  USER_NAME_DESC
+  DISPLAY_NAME_ASC
+  DISPLAY_NAME_DESC
+  PASSWORD_ASC
+  PASSWORD_DESC
+  TYPE_ASC
+  TYPE_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"A condition to be used against `Account` object types. All fields are tested for equality and combined with a logical ‘and.’"
+input AccountCondition {
+  "Checks for equality with the object’s `userName` field."
+  userName: String
+  "Checks for equality with the object’s `displayName` field."
+  displayName: String
+  "Checks for equality with the object’s `password` field."
+  password: String
+  "Checks for equality with the object’s `type` field."
+  type: Int
+}
+
+"A connection to a list of `Bill` values."
+type BillsConnection {
+  "A list of `Bill` objects."
+  nodes: [Bill]!
+  "A list of edges which contains the `Bill` and cursor to aid in pagination."
+  edges: [BillsEdge!]!
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "The count of *all* `Bill` you could get from the connection."
+  totalCount: Int!
+}
+
+type Bill implements Node {
+  "A globally unique identifier. Can be used in various places throughout the system to identify this single value."
+  nodeId: ID!
+  id: Int!
+  dateCheckIn: Datetime!
+  dateCheckOut: Datetime
+  idTable: Int!
+  status: Int!
+  totalAmount: Float!
+  paymentMethod: String
+  discount: Float
+  finalAmount: Float!
+  "Reads a single `CafeTable` that is related to this `Bill`."
+  cafeTableByIdTable: CafeTable
+  "Reads and enables pagination through a set of `BillInfo`."
+  billInfosByIdBill("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `BillInfo`." orderBy: [BillInfosOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: BillInfoCondition): BillInfosConnection!
+}
+
+"A point in time as described by the [ISO\n8601](https:\/\/en.wikipedia.org\/wiki\/ISO_8601) standard. May or may not include a timezone."
+scalar Datetime
+
+type CafeTable implements Node {
+  "A globally unique identifier. Can be used in various places throughout the system to identify this single value."
+  nodeId: ID!
+  id: Int!
+  name: String!
+  status: String!
+  location: String
+  "Reads and enables pagination through a set of `Bill`."
+  billsByIdTable("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `Bill`." orderBy: [BillsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: BillCondition): BillsConnection!
+}
+
+"Methods to use when ordering `Bill`."
+enum BillsOrderBy {
+  NATURAL
+  ID_ASC
+  ID_DESC
+  DATE_CHECK_IN_ASC
+  DATE_CHECK_IN_DESC
+  DATE_CHECK_OUT_ASC
+  DATE_CHECK_OUT_DESC
+  ID_TABLE_ASC
+  ID_TABLE_DESC
+  STATUS_ASC
+  STATUS_DESC
+  TOTAL_AMOUNT_ASC
+  TOTAL_AMOUNT_DESC
+  PAYMENT_METHOD_ASC
+  PAYMENT_METHOD_DESC
+  DISCOUNT_ASC
+  DISCOUNT_DESC
+  FINAL_AMOUNT_ASC
+  FINAL_AMOUNT_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"A condition to be used against `Bill` object types. All fields are tested for equality and combined with a logical ‘and.’"
+input BillCondition {
+  "Checks for equality with the object’s `id` field."
+  id: Int
+  "Checks for equality with the object’s `dateCheckIn` field."
+  dateCheckIn: Datetime
+  "Checks for equality with the object’s `dateCheckOut` field."
+  dateCheckOut: Datetime
+  "Checks for equality with the object’s `idTable` field."
+  idTable: Int
+  "Checks for equality with the object’s `status` field."
+  status: Int
+  "Checks for equality with the object’s `totalAmount` field."
+  totalAmount: Float
+  "Checks for equality with the object’s `paymentMethod` field."
+  paymentMethod: String
+  "Checks for equality with the object’s `discount` field."
+  discount: Float
+  "Checks for equality with the object’s `finalAmount` field."
+  finalAmount: Float
+}
+
+"A connection to a list of `BillInfo` values."
+type BillInfosConnection {
+  "A list of `BillInfo` objects."
+  nodes: [BillInfo]!
+  "A list of edges which contains the `BillInfo` and cursor to aid in pagination."
+  edges: [BillInfosEdge!]!
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "The count of *all* `BillInfo` you could get from the connection."
+  totalCount: Int!
+}
+
+type BillInfo implements Node {
+  "A globally unique identifier. Can be used in various places throughout the system to identify this single value."
+  nodeId: ID!
+  id: Int!
+  idBill: Int!
+  idProduct: Int!
+  count: Int!
+  unitPrice: Float!
+  totalPrice: Float!
+  "Reads a single `Bill` that is related to this `BillInfo`."
+  billByIdBill: Bill
+  "Reads a single `Product` that is related to this `BillInfo`."
+  productByIdProduct: Product
+}
+
+type Product implements Node {
+  "A globally unique identifier. Can be used in various places throughout the system to identify this single value."
+  nodeId: ID!
+  id: Int!
+  name: String!
+  idCategory: Int!
+  price: Float!
+  description: String
+  isAvailable: Boolean!
+  "Reads a single `Category` that is related to this `Product`."
+  categoryByIdCategory: Category
+  "Reads and enables pagination through a set of `ProductMaterial`."
+  productMaterialsByIdProduct("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `ProductMaterial`." orderBy: [ProductMaterialsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: ProductMaterialCondition): ProductMaterialsConnection!
+  "Reads and enables pagination through a set of `BillInfo`."
+  billInfosByIdProduct("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `BillInfo`." orderBy: [BillInfosOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: BillInfoCondition): BillInfosConnection!
+}
+
+type Category implements Node {
+  "A globally unique identifier. Can be used in various places throughout the system to identify this single value."
+  nodeId: ID!
+  id: Int!
+  name: String
+  description: String
+  "Reads and enables pagination through a set of `Product`."
+  productsByIdCategory("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `Product`." orderBy: [ProductsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: ProductCondition): ProductsConnection!
+}
+
+"A connection to a list of `Product` values."
+type ProductsConnection {
+  "A list of `Product` objects."
+  nodes: [Product]!
+  "A list of edges which contains the `Product` and cursor to aid in pagination."
+  edges: [ProductsEdge!]!
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "The count of *all* `Product` you could get from the connection."
+  totalCount: Int!
+}
+
+"A `Product` edge in the connection."
+type ProductsEdge {
+  "A cursor for use in pagination."
+  cursor: Cursor
+  "The `Product` at the end of the edge."
+  node: Product
+}
+
+"Methods to use when ordering `Product`."
+enum ProductsOrderBy {
+  NATURAL
+  ID_ASC
+  ID_DESC
+  NAME_ASC
+  NAME_DESC
+  ID_CATEGORY_ASC
+  ID_CATEGORY_DESC
+  PRICE_ASC
+  PRICE_DESC
+  DESCRIPTION_ASC
+  DESCRIPTION_DESC
+  IS_AVAILABLE_ASC
+  IS_AVAILABLE_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"A condition to be used against `Product` object types. All fields are tested for equality and combined with a logical ‘and.’"
+input ProductCondition {
+  "Checks for equality with the object’s `id` field."
+  id: Int
+  "Checks for equality with the object’s `name` field."
+  name: String
+  "Checks for equality with the object’s `idCategory` field."
+  idCategory: Int
+  "Checks for equality with the object’s `price` field."
+  price: Float
+  "Checks for equality with the object’s `description` field."
+  description: String
+  "Checks for equality with the object’s `isAvailable` field."
+  isAvailable: Boolean
+}
+
+"A connection to a list of `ProductMaterial` values."
+type ProductMaterialsConnection {
+  "A list of `ProductMaterial` objects."
+  nodes: [ProductMaterial]!
+  "A list of edges which contains the `ProductMaterial` and cursor to aid in pagination."
+  edges: [ProductMaterialsEdge!]!
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "The count of *all* `ProductMaterial` you could get from the connection."
+  totalCount: Int!
+}
+
+type ProductMaterial implements Node {
+  "A globally unique identifier. Can be used in various places throughout the system to identify this single value."
+  nodeId: ID!
+  id: Int!
+  idProduct: Int!
+  idMaterial: Int!
+  quantity: Float!
+  "Reads a single `Product` that is related to this `ProductMaterial`."
+  productByIdProduct: Product
+  "Reads a single `Material` that is related to this `ProductMaterial`."
+  materialByIdMaterial: Material
+}
+
+type Material implements Node {
+  "A globally unique identifier. Can be used in various places throughout the system to identify this single value."
+  nodeId: ID!
+  id: Int!
+  name: String!
+  unit: String!
+  currentStock: Float!
+  minStock: Float!
+  price: Float!
+  description: String
+  "Reads and enables pagination through a set of `ProductMaterial`."
+  productMaterialsByIdMaterial("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `ProductMaterial`." orderBy: [ProductMaterialsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: ProductMaterialCondition): ProductMaterialsConnection!
+  "Reads and enables pagination through a set of `MaterialItem`."
+  materialItemsByIdMaterial("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `MaterialItem`." orderBy: [MaterialItemsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: MaterialItemCondition): MaterialItemsConnection!
+}
+
+"Methods to use when ordering `ProductMaterial`."
+enum ProductMaterialsOrderBy {
+  NATURAL
+  ID_ASC
+  ID_DESC
+  ID_PRODUCT_ASC
+  ID_PRODUCT_DESC
+  ID_MATERIAL_ASC
+  ID_MATERIAL_DESC
+  QUANTITY_ASC
+  QUANTITY_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"A condition to be used against `ProductMaterial` object types. All fields are\ntested for equality and combined with a logical ‘and.’"
+input ProductMaterialCondition {
+  "Checks for equality with the object’s `id` field."
+  id: Int
+  "Checks for equality with the object’s `idProduct` field."
+  idProduct: Int
+  "Checks for equality with the object’s `idMaterial` field."
+  idMaterial: Int
+  "Checks for equality with the object’s `quantity` field."
+  quantity: Float
+}
+
+"A connection to a list of `MaterialItem` values."
+type MaterialItemsConnection {
+  "A list of `MaterialItem` objects."
+  nodes: [MaterialItem]!
+  "A list of edges which contains the `MaterialItem` and cursor to aid in pagination."
+  edges: [MaterialItemsEdge!]!
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "The count of *all* `MaterialItem` you could get from the connection."
+  totalCount: Int!
+}
+
+type MaterialItem implements Node {
+  "A globally unique identifier. Can be used in various places throughout the system to identify this single value."
+  nodeId: ID!
+  id: Int!
+  idMaterial: Int!
+  type: String!
+  quantity: Float!
+  unitPrice: Float!
+  date: Datetime!
+  note: String
+  "Reads a single `Material` that is related to this `MaterialItem`."
+  materialByIdMaterial: Material
+}
+
+"A `MaterialItem` edge in the connection."
+type MaterialItemsEdge {
+  "A cursor for use in pagination."
+  cursor: Cursor
+  "The `MaterialItem` at the end of the edge."
+  node: MaterialItem
+}
+
+"Methods to use when ordering `MaterialItem`."
+enum MaterialItemsOrderBy {
+  NATURAL
+  ID_ASC
+  ID_DESC
+  ID_MATERIAL_ASC
+  ID_MATERIAL_DESC
+  TYPE_ASC
+  TYPE_DESC
+  QUANTITY_ASC
+  QUANTITY_DESC
+  UNIT_PRICE_ASC
+  UNIT_PRICE_DESC
+  DATE_ASC
+  DATE_DESC
+  NOTE_ASC
+  NOTE_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"A condition to be used against `MaterialItem` object types. All fields are\ntested for equality and combined with a logical ‘and.’"
+input MaterialItemCondition {
+  "Checks for equality with the object’s `id` field."
+  id: Int
+  "Checks for equality with the object’s `idMaterial` field."
+  idMaterial: Int
+  "Checks for equality with the object’s `type` field."
+  type: String
+  "Checks for equality with the object’s `quantity` field."
+  quantity: Float
+  "Checks for equality with the object’s `unitPrice` field."
+  unitPrice: Float
+  "Checks for equality with the object’s `date` field."
+  date: Datetime
+  "Checks for equality with the object’s `note` field."
+  note: String
+}
+
+"A `ProductMaterial` edge in the connection."
+type ProductMaterialsEdge {
+  "A cursor for use in pagination."
+  cursor: Cursor
+  "The `ProductMaterial` at the end of the edge."
+  node: ProductMaterial
+}
+
+"Methods to use when ordering `BillInfo`."
+enum BillInfosOrderBy {
+  NATURAL
+  ID_ASC
+  ID_DESC
+  ID_BILL_ASC
+  ID_BILL_DESC
+  ID_PRODUCT_ASC
+  ID_PRODUCT_DESC
+  COUNT_ASC
+  COUNT_DESC
+  UNIT_PRICE_ASC
+  UNIT_PRICE_DESC
+  TOTAL_PRICE_ASC
+  TOTAL_PRICE_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"A condition to be used against `BillInfo` object types. All fields are tested\nfor equality and combined with a logical ‘and.’"
+input BillInfoCondition {
+  "Checks for equality with the object’s `id` field."
+  id: Int
+  "Checks for equality with the object’s `idBill` field."
+  idBill: Int
+  "Checks for equality with the object’s `idProduct` field."
+  idProduct: Int
+  "Checks for equality with the object’s `count` field."
+  count: Int
+  "Checks for equality with the object’s `unitPrice` field."
+  unitPrice: Float
+  "Checks for equality with the object’s `totalPrice` field."
+  totalPrice: Float
+}
+
+"A `BillInfo` edge in the connection."
+type BillInfosEdge {
+  "A cursor for use in pagination."
+  cursor: Cursor
+  "The `BillInfo` at the end of the edge."
+  node: BillInfo
+}
+
+"A `Bill` edge in the connection."
+type BillsEdge {
+  "A cursor for use in pagination."
+  cursor: Cursor
+  "The `Bill` at the end of the edge."
+  node: Bill
+}
+
+"A connection to a list of `CafeTable` values."
+type CafeTablesConnection {
+  "A list of `CafeTable` objects."
+  nodes: [CafeTable]!
+  "A list of edges which contains the `CafeTable` and cursor to aid in pagination."
+  edges: [CafeTablesEdge!]!
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "The count of *all* `CafeTable` you could get from the connection."
+  totalCount: Int!
+}
+
+"A `CafeTable` edge in the connection."
+type CafeTablesEdge {
+  "A cursor for use in pagination."
+  cursor: Cursor
+  "The `CafeTable` at the end of the edge."
+  node: CafeTable
+}
+
+"Methods to use when ordering `CafeTable`."
+enum CafeTablesOrderBy {
+  NATURAL
+  ID_ASC
+  ID_DESC
+  NAME_ASC
+  NAME_DESC
+  STATUS_ASC
+  STATUS_DESC
+  LOCATION_ASC
+  LOCATION_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"A condition to be used against `CafeTable` object types. All fields are tested\nfor equality and combined with a logical ‘and.’"
+input CafeTableCondition {
+  "Checks for equality with the object’s `id` field."
+  id: Int
+  "Checks for equality with the object’s `name` field."
+  name: String
+  "Checks for equality with the object’s `status` field."
+  status: String
+  "Checks for equality with the object’s `location` field."
+  location: String
+}
+
+"A connection to a list of `Category` values."
+type CategoriesConnection {
+  "A list of `Category` objects."
+  nodes: [Category]!
+  "A list of edges which contains the `Category` and cursor to aid in pagination."
+  edges: [CategoriesEdge!]!
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "The count of *all* `Category` you could get from the connection."
+  totalCount: Int!
+}
+
+"A `Category` edge in the connection."
+type CategoriesEdge {
+  "A cursor for use in pagination."
+  cursor: Cursor
+  "The `Category` at the end of the edge."
+  node: Category
+}
+
+"Methods to use when ordering `Category`."
+enum CategoriesOrderBy {
+  NATURAL
+  ID_ASC
+  ID_DESC
+  NAME_ASC
+  NAME_DESC
+  DESCRIPTION_ASC
+  DESCRIPTION_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"A condition to be used against `Category` object types. All fields are tested\nfor equality and combined with a logical ‘and.’"
+input CategoryCondition {
+  "Checks for equality with the object’s `id` field."
+  id: Int
+  "Checks for equality with the object’s `name` field."
+  name: String
+  "Checks for equality with the object’s `description` field."
+  description: String
+}
+
+"A connection to a list of `Material` values."
+type MaterialsConnection {
+  "A list of `Material` objects."
+  nodes: [Material]!
+  "A list of edges which contains the `Material` and cursor to aid in pagination."
+  edges: [MaterialsEdge!]!
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "The count of *all* `Material` you could get from the connection."
+  totalCount: Int!
+}
+
+"A `Material` edge in the connection."
+type MaterialsEdge {
+  "A cursor for use in pagination."
+  cursor: Cursor
+  "The `Material` at the end of the edge."
+  node: Material
+}
+
+"Methods to use when ordering `Material`."
+enum MaterialsOrderBy {
+  NATURAL
+  ID_ASC
+  ID_DESC
+  NAME_ASC
+  NAME_DESC
+  UNIT_ASC
+  UNIT_DESC
+  CURRENT_STOCK_ASC
+  CURRENT_STOCK_DESC
+  MIN_STOCK_ASC
+  MIN_STOCK_DESC
+  PRICE_ASC
+  PRICE_DESC
+  DESCRIPTION_ASC
+  DESCRIPTION_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"A condition to be used against `Material` object types. All fields are tested\nfor equality and combined with a logical ‘and.’"
+input MaterialCondition {
+  "Checks for equality with the object’s `id` field."
+  id: Int
+  "Checks for equality with the object’s `name` field."
+  name: String
+  "Checks for equality with the object’s `unit` field."
+  unit: String
+  "Checks for equality with the object’s `currentStock` field."
+  currentStock: Float
+  "Checks for equality with the object’s `minStock` field."
+  minStock: Float
+  "Checks for equality with the object’s `price` field."
+  price: Float
+  "Checks for equality with the object’s `description` field."
+  description: String
+}
+
+"A connection to a list of `KnexMigration` values."
+type KnexMigrationsConnection {
+  "A list of `KnexMigration` objects."
+  nodes: [KnexMigration]!
+  "A list of edges which contains the `KnexMigration` and cursor to aid in pagination."
+  edges: [KnexMigrationsEdge!]!
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "The count of *all* `KnexMigration` you could get from the connection."
+  totalCount: Int!
+}
+
+type KnexMigration implements Node {
+  "A globally unique identifier. Can be used in various places throughout the system to identify this single value."
+  nodeId: ID!
+  id: Int!
+  name: String
+  batch: Int
+  migrationTime: Datetime
+}
+
+"A `KnexMigration` edge in the connection."
+type KnexMigrationsEdge {
+  "A cursor for use in pagination."
+  cursor: Cursor
+  "The `KnexMigration` at the end of the edge."
+  node: KnexMigration
+}
+
+"Methods to use when ordering `KnexMigration`."
+enum KnexMigrationsOrderBy {
+  NATURAL
+  ID_ASC
+  ID_DESC
+  NAME_ASC
+  NAME_DESC
+  BATCH_ASC
+  BATCH_DESC
+  MIGRATION_TIME_ASC
+  MIGRATION_TIME_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"A condition to be used against `KnexMigration` object types. All fields are\ntested for equality and combined with a logical ‘and.’"
+input KnexMigrationCondition {
+  "Checks for equality with the object’s `id` field."
+  id: Int
+  "Checks for equality with the object’s `name` field."
+  name: String
+  "Checks for equality with the object’s `batch` field."
+  batch: Int
+  "Checks for equality with the object’s `migrationTime` field."
+  migrationTime: Datetime
+}
+
+"A connection to a list of `KnexMigrationsLock` values."
+type KnexMigrationsLocksConnection {
+  "A list of `KnexMigrationsLock` objects."
+  nodes: [KnexMigrationsLock]!
+  "A list of edges which contains the `KnexMigrationsLock` and cursor to aid in pagination."
+  edges: [KnexMigrationsLocksEdge!]!
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "The count of *all* `KnexMigrationsLock` you could get from the connection."
+  totalCount: Int!
+}
+
+type KnexMigrationsLock implements Node {
+  "A globally unique identifier. Can be used in various places throughout the system to identify this single value."
+  nodeId: ID!
+  index: Int!
+  isLocked: Int
+}
+
+"A `KnexMigrationsLock` edge in the connection."
+type KnexMigrationsLocksEdge {
+  "A cursor for use in pagination."
+  cursor: Cursor
+  "The `KnexMigrationsLock` at the end of the edge."
+  node: KnexMigrationsLock
+}
+
+"Methods to use when ordering `KnexMigrationsLock`."
+enum KnexMigrationsLocksOrderBy {
+  NATURAL
+  INDEX_ASC
+  INDEX_DESC
+  IS_LOCKED_ASC
+  IS_LOCKED_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"A condition to be used against `KnexMigrationsLock` object types. All fields are\ntested for equality and combined with a logical ‘and.’"
+input KnexMigrationsLockCondition {
+  "Checks for equality with the object’s `index` field."
+  index: Int
+  "Checks for equality with the object’s `isLocked` field."
+  isLocked: Int
+}
+
+"The root mutation type which contains root level fields which mutate data."
+type Mutation {
+  "Creates a single `Account`."
+  createAccount("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: CreateAccountInput!): CreateAccountPayload
+  "Creates a single `Bill`."
+  createBill("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: CreateBillInput!): CreateBillPayload
+  "Creates a single `BillInfo`."
+  createBillInfo("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: CreateBillInfoInput!): CreateBillInfoPayload
+  "Creates a single `CafeTable`."
+  createCafeTable("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: CreateCafeTableInput!): CreateCafeTablePayload
+  "Creates a single `Category`."
+  createCategory("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: CreateCategoryInput!): CreateCategoryPayload
+  "Creates a single `Material`."
+  createMaterial("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: CreateMaterialInput!): CreateMaterialPayload
+  "Creates a single `MaterialItem`."
+  createMaterialItem("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: CreateMaterialItemInput!): CreateMaterialItemPayload
+  "Creates a single `Product`."
+  createProduct("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: CreateProductInput!): CreateProductPayload
+  "Creates a single `ProductMaterial`."
+  createProductMaterial("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: CreateProductMaterialInput!): CreateProductMaterialPayload
+  "Creates a single `KnexMigration`."
+  createKnexMigration("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: CreateKnexMigrationInput!): CreateKnexMigrationPayload
+  "Creates a single `KnexMigrationsLock`."
+  createKnexMigrationsLock("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: CreateKnexMigrationsLockInput!): CreateKnexMigrationsLockPayload
+  "Updates a single `Account` using its globally unique id and a patch."
+  updateAccount("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateAccountInput!): UpdateAccountPayload
+  "Updates a single `Account` using a unique key and a patch."
+  updateAccountByUserName("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateAccountByUserNameInput!): UpdateAccountPayload
+  "Updates a single `Bill` using its globally unique id and a patch."
+  updateBill("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateBillInput!): UpdateBillPayload
+  "Updates a single `Bill` using a unique key and a patch."
+  updateBillById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateBillByIdInput!): UpdateBillPayload
+  "Updates a single `BillInfo` using its globally unique id and a patch."
+  updateBillInfo("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateBillInfoInput!): UpdateBillInfoPayload
+  "Updates a single `BillInfo` using a unique key and a patch."
+  updateBillInfoById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateBillInfoByIdInput!): UpdateBillInfoPayload
+  "Updates a single `CafeTable` using its globally unique id and a patch."
+  updateCafeTable("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateCafeTableInput!): UpdateCafeTablePayload
+  "Updates a single `CafeTable` using a unique key and a patch."
+  updateCafeTableById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateCafeTableByIdInput!): UpdateCafeTablePayload
+  "Updates a single `Category` using its globally unique id and a patch."
+  updateCategory("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateCategoryInput!): UpdateCategoryPayload
+  "Updates a single `Category` using a unique key and a patch."
+  updateCategoryById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateCategoryByIdInput!): UpdateCategoryPayload
+  "Updates a single `Material` using its globally unique id and a patch."
+  updateMaterial("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateMaterialInput!): UpdateMaterialPayload
+  "Updates a single `Material` using a unique key and a patch."
+  updateMaterialById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateMaterialByIdInput!): UpdateMaterialPayload
+  "Updates a single `MaterialItem` using its globally unique id and a patch."
+  updateMaterialItem("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateMaterialItemInput!): UpdateMaterialItemPayload
+  "Updates a single `MaterialItem` using a unique key and a patch."
+  updateMaterialItemById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateMaterialItemByIdInput!): UpdateMaterialItemPayload
+  "Updates a single `Product` using its globally unique id and a patch."
+  updateProduct("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateProductInput!): UpdateProductPayload
+  "Updates a single `Product` using a unique key and a patch."
+  updateProductById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateProductByIdInput!): UpdateProductPayload
+  "Updates a single `ProductMaterial` using its globally unique id and a patch."
+  updateProductMaterial("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateProductMaterialInput!): UpdateProductMaterialPayload
+  "Updates a single `ProductMaterial` using a unique key and a patch."
+  updateProductMaterialById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateProductMaterialByIdInput!): UpdateProductMaterialPayload
+  "Updates a single `KnexMigration` using its globally unique id and a patch."
+  updateKnexMigration("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateKnexMigrationInput!): UpdateKnexMigrationPayload
+  "Updates a single `KnexMigration` using a unique key and a patch."
+  updateKnexMigrationById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateKnexMigrationByIdInput!): UpdateKnexMigrationPayload
+  "Updates a single `KnexMigrationsLock` using its globally unique id and a patch."
+  updateKnexMigrationsLock("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateKnexMigrationsLockInput!): UpdateKnexMigrationsLockPayload
+  "Updates a single `KnexMigrationsLock` using a unique key and a patch."
+  updateKnexMigrationsLockByIndex("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateKnexMigrationsLockByIndexInput!): UpdateKnexMigrationsLockPayload
+  "Deletes a single `Account` using its globally unique id."
+  deleteAccount("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteAccountInput!): DeleteAccountPayload
+  "Deletes a single `Account` using a unique key."
+  deleteAccountByUserName("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteAccountByUserNameInput!): DeleteAccountPayload
+  "Deletes a single `Bill` using its globally unique id."
+  deleteBill("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteBillInput!): DeleteBillPayload
+  "Deletes a single `Bill` using a unique key."
+  deleteBillById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteBillByIdInput!): DeleteBillPayload
+  "Deletes a single `BillInfo` using its globally unique id."
+  deleteBillInfo("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteBillInfoInput!): DeleteBillInfoPayload
+  "Deletes a single `BillInfo` using a unique key."
+  deleteBillInfoById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteBillInfoByIdInput!): DeleteBillInfoPayload
+  "Deletes a single `CafeTable` using its globally unique id."
+  deleteCafeTable("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteCafeTableInput!): DeleteCafeTablePayload
+  "Deletes a single `CafeTable` using a unique key."
+  deleteCafeTableById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteCafeTableByIdInput!): DeleteCafeTablePayload
+  "Deletes a single `Category` using its globally unique id."
+  deleteCategory("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteCategoryInput!): DeleteCategoryPayload
+  "Deletes a single `Category` using a unique key."
+  deleteCategoryById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteCategoryByIdInput!): DeleteCategoryPayload
+  "Deletes a single `Material` using its globally unique id."
+  deleteMaterial("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteMaterialInput!): DeleteMaterialPayload
+  "Deletes a single `Material` using a unique key."
+  deleteMaterialById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteMaterialByIdInput!): DeleteMaterialPayload
+  "Deletes a single `MaterialItem` using its globally unique id."
+  deleteMaterialItem("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteMaterialItemInput!): DeleteMaterialItemPayload
+  "Deletes a single `MaterialItem` using a unique key."
+  deleteMaterialItemById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteMaterialItemByIdInput!): DeleteMaterialItemPayload
+  "Deletes a single `Product` using its globally unique id."
+  deleteProduct("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteProductInput!): DeleteProductPayload
+  "Deletes a single `Product` using a unique key."
+  deleteProductById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteProductByIdInput!): DeleteProductPayload
+  "Deletes a single `ProductMaterial` using its globally unique id."
+  deleteProductMaterial("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteProductMaterialInput!): DeleteProductMaterialPayload
+  "Deletes a single `ProductMaterial` using a unique key."
+  deleteProductMaterialById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteProductMaterialByIdInput!): DeleteProductMaterialPayload
+  "Deletes a single `KnexMigration` using its globally unique id."
+  deleteKnexMigration("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteKnexMigrationInput!): DeleteKnexMigrationPayload
+  "Deletes a single `KnexMigration` using a unique key."
+  deleteKnexMigrationById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteKnexMigrationByIdInput!): DeleteKnexMigrationPayload
+  "Deletes a single `KnexMigrationsLock` using its globally unique id."
+  deleteKnexMigrationsLock("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteKnexMigrationsLockInput!): DeleteKnexMigrationsLockPayload
+  "Deletes a single `KnexMigrationsLock` using a unique key."
+  deleteKnexMigrationsLockByIndex("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteKnexMigrationsLockByIndexInput!): DeleteKnexMigrationsLockPayload
+}
+
+"The output of our create `Account` mutation."
+type CreateAccountPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `Account` that was created by this mutation."
+  account: Account
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `Account`. May be used by Relay 1."
+  accountEdge("The method to use when ordering `Account`." orderBy: [AccountsOrderBy!] = [ PRIMARY_KEY_ASC ]): AccountsEdge
+}
+
+"All input for the create `Account` mutation."
+input CreateAccountInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The `Account` to be created by this mutation."
+  account: AccountInput!
+}
+
+"An input for mutations affecting `Account`"
+input AccountInput {
+  userName: String!
+  displayName: String!
+  password: String
+  type: Int
+}
+
+"The output of our create `Bill` mutation."
+type CreateBillPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `Bill` that was created by this mutation."
+  bill: Bill
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "Reads a single `CafeTable` that is related to this `Bill`."
+  cafeTableByIdTable: CafeTable
+  "An edge for our `Bill`. May be used by Relay 1."
+  billEdge("The method to use when ordering `Bill`." orderBy: [BillsOrderBy!] = [ PRIMARY_KEY_ASC ]): BillsEdge
+}
+
+"All input for the create `Bill` mutation."
+input CreateBillInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The `Bill` to be created by this mutation."
+  bill: BillInput!
+}
+
+"An input for mutations affecting `Bill`"
+input BillInput {
+  id: Int
+  dateCheckIn: Datetime
+  dateCheckOut: Datetime
+  idTable: Int!
+  status: Int
+  totalAmount: Float
+  paymentMethod: String
+  discount: Float
+  finalAmount: Float
+}
+
+"The output of our create `BillInfo` mutation."
+type CreateBillInfoPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `BillInfo` that was created by this mutation."
+  billInfo: BillInfo
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "Reads a single `Bill` that is related to this `BillInfo`."
+  billByIdBill: Bill
+  "Reads a single `Product` that is related to this `BillInfo`."
+  productByIdProduct: Product
+  "An edge for our `BillInfo`. May be used by Relay 1."
+  billInfoEdge("The method to use when ordering `BillInfo`." orderBy: [BillInfosOrderBy!] = [ PRIMARY_KEY_ASC ]): BillInfosEdge
+}
+
+"All input for the create `BillInfo` mutation."
+input CreateBillInfoInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The `BillInfo` to be created by this mutation."
+  billInfo: BillInfoInput!
+}
+
+"An input for mutations affecting `BillInfo`"
+input BillInfoInput {
+  id: Int
+  idBill: Int!
+  idProduct: Int!
+  count: Int
+  unitPrice: Float!
+  totalPrice: Float!
+}
+
+"The output of our create `CafeTable` mutation."
+type CreateCafeTablePayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `CafeTable` that was created by this mutation."
+  cafeTable: CafeTable
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `CafeTable`. May be used by Relay 1."
+  cafeTableEdge("The method to use when ordering `CafeTable`." orderBy: [CafeTablesOrderBy!] = [ PRIMARY_KEY_ASC ]): CafeTablesEdge
+}
+
+"All input for the create `CafeTable` mutation."
+input CreateCafeTableInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The `CafeTable` to be created by this mutation."
+  cafeTable: CafeTableInput!
+}
+
+"An input for mutations affecting `CafeTable`"
+input CafeTableInput {
+  id: Int
+  name: String
+  status: String
+  location: String
+}
+
+"The output of our create `Category` mutation."
+type CreateCategoryPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `Category` that was created by this mutation."
+  category: Category
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `Category`. May be used by Relay 1."
+  categoryEdge("The method to use when ordering `Category`." orderBy: [CategoriesOrderBy!] = [ PRIMARY_KEY_ASC ]): CategoriesEdge
+}
+
+"All input for the create `Category` mutation."
+input CreateCategoryInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The `Category` to be created by this mutation."
+  category: CategoryInput!
+}
+
+"An input for mutations affecting `Category`"
+input CategoryInput {
+  id: Int
+  name: String
+  description: String
+}
+
+"The output of our create `Material` mutation."
+type CreateMaterialPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `Material` that was created by this mutation."
+  material: Material
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `Material`. May be used by Relay 1."
+  materialEdge("The method to use when ordering `Material`." orderBy: [MaterialsOrderBy!] = [ PRIMARY_KEY_ASC ]): MaterialsEdge
+}
+
+"All input for the create `Material` mutation."
+input CreateMaterialInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The `Material` to be created by this mutation."
+  material: MaterialInput!
+}
+
+"An input for mutations affecting `Material`"
+input MaterialInput {
+  id: Int
+  name: String!
+  unit: String!
+  currentStock: Float
+  minStock: Float
+  price: Float
+  description: String
+}
+
+"The output of our create `MaterialItem` mutation."
+type CreateMaterialItemPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `MaterialItem` that was created by this mutation."
+  materialItem: MaterialItem
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "Reads a single `Material` that is related to this `MaterialItem`."
+  materialByIdMaterial: Material
+  "An edge for our `MaterialItem`. May be used by Relay 1."
+  materialItemEdge("The method to use when ordering `MaterialItem`." orderBy: [MaterialItemsOrderBy!] = [ PRIMARY_KEY_ASC ]): MaterialItemsEdge
+}
+
+"All input for the create `MaterialItem` mutation."
+input CreateMaterialItemInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The `MaterialItem` to be created by this mutation."
+  materialItem: MaterialItemInput!
+}
+
+"An input for mutations affecting `MaterialItem`"
+input MaterialItemInput {
+  id: Int
+  idMaterial: Int!
+  type: String!
+  quantity: Float!
+  unitPrice: Float!
+  date: Datetime
+  note: String
+}
+
+"The output of our create `Product` mutation."
+type CreateProductPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `Product` that was created by this mutation."
+  product: Product
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "Reads a single `Category` that is related to this `Product`."
+  categoryByIdCategory: Category
+  "An edge for our `Product`. May be used by Relay 1."
+  productEdge("The method to use when ordering `Product`." orderBy: [ProductsOrderBy!] = [ PRIMARY_KEY_ASC ]): ProductsEdge
+}
+
+"All input for the create `Product` mutation."
+input CreateProductInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The `Product` to be created by this mutation."
+  product: ProductInput!
+}
+
+"An input for mutations affecting `Product`"
+input ProductInput {
+  id: Int
+  name: String
+  idCategory: Int!
+  price: Float
+  description: String
+  isAvailable: Boolean
+}
+
+"The output of our create `ProductMaterial` mutation."
+type CreateProductMaterialPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `ProductMaterial` that was created by this mutation."
+  productMaterial: ProductMaterial
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "Reads a single `Product` that is related to this `ProductMaterial`."
+  productByIdProduct: Product
+  "Reads a single `Material` that is related to this `ProductMaterial`."
+  materialByIdMaterial: Material
+  "An edge for our `ProductMaterial`. May be used by Relay 1."
+  productMaterialEdge("The method to use when ordering `ProductMaterial`." orderBy: [ProductMaterialsOrderBy!] = [ PRIMARY_KEY_ASC ]): ProductMaterialsEdge
+}
+
+"All input for the create `ProductMaterial` mutation."
+input CreateProductMaterialInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The `ProductMaterial` to be created by this mutation."
+  productMaterial: ProductMaterialInput!
+}
+
+"An input for mutations affecting `ProductMaterial`"
+input ProductMaterialInput {
+  id: Int
+  idProduct: Int!
+  idMaterial: Int!
+  quantity: Float!
+}
+
+"The output of our create `KnexMigration` mutation."
+type CreateKnexMigrationPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `KnexMigration` that was created by this mutation."
+  knexMigration: KnexMigration
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `KnexMigration`. May be used by Relay 1."
+  knexMigrationEdge("The method to use when ordering `KnexMigration`." orderBy: [KnexMigrationsOrderBy!] = [ PRIMARY_KEY_ASC ]): KnexMigrationsEdge
+}
+
+"All input for the create `KnexMigration` mutation."
+input CreateKnexMigrationInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The `KnexMigration` to be created by this mutation."
+  knexMigration: KnexMigrationInput!
+}
+
+"An input for mutations affecting `KnexMigration`"
+input KnexMigrationInput {
+  id: Int
+  name: String
+  batch: Int
+  migrationTime: Datetime
+}
+
+"The output of our create `KnexMigrationsLock` mutation."
+type CreateKnexMigrationsLockPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `KnexMigrationsLock` that was created by this mutation."
+  knexMigrationsLock: KnexMigrationsLock
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `KnexMigrationsLock`. May be used by Relay 1."
+  knexMigrationsLockEdge("The method to use when ordering `KnexMigrationsLock`." orderBy: [KnexMigrationsLocksOrderBy!] = [ PRIMARY_KEY_ASC ]): KnexMigrationsLocksEdge
+}
+
+"All input for the create `KnexMigrationsLock` mutation."
+input CreateKnexMigrationsLockInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The `KnexMigrationsLock` to be created by this mutation."
+  knexMigrationsLock: KnexMigrationsLockInput!
+}
+
+"An input for mutations affecting `KnexMigrationsLock`"
+input KnexMigrationsLockInput {
+  index: Int
+  isLocked: Int
+}
+
+"The output of our update `Account` mutation."
+type UpdateAccountPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `Account` that was updated by this mutation."
+  account: Account
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `Account`. May be used by Relay 1."
+  accountEdge("The method to use when ordering `Account`." orderBy: [AccountsOrderBy!] = [ PRIMARY_KEY_ASC ]): AccountsEdge
+}
+
+"All input for the `updateAccount` mutation."
+input UpdateAccountInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `Account` to be updated."
+  nodeId: ID!
+  "An object where the defined keys will be set on the `Account` being updated."
+  accountPatch: AccountPatch!
+}
+
+"Represents an update to a `Account`. Fields that are set will be updated."
+input AccountPatch {
+  userName: String
+  displayName: String
+  password: String
+  type: Int
+}
+
+"All input for the `updateAccountByUserName` mutation."
+input UpdateAccountByUserNameInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "An object where the defined keys will be set on the `Account` being updated."
+  accountPatch: AccountPatch!
+  userName: String!
+}
+
+"The output of our update `Bill` mutation."
+type UpdateBillPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `Bill` that was updated by this mutation."
+  bill: Bill
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "Reads a single `CafeTable` that is related to this `Bill`."
+  cafeTableByIdTable: CafeTable
+  "An edge for our `Bill`. May be used by Relay 1."
+  billEdge("The method to use when ordering `Bill`." orderBy: [BillsOrderBy!] = [ PRIMARY_KEY_ASC ]): BillsEdge
+}
+
+"All input for the `updateBill` mutation."
+input UpdateBillInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `Bill` to be updated."
+  nodeId: ID!
+  "An object where the defined keys will be set on the `Bill` being updated."
+  billPatch: BillPatch!
+}
+
+"Represents an update to a `Bill`. Fields that are set will be updated."
+input BillPatch {
+  id: Int
+  dateCheckIn: Datetime
+  dateCheckOut: Datetime
+  idTable: Int
+  status: Int
+  totalAmount: Float
+  paymentMethod: String
+  discount: Float
+  finalAmount: Float
+}
+
+"All input for the `updateBillById` mutation."
+input UpdateBillByIdInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "An object where the defined keys will be set on the `Bill` being updated."
+  billPatch: BillPatch!
+  id: Int!
+}
+
+"The output of our update `BillInfo` mutation."
+type UpdateBillInfoPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `BillInfo` that was updated by this mutation."
+  billInfo: BillInfo
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "Reads a single `Bill` that is related to this `BillInfo`."
+  billByIdBill: Bill
+  "Reads a single `Product` that is related to this `BillInfo`."
+  productByIdProduct: Product
+  "An edge for our `BillInfo`. May be used by Relay 1."
+  billInfoEdge("The method to use when ordering `BillInfo`." orderBy: [BillInfosOrderBy!] = [ PRIMARY_KEY_ASC ]): BillInfosEdge
+}
+
+"All input for the `updateBillInfo` mutation."
+input UpdateBillInfoInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `BillInfo` to be updated."
+  nodeId: ID!
+  "An object where the defined keys will be set on the `BillInfo` being updated."
+  billInfoPatch: BillInfoPatch!
+}
+
+"Represents an update to a `BillInfo`. Fields that are set will be updated."
+input BillInfoPatch {
+  id: Int
+  idBill: Int
+  idProduct: Int
+  count: Int
+  unitPrice: Float
+  totalPrice: Float
+}
+
+"All input for the `updateBillInfoById` mutation."
+input UpdateBillInfoByIdInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "An object where the defined keys will be set on the `BillInfo` being updated."
+  billInfoPatch: BillInfoPatch!
+  id: Int!
+}
+
+"The output of our update `CafeTable` mutation."
+type UpdateCafeTablePayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `CafeTable` that was updated by this mutation."
+  cafeTable: CafeTable
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `CafeTable`. May be used by Relay 1."
+  cafeTableEdge("The method to use when ordering `CafeTable`." orderBy: [CafeTablesOrderBy!] = [ PRIMARY_KEY_ASC ]): CafeTablesEdge
+}
+
+"All input for the `updateCafeTable` mutation."
+input UpdateCafeTableInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `CafeTable` to be updated."
+  nodeId: ID!
+  "An object where the defined keys will be set on the `CafeTable` being updated."
+  cafeTablePatch: CafeTablePatch!
+}
+
+"Represents an update to a `CafeTable`. Fields that are set will be updated."
+input CafeTablePatch {
+  id: Int
+  name: String
+  status: String
+  location: String
+}
+
+"All input for the `updateCafeTableById` mutation."
+input UpdateCafeTableByIdInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "An object where the defined keys will be set on the `CafeTable` being updated."
+  cafeTablePatch: CafeTablePatch!
+  id: Int!
+}
+
+"The output of our update `Category` mutation."
+type UpdateCategoryPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `Category` that was updated by this mutation."
+  category: Category
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `Category`. May be used by Relay 1."
+  categoryEdge("The method to use when ordering `Category`." orderBy: [CategoriesOrderBy!] = [ PRIMARY_KEY_ASC ]): CategoriesEdge
+}
+
+"All input for the `updateCategory` mutation."
+input UpdateCategoryInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `Category` to be updated."
+  nodeId: ID!
+  "An object where the defined keys will be set on the `Category` being updated."
+  categoryPatch: CategoryPatch!
+}
+
+"Represents an update to a `Category`. Fields that are set will be updated."
+input CategoryPatch {
+  id: Int
+  name: String
+  description: String
+}
+
+"All input for the `updateCategoryById` mutation."
+input UpdateCategoryByIdInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "An object where the defined keys will be set on the `Category` being updated."
+  categoryPatch: CategoryPatch!
+  id: Int!
+}
+
+"The output of our update `Material` mutation."
+type UpdateMaterialPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `Material` that was updated by this mutation."
+  material: Material
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `Material`. May be used by Relay 1."
+  materialEdge("The method to use when ordering `Material`." orderBy: [MaterialsOrderBy!] = [ PRIMARY_KEY_ASC ]): MaterialsEdge
+}
+
+"All input for the `updateMaterial` mutation."
+input UpdateMaterialInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `Material` to be updated."
+  nodeId: ID!
+  "An object where the defined keys will be set on the `Material` being updated."
+  materialPatch: MaterialPatch!
+}
+
+"Represents an update to a `Material`. Fields that are set will be updated."
+input MaterialPatch {
+  id: Int
+  name: String
+  unit: String
+  currentStock: Float
+  minStock: Float
+  price: Float
+  description: String
+}
+
+"All input for the `updateMaterialById` mutation."
+input UpdateMaterialByIdInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "An object where the defined keys will be set on the `Material` being updated."
+  materialPatch: MaterialPatch!
+  id: Int!
+}
+
+"The output of our update `MaterialItem` mutation."
+type UpdateMaterialItemPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `MaterialItem` that was updated by this mutation."
+  materialItem: MaterialItem
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "Reads a single `Material` that is related to this `MaterialItem`."
+  materialByIdMaterial: Material
+  "An edge for our `MaterialItem`. May be used by Relay 1."
+  materialItemEdge("The method to use when ordering `MaterialItem`." orderBy: [MaterialItemsOrderBy!] = [ PRIMARY_KEY_ASC ]): MaterialItemsEdge
+}
+
+"All input for the `updateMaterialItem` mutation."
+input UpdateMaterialItemInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `MaterialItem` to be updated."
+  nodeId: ID!
+  "An object where the defined keys will be set on the `MaterialItem` being updated."
+  materialItemPatch: MaterialItemPatch!
+}
+
+"Represents an update to a `MaterialItem`. Fields that are set will be updated."
+input MaterialItemPatch {
+  id: Int
+  idMaterial: Int
+  type: String
+  quantity: Float
+  unitPrice: Float
+  date: Datetime
+  note: String
+}
+
+"All input for the `updateMaterialItemById` mutation."
+input UpdateMaterialItemByIdInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "An object where the defined keys will be set on the `MaterialItem` being updated."
+  materialItemPatch: MaterialItemPatch!
+  id: Int!
+}
+
+"The output of our update `Product` mutation."
+type UpdateProductPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `Product` that was updated by this mutation."
+  product: Product
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "Reads a single `Category` that is related to this `Product`."
+  categoryByIdCategory: Category
+  "An edge for our `Product`. May be used by Relay 1."
+  productEdge("The method to use when ordering `Product`." orderBy: [ProductsOrderBy!] = [ PRIMARY_KEY_ASC ]): ProductsEdge
+}
+
+"All input for the `updateProduct` mutation."
+input UpdateProductInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `Product` to be updated."
+  nodeId: ID!
+  "An object where the defined keys will be set on the `Product` being updated."
+  productPatch: ProductPatch!
+}
+
+"Represents an update to a `Product`. Fields that are set will be updated."
+input ProductPatch {
+  id: Int
+  name: String
+  idCategory: Int
+  price: Float
+  description: String
+  isAvailable: Boolean
+}
+
+"All input for the `updateProductById` mutation."
+input UpdateProductByIdInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "An object where the defined keys will be set on the `Product` being updated."
+  productPatch: ProductPatch!
+  id: Int!
+}
+
+"The output of our update `ProductMaterial` mutation."
+type UpdateProductMaterialPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `ProductMaterial` that was updated by this mutation."
+  productMaterial: ProductMaterial
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "Reads a single `Product` that is related to this `ProductMaterial`."
+  productByIdProduct: Product
+  "Reads a single `Material` that is related to this `ProductMaterial`."
+  materialByIdMaterial: Material
+  "An edge for our `ProductMaterial`. May be used by Relay 1."
+  productMaterialEdge("The method to use when ordering `ProductMaterial`." orderBy: [ProductMaterialsOrderBy!] = [ PRIMARY_KEY_ASC ]): ProductMaterialsEdge
+}
+
+"All input for the `updateProductMaterial` mutation."
+input UpdateProductMaterialInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `ProductMaterial` to be updated."
+  nodeId: ID!
+  "An object where the defined keys will be set on the `ProductMaterial` being updated."
+  productMaterialPatch: ProductMaterialPatch!
+}
+
+"Represents an update to a `ProductMaterial`. Fields that are set will be updated."
+input ProductMaterialPatch {
+  id: Int
+  idProduct: Int
+  idMaterial: Int
+  quantity: Float
+}
+
+"All input for the `updateProductMaterialById` mutation."
+input UpdateProductMaterialByIdInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "An object where the defined keys will be set on the `ProductMaterial` being updated."
+  productMaterialPatch: ProductMaterialPatch!
+  id: Int!
+}
+
+"The output of our update `KnexMigration` mutation."
+type UpdateKnexMigrationPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `KnexMigration` that was updated by this mutation."
+  knexMigration: KnexMigration
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `KnexMigration`. May be used by Relay 1."
+  knexMigrationEdge("The method to use when ordering `KnexMigration`." orderBy: [KnexMigrationsOrderBy!] = [ PRIMARY_KEY_ASC ]): KnexMigrationsEdge
+}
+
+"All input for the `updateKnexMigration` mutation."
+input UpdateKnexMigrationInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `KnexMigration` to be updated."
+  nodeId: ID!
+  "An object where the defined keys will be set on the `KnexMigration` being updated."
+  knexMigrationPatch: KnexMigrationPatch!
+}
+
+"Represents an update to a `KnexMigration`. Fields that are set will be updated."
+input KnexMigrationPatch {
+  id: Int
+  name: String
+  batch: Int
+  migrationTime: Datetime
+}
+
+"All input for the `updateKnexMigrationById` mutation."
+input UpdateKnexMigrationByIdInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "An object where the defined keys will be set on the `KnexMigration` being updated."
+  knexMigrationPatch: KnexMigrationPatch!
+  id: Int!
+}
+
+"The output of our update `KnexMigrationsLock` mutation."
+type UpdateKnexMigrationsLockPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `KnexMigrationsLock` that was updated by this mutation."
+  knexMigrationsLock: KnexMigrationsLock
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `KnexMigrationsLock`. May be used by Relay 1."
+  knexMigrationsLockEdge("The method to use when ordering `KnexMigrationsLock`." orderBy: [KnexMigrationsLocksOrderBy!] = [ PRIMARY_KEY_ASC ]): KnexMigrationsLocksEdge
+}
+
+"All input for the `updateKnexMigrationsLock` mutation."
+input UpdateKnexMigrationsLockInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `KnexMigrationsLock` to be updated."
+  nodeId: ID!
+  "An object where the defined keys will be set on the `KnexMigrationsLock` being updated."
+  knexMigrationsLockPatch: KnexMigrationsLockPatch!
+}
+
+"Represents an update to a `KnexMigrationsLock`. Fields that are set will be updated."
+input KnexMigrationsLockPatch {
+  index: Int
+  isLocked: Int
+}
+
+"All input for the `updateKnexMigrationsLockByIndex` mutation."
+input UpdateKnexMigrationsLockByIndexInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "An object where the defined keys will be set on the `KnexMigrationsLock` being updated."
+  knexMigrationsLockPatch: KnexMigrationsLockPatch!
+  index: Int!
+}
+
+"The output of our delete `Account` mutation."
+type DeleteAccountPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `Account` that was deleted by this mutation."
+  account: Account
+  deletedAccountId: ID
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `Account`. May be used by Relay 1."
+  accountEdge("The method to use when ordering `Account`." orderBy: [AccountsOrderBy!] = [ PRIMARY_KEY_ASC ]): AccountsEdge
+}
+
+"All input for the `deleteAccount` mutation."
+input DeleteAccountInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `Account` to be deleted."
+  nodeId: ID!
+}
+
+"All input for the `deleteAccountByUserName` mutation."
+input DeleteAccountByUserNameInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  userName: String!
+}
+
+"The output of our delete `Bill` mutation."
+type DeleteBillPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `Bill` that was deleted by this mutation."
+  bill: Bill
+  deletedBillId: ID
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "Reads a single `CafeTable` that is related to this `Bill`."
+  cafeTableByIdTable: CafeTable
+  "An edge for our `Bill`. May be used by Relay 1."
+  billEdge("The method to use when ordering `Bill`." orderBy: [BillsOrderBy!] = [ PRIMARY_KEY_ASC ]): BillsEdge
+}
+
+"All input for the `deleteBill` mutation."
+input DeleteBillInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `Bill` to be deleted."
+  nodeId: ID!
+}
+
+"All input for the `deleteBillById` mutation."
+input DeleteBillByIdInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  id: Int!
+}
+
+"The output of our delete `BillInfo` mutation."
+type DeleteBillInfoPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `BillInfo` that was deleted by this mutation."
+  billInfo: BillInfo
+  deletedBillInfoId: ID
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "Reads a single `Bill` that is related to this `BillInfo`."
+  billByIdBill: Bill
+  "Reads a single `Product` that is related to this `BillInfo`."
+  productByIdProduct: Product
+  "An edge for our `BillInfo`. May be used by Relay 1."
+  billInfoEdge("The method to use when ordering `BillInfo`." orderBy: [BillInfosOrderBy!] = [ PRIMARY_KEY_ASC ]): BillInfosEdge
+}
+
+"All input for the `deleteBillInfo` mutation."
+input DeleteBillInfoInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `BillInfo` to be deleted."
+  nodeId: ID!
+}
+
+"All input for the `deleteBillInfoById` mutation."
+input DeleteBillInfoByIdInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  id: Int!
+}
+
+"The output of our delete `CafeTable` mutation."
+type DeleteCafeTablePayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `CafeTable` that was deleted by this mutation."
+  cafeTable: CafeTable
+  deletedCafeTableId: ID
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `CafeTable`. May be used by Relay 1."
+  cafeTableEdge("The method to use when ordering `CafeTable`." orderBy: [CafeTablesOrderBy!] = [ PRIMARY_KEY_ASC ]): CafeTablesEdge
+}
+
+"All input for the `deleteCafeTable` mutation."
+input DeleteCafeTableInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `CafeTable` to be deleted."
+  nodeId: ID!
+}
+
+"All input for the `deleteCafeTableById` mutation."
+input DeleteCafeTableByIdInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  id: Int!
+}
+
+"The output of our delete `Category` mutation."
+type DeleteCategoryPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `Category` that was deleted by this mutation."
+  category: Category
+  deletedCategoryId: ID
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `Category`. May be used by Relay 1."
+  categoryEdge("The method to use when ordering `Category`." orderBy: [CategoriesOrderBy!] = [ PRIMARY_KEY_ASC ]): CategoriesEdge
+}
+
+"All input for the `deleteCategory` mutation."
+input DeleteCategoryInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `Category` to be deleted."
+  nodeId: ID!
+}
+
+"All input for the `deleteCategoryById` mutation."
+input DeleteCategoryByIdInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  id: Int!
+}
+
+"The output of our delete `Material` mutation."
+type DeleteMaterialPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `Material` that was deleted by this mutation."
+  material: Material
+  deletedMaterialId: ID
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `Material`. May be used by Relay 1."
+  materialEdge("The method to use when ordering `Material`." orderBy: [MaterialsOrderBy!] = [ PRIMARY_KEY_ASC ]): MaterialsEdge
+}
+
+"All input for the `deleteMaterial` mutation."
+input DeleteMaterialInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `Material` to be deleted."
+  nodeId: ID!
+}
+
+"All input for the `deleteMaterialById` mutation."
+input DeleteMaterialByIdInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  id: Int!
+}
+
+"The output of our delete `MaterialItem` mutation."
+type DeleteMaterialItemPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `MaterialItem` that was deleted by this mutation."
+  materialItem: MaterialItem
+  deletedMaterialItemId: ID
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "Reads a single `Material` that is related to this `MaterialItem`."
+  materialByIdMaterial: Material
+  "An edge for our `MaterialItem`. May be used by Relay 1."
+  materialItemEdge("The method to use when ordering `MaterialItem`." orderBy: [MaterialItemsOrderBy!] = [ PRIMARY_KEY_ASC ]): MaterialItemsEdge
+}
+
+"All input for the `deleteMaterialItem` mutation."
+input DeleteMaterialItemInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `MaterialItem` to be deleted."
+  nodeId: ID!
+}
+
+"All input for the `deleteMaterialItemById` mutation."
+input DeleteMaterialItemByIdInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  id: Int!
+}
+
+"The output of our delete `Product` mutation."
+type DeleteProductPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `Product` that was deleted by this mutation."
+  product: Product
+  deletedProductId: ID
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "Reads a single `Category` that is related to this `Product`."
+  categoryByIdCategory: Category
+  "An edge for our `Product`. May be used by Relay 1."
+  productEdge("The method to use when ordering `Product`." orderBy: [ProductsOrderBy!] = [ PRIMARY_KEY_ASC ]): ProductsEdge
+}
+
+"All input for the `deleteProduct` mutation."
+input DeleteProductInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `Product` to be deleted."
+  nodeId: ID!
+}
+
+"All input for the `deleteProductById` mutation."
+input DeleteProductByIdInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  id: Int!
+}
+
+"The output of our delete `ProductMaterial` mutation."
+type DeleteProductMaterialPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `ProductMaterial` that was deleted by this mutation."
+  productMaterial: ProductMaterial
+  deletedProductMaterialId: ID
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "Reads a single `Product` that is related to this `ProductMaterial`."
+  productByIdProduct: Product
+  "Reads a single `Material` that is related to this `ProductMaterial`."
+  materialByIdMaterial: Material
+  "An edge for our `ProductMaterial`. May be used by Relay 1."
+  productMaterialEdge("The method to use when ordering `ProductMaterial`." orderBy: [ProductMaterialsOrderBy!] = [ PRIMARY_KEY_ASC ]): ProductMaterialsEdge
+}
+
+"All input for the `deleteProductMaterial` mutation."
+input DeleteProductMaterialInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `ProductMaterial` to be deleted."
+  nodeId: ID!
+}
+
+"All input for the `deleteProductMaterialById` mutation."
+input DeleteProductMaterialByIdInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  id: Int!
+}
+
+"The output of our delete `KnexMigration` mutation."
+type DeleteKnexMigrationPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `KnexMigration` that was deleted by this mutation."
+  knexMigration: KnexMigration
+  deletedKnexMigrationId: ID
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `KnexMigration`. May be used by Relay 1."
+  knexMigrationEdge("The method to use when ordering `KnexMigration`." orderBy: [KnexMigrationsOrderBy!] = [ PRIMARY_KEY_ASC ]): KnexMigrationsEdge
+}
+
+"All input for the `deleteKnexMigration` mutation."
+input DeleteKnexMigrationInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `KnexMigration` to be deleted."
+  nodeId: ID!
+}
+
+"All input for the `deleteKnexMigrationById` mutation."
+input DeleteKnexMigrationByIdInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  id: Int!
+}
+
+"The output of our delete `KnexMigrationsLock` mutation."
+type DeleteKnexMigrationsLockPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `KnexMigrationsLock` that was deleted by this mutation."
+  knexMigrationsLock: KnexMigrationsLock
+  deletedKnexMigrationsLockId: ID
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `KnexMigrationsLock`. May be used by Relay 1."
+  knexMigrationsLockEdge("The method to use when ordering `KnexMigrationsLock`." orderBy: [KnexMigrationsLocksOrderBy!] = [ PRIMARY_KEY_ASC ]): KnexMigrationsLocksEdge
+}
+
+"All input for the `deleteKnexMigrationsLock` mutation."
+input DeleteKnexMigrationsLockInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `KnexMigrationsLock` to be deleted."
+  nodeId: ID!
+}
+
+"All input for the `deleteKnexMigrationsLockByIndex` mutation."
+input DeleteKnexMigrationsLockByIndexInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  index: Int!
+}
