@@ -14,6 +14,7 @@
   </PropertyGroup>
   <ItemGroup>
     <GraphQL Remove="queries.graphql" />
+    <GraphQL Remove="Queries\billinfos.graphql" />
     <GraphQL Remove="Queries\bills.graphql" />
     <GraphQL Remove="Queries\cafetables.graphql" />
   </ItemGroup>

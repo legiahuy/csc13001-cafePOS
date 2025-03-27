@@ -14,3 +14,42 @@
     }
   }
 }
+
+query GetBillByTableIdAndStatus($tableId: Int!, $status: Int!) {
+  allBills(condition: {idTable: $tableId, status: $status}) {
+    edges {
+      node {
+        idTable
+        status
+        totalAmount
+        paymentMethod
+        finalAmount
+        discount
+        dateCheckOut
+        dateCheckIn
+        id
+      }
+    }
+  }
+}
+
+query GetListMenuByTable($idTable: Int!) {
+  allBills(condition: {idTable: $idTable}) {
+    nodes {
+      billInfosByIdBill {
+        nodes {
+          productByIdProduct {
+            name
+            price
+          }
+          count
+        }
+      }
+    }
+  }
+}
+
+
+
+
+

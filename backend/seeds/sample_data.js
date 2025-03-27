@@ -61,13 +61,16 @@ exports.seed = async function(knex) {
 
   // Thêm dữ liệu cho bảng Bill
   await knex('Bill').insert([
-    { dateCheckIn: knex.fn.now(), idTable: 2, status: 1, totalAmount: 55000, paymentMethod: 'Tiền mặt', finalAmount: 55000 },
+    { dateCheckIn: knex.fn.now(), idTable: 2, status: 1, totalAmount: 80000, paymentMethod: 'Tiền mặt', finalAmount: 80000 },
+    { dateCheckIn: knex.fn.now(), idTable: 1, status: 0, totalAmount: 755000, paymentMethod: 'Tiền mặt', finalAmount: 755000 },
+    { dateCheckIn: knex.fn.now(), idTable: 3, status: 0, totalAmount: 50000, paymentMethod: 'Tiền mặt', finalAmount: 50000 },
   ]);
 
   // Thêm dữ liệu cho bảng BillInfo
   await knex('BillInfo').insert([
-    { idBill: 1, idProduct: 1, count: 1, unitPrice: 30000, totalPrice: 30000 },
-    { idBill: 1, idProduct: 2, count: 1, unitPrice: 25000, totalPrice: 25000 },
+    { idBill: 2, idProduct: 1, count: 1, unitPrice: 30000, totalPrice: 30000 },
+    { idBill: 2, idProduct: 2, count: 2, unitPrice: 25000, totalPrice: 25000 },
+    { idBill: 3, idProduct: 2, count: 2, unitPrice: 50000, totalPrice: 50000 },
   ]);
 
   // Thêm dữ liệu cho bảng MaterialItem

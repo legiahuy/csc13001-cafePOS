@@ -1,0 +1,12 @@
+﻿query GetBillInfoByBillId($billId: Int!) {
+  allBillInfos(condition: {idBill: $billId}) {
+    edges {
+      node {
+        id
+        idProduct
+        count
+        idBill
+      }
+    }
+  }
+}

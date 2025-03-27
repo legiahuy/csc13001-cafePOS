@@ -50,6 +50,9 @@ namespace CafePOS
                     }
                 };
 
+                btn.Click += btn_Click;
+                btn.Tag = table;
+
                 switch (table.Status) {
                     case "Trống":
                         btn.Background = new SolidColorBrush(Colors.Aqua);
@@ -61,6 +64,16 @@ namespace CafePOS
 
                 TableItemsControl.Items.Add(btn);
             }
+        }
+
+        async void ShowBill(int tableId)
+        {
+            List<Menu> listBillInfo = await MenuDAO.Instance.GetListMenuByTableAsync(tableId);
+            OrderListView.ItemsSource = listBillInfo;
+        }
+        void btn_Click(object sender, RoutedEventArgs e) {
+            int tableID = ((sender as Button).Tag as CafeTable)!.Id;
+            ShowBill(tableID);
         }
     }
 }
