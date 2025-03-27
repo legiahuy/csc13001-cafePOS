@@ -2,6 +2,7 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
 using Windows.UI.Xaml;
+using CafePOS.DAO;
 
 
 namespace CafePOS
@@ -44,6 +45,12 @@ namespace CafePOS
                     PageTitleText.Text = "Quản lý đơn hàng";
                     PageDescriptionText.Text = "Tạo và quản lý các đơn hàng, theo dõi tình trạng";
                     // ContentFrame.Navigate(typeof(OrdersPage));
+                    break;
+
+                case "Tables":
+                    PageTitleText.Text = "Quản lý bàn";
+                    PageDescriptionText.Text = "Tạo và quản lý các bàn";
+                    ContentFrame.Navigate(typeof(TableManagerPage));
                     break;
 
                 case "Inventory":

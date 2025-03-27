@@ -1,0 +1,12 @@
+﻿query getAllCafeTables {
+  allCafeTables {
+    edges {
+      node {
+        id
+        name
+        location
+        status
+      }
+    }
+  }
+}

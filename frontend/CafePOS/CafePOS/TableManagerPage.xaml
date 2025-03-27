@@ -1,0 +1,218 @@
+<Page
+    x:Class="CafePOS.TableManagerPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CafePOS"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="#F5F5F5">
+
+    <Page.Resources>
+        <Style x:Key="ComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Background" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="MinWidth" Value="0"/>
+        </Style>
+
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="MinWidth" Value="0"/>
+        </Style>
+    </Page.Resources>
+
+    <Grid Padding="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- LEFT: Table Grid with Improved Styling -->
+        <Border Grid.Column="0" 
+                Background="White" 
+                CornerRadius="8" 
+                Margin="0,0,10,0" 
+                BorderThickness="1" 
+                BorderBrush="#E0E0E0">
+            <ScrollViewer>
+                <ItemsControl x:Name="TableItemsControl">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsWrapGrid 
+                                Orientation="Horizontal" 
+                                MaximumRowsOrColumns="100"
+                                Margin="15"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border 
+                                Width="120" 
+                                Height="120" 
+                                Background="#4A90E2" 
+                                CornerRadius="8" 
+                                Margin="5" 
+                                BorderThickness="2" 
+                                BorderBrush="#3A7BD5">
+                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <TextBlock 
+                                        Text="{Binding TableNumber}" 
+                                        FontSize="24" 
+                                        FontWeight="Bold" 
+                                        Foreground="White" 
+                                        HorizontalAlignment="Center"/>
+                                    <TextBlock 
+                                        Text="{Binding Status}" 
+                                        FontSize="14" 
+                                        Foreground="White" 
+                                        Opacity="0.7" 
+                                        HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Border>
+
+        <!-- RIGHT: Menu & Actions with Enhanced Design -->
+        <Border 
+    Grid.Column="1" 
+    Background="White" 
+    CornerRadius="8" 
+    BorderThickness="1" 
+    BorderBrush="#E0E0E0" 
+    Padding="20">
+
+            <Grid RowSpacing="15">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <!-- Add Food Section -->
+                    <RowDefinition Height="2*" />
+                    <!-- Order List -->
+                    <RowDefinition Height="1*" />
+                    <!-- Bottom Actions -->
+                </Grid.RowDefinitions>
+
+                <!-- Add Food Section -->
+                <StackPanel Grid.Row="0" Spacing="10">
+                    <TextBlock 
+                Text="Thực đơn" 
+                FontSize="22" 
+                FontWeight="Bold" 
+                Foreground="#333333" 
+                HorizontalAlignment="Center"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                            <ComboBox 
+                        x:Name="FoodComboBox" 
+                        PlaceholderText="Chọn món" 
+                        Style="{StaticResource ComboBoxStyle}"
+                        Margin="0,0,0,5"/>
+                            <ComboBox 
+                        x:Name="CategoryComboBox" 
+                        PlaceholderText="Loại món" 
+                        Style="{StaticResource ComboBoxStyle}"/>
+                        </StackPanel>
+
+                        <Button 
+                    Grid.Column="1"
+                    VerticalAlignment="Stretch"
+                    Content="Thêm món" 
+                    Background="#4CAF50" 
+                    Foreground="White" 
+                    Style="{StaticResource ButtonStyle}"/>
+
+                        <NumberBox 
+                    Grid.Column="2"
+                    x:Name="QuantityBox"
+                    Value="1"
+                    Minimum="1"
+                    Margin="10,0,0,0"
+                    VerticalAlignment="Center"
+                    SpinButtonPlacementMode="Compact" 
+                    SmallChange="1"/>
+                    </Grid>
+                </StackPanel>
+
+                <!-- Order List -->
+                <StackPanel Grid.Row="1">
+                    <TextBlock 
+                        Text="Danh sách món" 
+                        FontSize="18" 
+                        FontWeight="SemiBold" 
+                        Foreground="#333333"
+                        HorizontalAlignment="Center"
+                        Margin="0,10"/>
+
+                    <ListView 
+                        x:Name="OrderListView" 
+                        Background="#F9F9F9" 
+                        BorderThickness="1" 
+                        BorderBrush="#E0E0E0"/>
+                </StackPanel>
+                
+                <!-- Bottom Section -->
+                <Grid Grid.Row="2" ColumnSpacing="10">
+                    
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left: Table & Discount -->
+                    <StackPanel Grid.Column="0" Spacing="10">
+                     
+                        <ComboBox 
+                        x:Name="MoveTableComboBox" 
+                        PlaceholderText="Chuyển bàn" 
+                        Style="{StaticResource ComboBoxStyle}"/>
+
+                        <StackPanel Orientation="Horizontal" Spacing="10" >
+                            <TextBlock 
+                                Text="Giảm giá:" 
+                                VerticalAlignment="Center" 
+                                Foreground="#666666"/>
+                            <NumberBox 
+                                x:Name="DiscountBox" 
+                                Value="0" 
+                                Width="100" 
+                                Minimum="0" 
+                                Maximum="100"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Right: Buttons Vertical -->
+                    <StackPanel Grid.Column="1" Spacing="10">
+                        <Button 
+                            Content="Thanh toán" 
+                            Background="#2196F3" 
+                            Foreground="White" 
+                            Style="{StaticResource ButtonStyle}"
+                        />
+                        <Button 
+                            Content="Hủy" 
+                            Background="#F44336" 
+                            Foreground="White" 
+                            Style="{StaticResource ButtonStyle}" 
+                        />
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>

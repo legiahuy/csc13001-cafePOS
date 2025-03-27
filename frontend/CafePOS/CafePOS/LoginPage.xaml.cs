@@ -33,6 +33,7 @@ namespace CafePOS
         {
             string username = UsernameBox.Text;
             string password = PasswordBox.Password;
+            LoginButton.IsEnabled = false;
 
             try
             {
@@ -59,8 +60,7 @@ namespace CafePOS
             }
             finally
             {
-                // Re-enable the login button
-                //LoginButton.IsEnabled = true;
+                LoginButton.IsEnabled = true;
             }
         }
     }

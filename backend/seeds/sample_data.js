@@ -15,11 +15,19 @@ exports.seed = async function(knex) {
   await knex('CafeTable').del();
 
   // Thêm dữ liệu cho bảng CafeTable
-  await knex('CafeTable').insert([
-    { name: 'Bàn 1', status: 'Trống', location: 'Tầng 1' },
-    { name: 'Bàn 2', status: 'Có khách', location: 'Tầng 1' },
-    { name: 'Bàn 3', status: 'Trống', location: 'Tầng 2' },
-  ]);
+  // await knex('CafeTable').insert([
+  //   { name: 'Bàn 1', status: 'Trống', location: 'Tầng 1' },
+  //   { name: 'Bàn 2', status: 'Có khách', location: 'Tầng 1' },
+  //   { name: 'Bàn 3', status: 'Trống', location: 'Tầng 2' },
+  // ]);
+
+  const cafeTables = Array.from({ length: 20 }, (_, i) => ({
+    name: `Bàn ${i + 1}`,
+    status: i % 3 === 0 ? 'Trống' : 'Có khách',
+    location: i < 10 ? 'Tầng 1' : 'Tầng 2',
+  }));
+
+  await knex('CafeTable').insert(cafeTables);
 
   // Thêm dữ liệu cho bảng Account
   await knex('Account').insert([

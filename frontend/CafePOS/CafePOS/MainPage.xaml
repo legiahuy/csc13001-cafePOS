@@ -90,6 +90,21 @@
                             </Grid>
                         </Button>
 
+                        <!-- Table Management -->
+                        <Button x:Name="TableButton" 
+                                Style="{StaticResource TextBlockButtonStyle}" 
+                                Click="NavigationButton_Click"
+                                Tag="Tables">   
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <FontIcon Grid.Column="0" Glyph="&#xE8A1;" FontFamily="Segoe MDL2 Assets" Margin="15,0,15,0" />
+                                <TextBlock Grid.Column="1" Text="Phòng/Bàn" VerticalAlignment="Center" />
+                            </Grid>
+                        </Button>
+
                         <!-- Inventory Management -->
                         <Button x:Name="InventoryButton" 
                                 Style="{StaticResource TextBlockButtonStyle}" 

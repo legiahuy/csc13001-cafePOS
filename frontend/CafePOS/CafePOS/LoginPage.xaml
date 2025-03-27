@@ -166,6 +166,7 @@
 
                     <!-- Login button with static colors -->
                     <Button Content="Đăng Nhập"
+                            Name="LoginButton"
                             Background="#0D6EFD"
                             Foreground="White"
                             BorderThickness="0"

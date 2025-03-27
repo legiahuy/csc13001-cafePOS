@@ -14,11 +14,14 @@
   </PropertyGroup>
   <ItemGroup>
     <GraphQL Remove="queries.graphql" />
+    <GraphQL Remove="Queries\bills.graphql" />
+    <GraphQL Remove="Queries\cafetables.graphql" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="LoginPage.xaml" />
     <None Remove="MainPage.xaml" />
     <None Remove="PlaceholderPage.xaml" />
+    <None Remove="TableManagerPage.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -47,6 +50,11 @@
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250310001" />
     <PackageReference Include="StrawberryShake.Server" Version="15.1.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="TableManagerPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="PlaceholderPage.xaml">

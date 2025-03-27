@@ -26,7 +26,7 @@ namespace CafePOS
         public MainWindow()
         {
             this.InitializeComponent();
-            MainFrame.Navigate(typeof(LoginPage));
+            MainFrame.Navigate(typeof(MainPage));
         }
     }
 }
