@@ -257,6 +257,21 @@
                                 Minimum="0" 
                                 Maximum="100"/>
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+                            <TextBlock 
+                                Text="Tổng tiền:" 
+                                FontSize="16" 
+                                FontWeight="Bold" 
+                                Foreground="#333333"
+                                VerticalAlignment="Center"/>
+                            <TextBlock 
+                                x:Name="TotalPriceTextBlock" 
+                                Text="0 ₫"
+                                FontSize="16" 
+                                FontWeight="Bold" 
+                                Foreground="#FF5722"
+                                VerticalAlignment="Center"/>
+                        </StackPanel>
                     </StackPanel>
 
                     <!-- Right: Buttons Vertical -->

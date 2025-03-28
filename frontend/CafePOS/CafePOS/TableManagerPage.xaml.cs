@@ -70,6 +70,12 @@ namespace CafePOS
         {
             List<Menu> listBillInfo = await MenuDAO.Instance.GetListMenuByTableAsync(tableId);
             OrderListView.ItemsSource = listBillInfo;
+            double totalPrice = 0;
+            foreach(Menu item in listBillInfo)
+            {
+                totalPrice += item.TotalPrice;
+            }
+            TotalPriceTextBlock.Text = totalPrice.ToString("C0", new System.Globalization.CultureInfo("vi-VN"));
         }
         void btn_Click(object sender, RoutedEventArgs e) {
             int tableID = ((sender as Button).Tag as CafeTable)!.Id;
