@@ -1,0 +1,10 @@
+query GetCategories {
+  allCategories {
+    edges {
+      node {
+        id
+        name
+      }
+    }
+  }
+}

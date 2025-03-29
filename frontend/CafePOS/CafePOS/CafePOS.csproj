@@ -17,6 +17,8 @@
     <GraphQL Remove="Queries\billinfos.graphql" />
     <GraphQL Remove="Queries\bills.graphql" />
     <GraphQL Remove="Queries\cafetables.graphql" />
+    <GraphQL Remove="queries\categories.graphql" />
+    <GraphQL Remove="queries\drinks.graphql" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="LoginPage.xaml" />

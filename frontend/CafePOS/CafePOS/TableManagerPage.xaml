@@ -127,7 +127,9 @@
                             <ComboBox 
                         x:Name="CategoryComboBox" 
                         PlaceholderText="Loại món" 
-                        Style="{StaticResource ComboBoxStyle}"/>
+                        Style="{StaticResource ComboBoxStyle}"
+                        SelectionChanged="CategoryComboBox_SelectionChanged"
+                        />
                         </StackPanel>
 
                         <Button 

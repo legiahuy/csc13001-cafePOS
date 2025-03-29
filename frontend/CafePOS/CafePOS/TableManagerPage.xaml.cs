@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using CafePOS.DAO;
 using CafePOS.DTO;
 using Microsoft.UI;
@@ -31,6 +33,20 @@ namespace CafePOS
         {
             this.InitializeComponent();
             LoadTable();
+            LoadCategory();
+        }
+
+        private async void LoadCategory()
+        {
+            List<Category> listCategory = await CategoryDAO.Instance.GetListCategoryAsync();
+            CategoryComboBox.ItemsSource = listCategory;
+            CategoryComboBox.DisplayMemberPath = "Name";
+        }
+        private async Task LoadDrinkListByCategoryID(int id)
+        {
+            List<Drink> listDrink = await DrinkDAO.Instance.GetDrinkByCategoryIDAsync(id);
+            FoodComboBox.ItemsSource = listDrink;
+            FoodComboBox.DisplayMemberPath = "Name";
         }
 
         private async void LoadTable() {
@@ -71,7 +87,7 @@ namespace CafePOS
             List<Menu> listBillInfo = await MenuDAO.Instance.GetListMenuByTableAsync(tableId);
             OrderListView.ItemsSource = listBillInfo;
             double totalPrice = 0;
-            foreach(Menu item in listBillInfo)
+            foreach (Menu item in listBillInfo)
             {
                 totalPrice += item.TotalPrice;
             }
@@ -80,6 +96,13 @@ namespace CafePOS
         void btn_Click(object sender, RoutedEventArgs e) {
             int tableID = ((sender as Button).Tag as CafeTable)!.Id;
             ShowBill(tableID);
+        }
+        private async void CategoryComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (CategoryComboBox.SelectedItem is Category selectedCategory)
+            {
+                await LoadDrinkListByCategoryID(selectedCategory.ID);
+            }
         }
     }
 }

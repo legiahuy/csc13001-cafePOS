@@ -1,0 +1,11 @@
+query GetDrinksByCategory($idCategory: Int!) {
+  allProducts(condition: {idCategory: $idCategory}) {
+    edges {
+      node {
+        id
+        name
+        price
+      }
+    }
+  }
+}
