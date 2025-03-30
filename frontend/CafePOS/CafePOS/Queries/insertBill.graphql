@@ -1,0 +1,11 @@
+mutation CreateBill($idTable: Int!, $status: Int!, $dateCheckIn: Datetime!) {
+  createBill(input: { bill: { idTable: $idTable, status: $status, dateCheckIn: $dateCheckIn } }) {
+    bill {
+      id
+      idTable
+      status
+      dateCheckIn
+    }
+  }
+}
+

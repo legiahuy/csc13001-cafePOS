@@ -60,5 +60,28 @@ namespace CafePOS.DAO
 
             return tableList;
         }
+        public async Task<int> InsertBillAsync(int idTable)
+        {
+            var client = DataProvider.Instance.Client;
+            var dateCheckIn = DateTime.UtcNow.ToString("o");
+
+            var result = await client.CreateBill.ExecuteAsync(idTable, 0, dateCheckIn);
+
+            return result.Data?.CreateBill?.Bill?.Id ?? -1;
+        }
+
+        public async Task<int> GetMaxIDBillAsync()
+        {
+            var client = DataProvider.Instance.Client;
+            var result = await client.GetAllBills.ExecuteAsync();
+
+            var maxId = result.Data?.AllBills?.Edges?
+                .Where(e => e.Node != null)  
+                .Select(e => e.Node.Id)     
+                .DefaultIfEmpty(1)          
+                .Max() ?? 1;                      
+
+            return maxId;
+        }
     }
 }

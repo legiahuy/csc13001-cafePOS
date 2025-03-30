@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CafePOS.GraphQL;
+using Microsoft.UI;
+using Microsoft.UI.Xaml.Media;
 
 namespace CafePOS.DTO
 {
@@ -28,6 +31,24 @@ namespace CafePOS.DTO
 
         public int Id { get => _id; set => _id = value; }
         public string Name { get => _name; set => _name = value; }
-        public string Status { get => _status; set => _status = value; }
+        public string Status
+        {
+            get => _status;
+            set
+            {
+                _status = value;
+                OnPropertyChanged(nameof(Status));
+                OnPropertyChanged(nameof(BackgroundColor));
+            }
+        }
+
+        public SolidColorBrush BackgroundColor =>
+            Status.Equals("Trống") ? new SolidColorBrush(Colors.Aqua) : new SolidColorBrush(Colors.LightPink);
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

@@ -37,49 +37,54 @@
 
         <!-- LEFT: Table Grid with Improved Styling -->
         <Border Grid.Column="0" 
-                Background="White" 
-                CornerRadius="8" 
-                Margin="0,0,10,0" 
-                BorderThickness="1" 
-                BorderBrush="#E0E0E0">
+        Background="White" 
+        CornerRadius="8" 
+        Margin="0,0,10,0" 
+        BorderThickness="1" 
+        BorderBrush="#E0E0E0">
             <ScrollViewer>
-                <ItemsControl x:Name="TableItemsControl">
-                    <ItemsControl.ItemsPanel>
+                <ListView x:Name="TableItemsControl" 
+                  SelectionChanged="TableItemsControl_SelectionChanged"
+                  SelectionMode="Single"
+                  BorderThickness="0"
+                  Background="Transparent">
+
+                    <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <ItemsWrapGrid 
-                                Orientation="Horizontal" 
-                                MaximumRowsOrColumns="100"
-                                Margin="15"/>
+                            <ItemsWrapGrid Orientation="Horizontal" MaximumRowsOrColumns="100" Margin="15"/>
                         </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border 
-                                Width="120" 
-                                Height="120" 
-                                Background="#4A90E2" 
-                                CornerRadius="8" 
-                                Margin="5" 
-                                BorderThickness="2" 
-                                BorderBrush="#3A7BD5">
-                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                    <TextBlock 
-                                        Text="{Binding TableNumber}" 
-                                        FontSize="24" 
-                                        FontWeight="Bold" 
-                                        Foreground="White" 
-                                        HorizontalAlignment="Center"/>
-                                    <TextBlock 
-                                        Text="{Binding Status}" 
-                                        FontSize="14" 
-                                        Foreground="White" 
-                                        Opacity="0.7" 
-                                        HorizontalAlignment="Center"/>
-                                </StackPanel>
-                            </Border>
+                    </ListView.ItemsPanel>
+
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="dto:CafeTable">
+                            <Button Click="TableButton_Click" Background="Transparent" BorderThickness="0">
+                                <Border 
+                                    Width="120" 
+                                    Height="120" 
+                                    Background="{x:Bind BackgroundColor}"
+                                    CornerRadius="8" 
+                                    Margin="5" 
+                                    BorderThickness="2" 
+                                    BorderBrush="#3A7BD5">
+                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <TextBlock 
+                                            Text="{x:Bind Name}" 
+                                            FontSize="24" 
+                                            FontWeight="Bold" 
+                                            Foreground="White" 
+                                            HorizontalAlignment="Center"/>
+                                        <TextBlock 
+                                            Text="{x:Bind Status}" 
+                                            FontSize="14" 
+                                            Foreground="White" 
+                                            Opacity="0.7" 
+                                            HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                            </Button>
                         </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                    </ListView.ItemTemplate>
+                </ListView>
             </ScrollViewer>
         </Border>
 
@@ -133,12 +138,15 @@
                         </StackPanel>
 
                         <Button 
+                    x:Name="btnAddFood"        
                     Grid.Column="1"
                     VerticalAlignment="Stretch"
                     Content="Thêm món" 
                     Background="#4CAF50" 
                     Foreground="White" 
-                    Style="{StaticResource ButtonStyle}"/>
+                    Style="{StaticResource ButtonStyle}"
+                    Click="btnAddFood_Click"        
+                    />
 
                         <NumberBox 
                     Grid.Column="2"

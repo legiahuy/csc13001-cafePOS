@@ -19,6 +19,7 @@ using Microsoft.UI.Xaml.Navigation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
+
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
@@ -49,38 +50,17 @@ namespace CafePOS
             FoodComboBox.DisplayMemberPath = "Name";
         }
 
-        private async void LoadTable() {
+        private async void LoadTable()
+        {
             List<CafeTable> tableList = await CafeTableDAO.Instance.GetAllCafeTablesAsync();
-
-            foreach (CafeTable table in tableList) {
-                Button btn = new Button {
-                    Width = CafeTableDAO.tableWidth,
-                    Height = CafeTableDAO.tableHeight,
-                    Margin = new Thickness(5),
-                    Content = new TextBlock
-                    {
-                        Text = table.Name + "\n" + table.Status,
-                        TextAlignment = Microsoft.UI.Xaml.TextAlignment.Center,
-                        HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Center,
-                        VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Center
-                    }
-                };
-
-                btn.Click += btn_Click;
-                btn.Tag = table;
-
-                switch (table.Status) {
-                    case "Trống":
-                        btn.Background = new SolidColorBrush(Colors.Aqua);
-                        break;
-                    default:
-                        btn.Background = new SolidColorBrush(Colors.LightPink);
-                        break;
-                }
-
-                TableItemsControl.Items.Add(btn);
-            }
+            TableItemsControl.ItemsSource = tableList; // Let XAML handle the UI updates
         }
+
+        //void btn_Click(object sender, RoutedEventArgs e)
+        //{
+        //    int tableID = ((sender as Button).Tag as CafeTable)!.Id;
+        //    ShowBill(tableID);
+        //}
 
         async void ShowBill(int tableId)
         {
@@ -93,15 +73,92 @@ namespace CafePOS
             }
             TotalPriceTextBlock.Text = totalPrice.ToString("C0", new System.Globalization.CultureInfo("vi-VN"));
         }
-        void btn_Click(object sender, RoutedEventArgs e) {
-            int tableID = ((sender as Button).Tag as CafeTable)!.Id;
-            ShowBill(tableID);
-        }
+
         private async void CategoryComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (CategoryComboBox.SelectedItem is Category selectedCategory)
             {
                 await LoadDrinkListByCategoryID(selectedCategory.ID);
+            }
+        }
+        private async void btnAddFood_Click(object sender, RoutedEventArgs e)
+        {
+            if (OrderListView.Tag is not CafeTable table)
+            {
+                await ShowDialog("Error", "Please select a table first.");
+                Debug.WriteLine("Table selection error: OrderListView.Tag is null or incorrect.");
+                return;
+            }
+
+            Debug.WriteLine($"Selected Table ID: {table.Id}, Name: {table.Name}");
+
+            int idBill = await BillDAO.Instance.GetUncheckBillIDByTableID(table.Id, 0);
+            int foodID = (FoodComboBox.SelectedItem as Drink)?.ID ?? -1;
+            int count = (int)QuantityBox.Value;
+
+            if (foodID == -1)
+            {
+                await ShowDialog("Error", "Please select a valid food item.");
+                return;
+            }
+
+            float unitPrice = GetUnitPrice(foodID);
+            float totalPrice = unitPrice * count;
+
+            if (idBill == -1)
+            {
+                int newBillId = await BillDAO.Instance.InsertBillAsync(table.Id);
+                if (newBillId > 0)
+                {
+                    await BillInfoDAO.Instance.InsertBillInfoAsync(newBillId, foodID, count, unitPrice, totalPrice);
+                }
+            }
+            else
+            {
+                await BillInfoDAO.Instance.InsertBillInfoAsync(idBill, foodID, count, unitPrice, totalPrice);
+            }
+            ShowBill(table.Id);
+        }
+
+        private async Task ShowDialog(string title, string content)
+        {
+            ContentDialog dialog = new ContentDialog
+            {
+                Title = title,
+                Content = content,
+                CloseButtonText = "OK",
+                XamlRoot = this.XamlRoot
+            };
+            await dialog.ShowAsync();
+        }
+        private float GetUnitPrice(int foodID)
+        {
+            return 10000f; 
+        }
+        private void TableItemsControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (TableItemsControl.SelectedItem is CafeTable selectedTable)
+            {
+                Debug.WriteLine($"Table Selected: {selectedTable.Id}");
+                ShowBill(selectedTable.Id);
+            }
+            else
+            {
+                Debug.WriteLine("Table selection changed, but no table found.");
+            }
+        }
+
+        private void TableButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.DataContext is CafeTable selectedTable)
+            {
+                Debug.WriteLine($"Button Clicked: {selectedTable}");
+                OrderListView.Tag = selectedTable;
+                ShowBill(selectedTable.Id);
+            }
+            else
+            {
+                Debug.WriteLine("Button Clicked: No table found in DataContext.");
             }
         }
     }

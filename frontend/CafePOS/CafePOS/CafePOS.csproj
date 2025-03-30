@@ -19,6 +19,9 @@
     <GraphQL Remove="Queries\cafetables.graphql" />
     <GraphQL Remove="queries\categories.graphql" />
     <GraphQL Remove="queries\drinks.graphql" />
+    <GraphQL Remove="queries\getMaxIDBill.graphql" />
+    <GraphQL Remove="queries\insertBill.graphql" />
+    <GraphQL Remove="queries\InsertBillInfo.graphql" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="LoginPage.xaml" />
