@@ -48,6 +48,26 @@ namespace CafePOS.DAO
             }
         }
 
+
+        public async Task<bool> CheckOutAsync(int id)
+        {
+            try
+            {
+                var client = DataProvider.Instance.Client;
+
+                var result = await client.UpdateBillStatus.ExecuteAsync(id);
+
+                var updatedBill = result.Data?.UpdateBillById?.Bill;
+
+                return updatedBill?.Status == 1;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error in CheckOutAsync: {ex.Message}");
+                return false;
+            }
+        }
+
         public async Task<List<CafeTable>> GetAllCafeTablesAsync()
         {
             var client = DataProvider.Instance.Client;

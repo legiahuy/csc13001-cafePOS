@@ -22,6 +22,7 @@
     <GraphQL Remove="queries\getMaxIDBill.graphql" />
     <GraphQL Remove="queries\insertBill.graphql" />
     <GraphQL Remove="queries\InsertBillInfo.graphql" />
+    <GraphQL Remove="Queries\UpdateBillStatus.graphql" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="LoginPage.xaml" />

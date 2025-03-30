@@ -52,7 +52,14 @@ namespace CafePOS
 
         private async void LoadTable()
         {
+
             List<CafeTable> tableList = await CafeTableDAO.Instance.GetAllCafeTablesAsync();
+
+            foreach (var table in tableList)
+            {
+                int billId = await BillDAO.Instance.GetUncheckBillIDByTableID(table.Id, 0);
+                table.Status = (billId != -1) ? "Có Khách" : "Trống";
+            }
             TableItemsControl.ItemsSource = tableList; // Let XAML handle the UI updates
         }
 
@@ -117,7 +124,9 @@ namespace CafePOS
             {
                 await BillInfoDAO.Instance.InsertBillInfoAsync(idBill, foodID, count, unitPrice, totalPrice);
             }
+            table.Status = "Có Khách";
             ShowBill(table.Id);
+            LoadTable();
         }
 
         private async Task ShowDialog(string title, string content)
@@ -161,5 +170,53 @@ namespace CafePOS
                 Debug.WriteLine("Button Clicked: No table found in DataContext.");
             }
         }
+
+        private async void btnCheckOut_Click(object sender, RoutedEventArgs e)
+        {
+            if (OrderListView.Tag is not CafeTable table)
+            {
+                await ShowDialog("Thông báo", "Vui lòng chọn bàn để thanh toán.");
+                return;
+            }
+
+            int idBill = await BillDAO.Instance.GetUncheckBillIDByTableID(table.Id, 0);
+
+            if (idBill == -1)
+            {
+                await ShowDialog("Thông báo", $"Không tìm thấy hóa đơn chưa thanh toán cho bàn {table.Name}.");
+                return;
+            }
+
+            var dialogResult = await new ContentDialog
+            {
+                Title = "Xác nhận thanh toán",
+                Content = $"Bạn có chắc chắn muốn thanh toán hóa đơn cho bàn {table.Name}?",
+                PrimaryButtonText = "OK",
+                CloseButtonText = "Hủy",
+                XamlRoot = this.XamlRoot
+            }.ShowAsync();
+
+            if (dialogResult == ContentDialogResult.Primary)
+            {
+                bool success = await BillDAO.Instance.CheckOutAsync(idBill);
+
+                if (success)
+                {
+                    OrderListView.ItemsSource = null;
+                    OrderListView.Tag = null;
+                    TotalPriceTextBlock.Text = "0 ₫";
+
+                    table.Status = "Trống";
+                    LoadTable(); 
+
+                }
+                else
+                {
+                    await ShowDialog("Lỗi", "Không thể cập nhật trạng thái hóa đơn.");
+                }
+            }
+        }
+
+
     }
 }
