@@ -18,6 +18,7 @@
     <GraphQL Remove="Queries\bills.graphql" />
     <GraphQL Remove="Queries\cafetables.graphql" />
     <GraphQL Remove="queries\categories.graphql" />
+    <GraphQL Remove="Queries\ChangeTable.graphql" />
     <GraphQL Remove="queries\drinks.graphql" />
     <GraphQL Remove="queries\getMaxIDBill.graphql" />
     <GraphQL Remove="queries\insertBill.graphql" />

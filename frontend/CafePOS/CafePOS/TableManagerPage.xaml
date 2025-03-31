@@ -255,6 +255,13 @@
                         PlaceholderText="Chuyển bàn" 
                         Style="{StaticResource ComboBoxStyle}"/>
 
+                        <Button 
+                        Content="Chuyển bàn" 
+                        Background="#FF9800" 
+                        Foreground="White" 
+                        Style="{StaticResource ButtonStyle}" 
+                        Click="btnChangeTable_Click"/>      
+
                         <StackPanel Orientation="Horizontal" Spacing="10" >
                             <TextBlock 
                                 Text="Giảm giá:" 

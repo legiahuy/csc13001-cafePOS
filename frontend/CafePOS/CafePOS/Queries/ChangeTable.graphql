@@ -1,0 +1,13 @@
+﻿mutation ChangeTable($billId: Int!, $newTableId: Int!) {
+  updateBillById(input: {
+    id: $billId,
+    billPatch: {
+      idTable: $newTableId
+    }
+  }) {
+    bill {
+      id
+      idTable
+    }
+  }
+}
