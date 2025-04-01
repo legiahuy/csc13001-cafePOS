@@ -64,13 +64,7 @@ namespace CafePOS
             }
 
             TableItemsControl.ItemsSource = tableList;
-
-            var currentTable = OrderListView.Tag as CafeTable;
-            var filteredTables = (currentTable == null)
-                ? tableList
-                : tableList.Where(t => t.Id != currentTable.Id).ToList();
-
-            MoveTableComboBox.ItemsSource = filteredTables;
+            MoveTableComboBox.ItemsSource = tableList;
             MoveTableComboBox.DisplayMemberPath = "Name";
 
         }
