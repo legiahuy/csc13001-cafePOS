@@ -38,7 +38,7 @@
                         <TextBlock Text="Check-out: " FontWeight="Bold" Margin="10,0,0,0"/>
                         <TextBlock Text="{Binding DateCheckOut}" Margin="5,0"/>
                         <TextBlock Text="Status: " FontWeight="Bold" Margin="10,0,0,0"/>
-                        <TextBlock Text="{Binding Status}" Margin="5,0"/>
+                        <TextBlock Text="{Binding StatusText}" Margin="5,0"/>
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>

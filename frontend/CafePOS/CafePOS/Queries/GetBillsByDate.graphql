@@ -1,5 +1,10 @@
 query GetBillsByDate($checkIn: Datetime!, $checkOut: Datetime!) {
-  allBills(condition: {dateCheckIn: $checkIn, dateCheckOut: $checkOut}) {
+  allBills(
+    filter: {
+      dateCheckIn: {greaterThanOrEqualTo: $checkIn}
+      dateCheckIn: {lessThanOrEqualTo: $checkOut}
+    }
+  ) {
     edges {
       node {
         id
