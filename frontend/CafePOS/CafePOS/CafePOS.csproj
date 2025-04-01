@@ -1,8 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
-    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+	  <TargetFramework>net8.0-windows10.0.19041</TargetFramework>
+
+
+	  <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <RootNamespace>CafePOS</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Platforms>x86;x64;ARM64</Platforms>
@@ -18,10 +20,12 @@
     <GraphQL Remove="Queries\bills.graphql" />
     <GraphQL Remove="Queries\cafetables.graphql" />
     <GraphQL Remove="queries\categories.graphql" />
+    <GraphQL Remove="Queries\ChangeTable.graphql" />
     <GraphQL Remove="queries\drinks.graphql" />
     <GraphQL Remove="queries\getMaxIDBill.graphql" />
     <GraphQL Remove="queries\insertBill.graphql" />
     <GraphQL Remove="queries\InsertBillInfo.graphql" />
+    <GraphQL Remove="Queries\UpdateBillStatus.graphql" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="LoginPage.xaml" />

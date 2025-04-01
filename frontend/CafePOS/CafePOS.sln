@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CafePOS", "CafePOS\CafePOS.csproj", "{7B8A7719-DC27-4D10-B7E7-B6D9364D7A93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CafePOSTestProject", "CafePOSTestProject\CafePOSTestProject.csproj", "{CB1781BA-F7C3-49E8-946F-8270AF8BD0C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,18 @@ Global
 		{7B8A7719-DC27-4D10-B7E7-B6D9364D7A93}.Release|x86.ActiveCfg = Release|x86
 		{7B8A7719-DC27-4D10-B7E7-B6D9364D7A93}.Release|x86.Build.0 = Release|x86
 		{7B8A7719-DC27-4D10-B7E7-B6D9364D7A93}.Release|x86.Deploy.0 = Release|x86
+		{CB1781BA-F7C3-49E8-946F-8270AF8BD0C0}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{CB1781BA-F7C3-49E8-946F-8270AF8BD0C0}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{CB1781BA-F7C3-49E8-946F-8270AF8BD0C0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CB1781BA-F7C3-49E8-946F-8270AF8BD0C0}.Debug|x64.Build.0 = Debug|Any CPU
+		{CB1781BA-F7C3-49E8-946F-8270AF8BD0C0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CB1781BA-F7C3-49E8-946F-8270AF8BD0C0}.Debug|x86.Build.0 = Debug|Any CPU
+		{CB1781BA-F7C3-49E8-946F-8270AF8BD0C0}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{CB1781BA-F7C3-49E8-946F-8270AF8BD0C0}.Release|ARM64.Build.0 = Release|Any CPU
+		{CB1781BA-F7C3-49E8-946F-8270AF8BD0C0}.Release|x64.ActiveCfg = Release|Any CPU
+		{CB1781BA-F7C3-49E8-946F-8270AF8BD0C0}.Release|x64.Build.0 = Release|Any CPU
+		{CB1781BA-F7C3-49E8-946F-8270AF8BD0C0}.Release|x86.ActiveCfg = Release|Any CPU
+		{CB1781BA-F7C3-49E8-946F-8270AF8BD0C0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

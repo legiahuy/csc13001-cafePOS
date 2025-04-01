@@ -266,32 +266,7 @@
                                    Margin="0,5,0,0" />
                     </StackPanel>
 
-                    <!-- Action Buttons -->
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Button Background="#0D6EFD" 
-                                Foreground="White" 
-                                CornerRadius="6" 
-                                Padding="15,8" 
-                                BorderThickness="0">
-                            <StackPanel Orientation="Horizontal">
-                                <FontIcon Glyph="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,8,0" />
-                                <TextBlock Text="Tạo mới" />
-                            </StackPanel>
-                        </Button>
-
-                        <Button Background="Transparent" 
-                                Foreground="#6C757D" 
-                                BorderBrush="#CED4DA"
-                                BorderThickness="1"
-                                CornerRadius="6" 
-                                Padding="15,8" 
-                                Margin="10,0,0,0">
-                            <StackPanel Orientation="Horizontal">
-                                <FontIcon Glyph="&#xE8B5;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,8,0" />
-                                <TextBlock Text="Làm mới" />
-                            </StackPanel>
-                        </Button>
-                    </StackPanel>
+                 
                 </Grid>
 
                 <!-- Page Content - Frame for navigation -->

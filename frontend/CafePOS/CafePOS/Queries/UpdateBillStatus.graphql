@@ -1,0 +1,16 @@
+﻿mutation UpdateBillStatus($id: Int!, $discount: Float!) {
+  updateBillById(input: {
+    id: $id,
+    billPatch: {
+      status: 1,
+      discount: $discount
+    }
+  }) {
+    bill {
+      id
+      status
+      discount
+    }
+  }
+}
+

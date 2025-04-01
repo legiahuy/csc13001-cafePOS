@@ -33,9 +33,10 @@ namespace CafePOS
         public TableManagerPage()
         {
             this.InitializeComponent();
-            LoadTable();
+            _ = LoadTable(); // Gọi không chờ
             LoadCategory();
         }
+
 
         private async void LoadCategory()
         {
@@ -50,11 +51,24 @@ namespace CafePOS
             FoodComboBox.DisplayMemberPath = "Name";
         }
 
-        private async void LoadTable()
+        private async Task LoadTable()
         {
             List<CafeTable> tableList = await CafeTableDAO.Instance.GetAllCafeTablesAsync();
-            TableItemsControl.ItemsSource = tableList; // Let XAML handle the UI updates
+
+            foreach (var table in tableList)
+            {
+                int billId = await BillDAO.Instance.GetUncheckBillIDByTableID(table.Id, 0);
+                table.Status = (billId != -1) ? "Có khách" : "Trống";
+
+                Debug.WriteLine($"[LoadTable] {table.Name} - BillID: {billId} => Status: {table.Status}");
+            }
+
+            TableItemsControl.ItemsSource = tableList;
+            MoveTableComboBox.ItemsSource = tableList;
+            MoveTableComboBox.DisplayMemberPath = "Name";
+
         }
+
 
         //void btn_Click(object sender, RoutedEventArgs e)
         //{
@@ -85,12 +99,12 @@ namespace CafePOS
         {
             if (OrderListView.Tag is not CafeTable table)
             {
-                await ShowDialog("Error", "Please select a table first.");
-                Debug.WriteLine("Table selection error: OrderListView.Tag is null or incorrect.");
+                await ShowDialog("Lỗi", "Vui lòng chọn một bàn trước.");
+                Debug.WriteLine("Lỗi chọn bàn: OrderListView.Tag là null hoặc không đúng.");
                 return;
             }
 
-            Debug.WriteLine($"Selected Table ID: {table.Id}, Name: {table.Name}");
+            Debug.WriteLine($"Bàn được chọn ID: {table.Id}, Tên: {table.Name}");
 
             int idBill = await BillDAO.Instance.GetUncheckBillIDByTableID(table.Id, 0);
             int foodID = (FoodComboBox.SelectedItem as Drink)?.ID ?? -1;
@@ -98,7 +112,7 @@ namespace CafePOS
 
             if (foodID == -1)
             {
-                await ShowDialog("Error", "Please select a valid food item.");
+                await ShowDialog("Lỗi", "Vui lòng chọn món ăn hợp lệ.");
                 return;
             }
 
@@ -117,8 +131,11 @@ namespace CafePOS
             {
                 await BillInfoDAO.Instance.InsertBillInfoAsync(idBill, foodID, count, unitPrice, totalPrice);
             }
+
             ShowBill(table.Id);
+            await LoadTable();
         }
+
 
         private async Task ShowDialog(string title, string content)
         {
@@ -139,12 +156,12 @@ namespace CafePOS
         {
             if (TableItemsControl.SelectedItem is CafeTable selectedTable)
             {
-                Debug.WriteLine($"Table Selected: {selectedTable.Id}");
+                Debug.WriteLine($"Bàn được chọn: {selectedTable.Id}");
                 ShowBill(selectedTable.Id);
             }
             else
             {
-                Debug.WriteLine("Table selection changed, but no table found.");
+                Debug.WriteLine("Thay đổi lựa chọn bàn, nhưng không tìm thấy bàn.");
             }
         }
 
@@ -152,14 +169,137 @@ namespace CafePOS
         {
             if (sender is Button button && button.DataContext is CafeTable selectedTable)
             {
-                Debug.WriteLine($"Button Clicked: {selectedTable}");
+                Debug.WriteLine($"Nút đã được nhấn: {selectedTable}");
                 OrderListView.Tag = selectedTable;
                 ShowBill(selectedTable.Id);
             }
             else
             {
-                Debug.WriteLine("Button Clicked: No table found in DataContext.");
+                Debug.WriteLine("Nút đã được nhấn: Không tìm thấy bàn trong DataContext.");
             }
         }
+
+
+        private async void btnCheckOut_Click(object sender, RoutedEventArgs e)
+        {
+            if (OrderListView.Tag is not CafeTable table)
+            {
+                await ShowDialog("Thông báo", "Vui lòng chọn bàn để thanh toán.");
+                return;
+            }
+
+            int idBill = await BillDAO.Instance.GetUncheckBillIDByTableID(table.Id, 0);
+            if (idBill == -1)
+            {
+                await ShowDialog("Thông báo", $"Không tìm thấy hóa đơn chưa thanh toán cho bàn {table.Name}.");
+                return;
+            }
+
+            float discount = (float)DiscountBox.Value;
+            double originalTotal = 0;
+            if (OrderListView.ItemsSource is IEnumerable<Menu> items)
+            {
+                originalTotal = items.Sum(item => item.TotalPrice);
+            }
+            double finalTotal = originalTotal * (100 - discount) / 100;
+            var culture = new System.Globalization.CultureInfo("vi-VN");
+            string originalStr = originalTotal.ToString("C0", culture);
+            string finalStr = finalTotal.ToString("C0", culture);
+
+            string content = $"Bạn có chắc chắn muốn thanh toán hóa đơn cho bàn {table.Name}?\n" +
+                             $"Tổng tiền: {originalStr}\n" +
+                             $"Giảm giá: {discount}%\n" +
+                             $"Thanh toán: {finalStr}";
+
+            var dialogResult = await new ContentDialog
+            {
+                Title = "Xác nhận thanh toán",
+                Content = content,
+                PrimaryButtonText = "OK",
+                CloseButtonText = "Hủy",
+                XamlRoot = this.XamlRoot
+            }.ShowAsync();
+
+            if (dialogResult == ContentDialogResult.Primary)
+            {
+                bool success = await BillDAO.Instance.CheckOutAsync(idBill, discount);
+
+                if (success)
+                {
+                    OrderListView.ItemsSource = null;
+                    OrderListView.Tag = null;
+                    TotalPriceTextBlock.Text = "0 ₫";
+                    DiscountBox.Value = 0;
+
+                    await LoadTable();
+
+                    await ShowDialog("Thành công", $"Đã thanh toán cho bàn {table.Name}.");
+                }
+                else
+                {
+                    await ShowDialog("Lỗi", "Không thể cập nhật trạng thái hóa đơn.");
+                }
+            }
+        }
+        private async void btnChangeTable_Click(object sender, RoutedEventArgs e)
+        {
+            if (OrderListView.Tag is not CafeTable currentTable)
+            {
+                await ShowDialog("Thông báo", "Vui lòng chọn bàn hiện tại để chuyển.");
+                return;
+            }
+
+            if (MoveTableComboBox.SelectedItem is not CafeTable targetTable)
+            {
+                await ShowDialog("Thông báo", "Vui lòng chọn bàn đích.");
+                return;
+            }
+
+            if (currentTable.Id == targetTable.Id)
+            {
+                await ShowDialog("Thông báo", "Không thể chuyển sang cùng một bàn.");
+                return;
+            }
+
+            if (targetTable.Status == "Có khách")
+            {
+                await ShowDialog("Không thể chuyển bàn", $"Bàn {targetTable.Name} hiện đang có khách. Vui lòng chọn bàn trống.");
+                return;
+            }
+
+            var confirmDialog = new ContentDialog
+            {
+                Title = "Xác nhận chuyển bàn",
+                Content = $"Bạn có thật sự muốn chuyển bàn {currentTable.Name} → {targetTable.Name}?",
+                PrimaryButtonText = "Chuyển",
+                CloseButtonText = "Hủy",
+                XamlRoot = this.XamlRoot
+            };
+
+            var result = await confirmDialog.ShowAsync();
+            if (result != ContentDialogResult.Primary) return;
+
+            int billId = await BillDAO.Instance.GetUncheckBillIDByTableID(currentTable.Id, 0);
+            if (billId == -1)
+            {
+                await ShowDialog("Thông báo", $"Không có hóa đơn đang mở trên {currentTable.Name}.");
+                return;
+            }
+
+            bool success = await BillDAO.Instance.ChangeTableAsync(billId, targetTable.Id);
+            if (success)
+            {
+                await ShowDialog("Thành công", $"Đã chuyển hóa đơn từ {currentTable.Name} sang {targetTable.Name}.");
+                await LoadTable();
+                ShowBill(targetTable.Id);
+                OrderListView.Tag = targetTable;
+            }
+            else
+            {
+                await ShowDialog("Lỗi", "Không thể chuyển bàn.");
+            }
+        }
+
+
     }
 }
