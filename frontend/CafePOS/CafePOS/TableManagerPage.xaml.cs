@@ -99,12 +99,12 @@ namespace CafePOS
         {
             if (OrderListView.Tag is not CafeTable table)
             {
-                await ShowDialog("Error", "Please select a table first.");
-                Debug.WriteLine("Table selection error: OrderListView.Tag is null or incorrect.");
+                await ShowDialog("Lỗi", "Vui lòng chọn một bàn trước.");
+                Debug.WriteLine("Lỗi chọn bàn: OrderListView.Tag là null hoặc không đúng.");
                 return;
             }
 
-            Debug.WriteLine($"Selected Table ID: {table.Id}, Name: {table.Name}");
+            Debug.WriteLine($"Bàn được chọn ID: {table.Id}, Tên: {table.Name}");
 
             int idBill = await BillDAO.Instance.GetUncheckBillIDByTableID(table.Id, 0);
             int foodID = (FoodComboBox.SelectedItem as Drink)?.ID ?? -1;
@@ -112,7 +112,7 @@ namespace CafePOS
 
             if (foodID == -1)
             {
-                await ShowDialog("Error", "Please select a valid food item.");
+                await ShowDialog("Lỗi", "Vui lòng chọn món ăn hợp lệ.");
                 return;
             }
 
@@ -131,10 +131,11 @@ namespace CafePOS
             {
                 await BillInfoDAO.Instance.InsertBillInfoAsync(idBill, foodID, count, unitPrice, totalPrice);
             }
-           
+
             ShowBill(table.Id);
             await LoadTable();
         }
+
 
         private async Task ShowDialog(string title, string content)
         {
@@ -155,12 +156,12 @@ namespace CafePOS
         {
             if (TableItemsControl.SelectedItem is CafeTable selectedTable)
             {
-                Debug.WriteLine($"Table Selected: {selectedTable.Id}");
+                Debug.WriteLine($"Bàn được chọn: {selectedTable.Id}");
                 ShowBill(selectedTable.Id);
             }
             else
             {
-                Debug.WriteLine("Table selection changed, but no table found.");
+                Debug.WriteLine("Thay đổi lựa chọn bàn, nhưng không tìm thấy bàn.");
             }
         }
 
@@ -168,15 +169,16 @@ namespace CafePOS
         {
             if (sender is Button button && button.DataContext is CafeTable selectedTable)
             {
-                Debug.WriteLine($"Button Clicked: {selectedTable}");
+                Debug.WriteLine($"Nút đã được nhấn: {selectedTable}");
                 OrderListView.Tag = selectedTable;
                 ShowBill(selectedTable.Id);
             }
             else
             {
-                Debug.WriteLine("Button Clicked: No table found in DataContext.");
+                Debug.WriteLine("Nút đã được nhấn: Không tìm thấy bàn trong DataContext.");
             }
         }
+
 
         private async void btnCheckOut_Click(object sender, RoutedEventArgs e)
         {
