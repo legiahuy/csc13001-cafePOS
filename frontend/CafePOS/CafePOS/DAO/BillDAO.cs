@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -49,12 +50,13 @@ namespace CafePOS.DAO
         }
 
 
-        public async Task<bool> CheckOutAsync(int id, float discount)
+        public async Task<bool> CheckOutAsync(int id, float discount, float totalPrice)
         {
             try
             {
                 var client = DataProvider.Instance.Client;
-                var result = await client.UpdateBillStatus.ExecuteAsync(id, discount);
+                string dateCheckout = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
+                var result = await client.UpdateBillStatus.ExecuteAsync(id, discount,dateCheckout ,totalPrice);
                 var updatedBill = result.Data?.UpdateBillById?.Bill;
                 return updatedBill?.Status == 1;
             }
@@ -86,6 +88,31 @@ namespace CafePOS.DAO
             var result = await client.CreateBill.ExecuteAsync(idTable, 0, dateCheckIn);
 
             return result.Data?.CreateBill?.Bill?.Id ?? -1;
+        }
+
+        public async Task<List<Bill>> GetBillsByDateAsync(DateTime checkIn, DateTime checkOut)
+        {
+            var client = DataProvider.Instance.Client;
+            var checkInString = checkIn.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss");
+            var checkOutString = checkOut.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss");
+            var result = await client.GetBillsByDate.ExecuteAsync(checkInString, checkOutString);
+
+            var bills = new List<Bill>();
+
+            if (result.Data?.AllBills?.Edges != null)
+            {
+                foreach (var edge in result.Data.AllBills.Edges)
+                {
+                    bills.Add(new Bill(
+                        edge.Node.Id,
+                        DateTime.TryParse(edge.Node.DateCheckIn, out DateTime dateIn) ? dateIn : (DateTime?)null,
+                        DateTime.TryParse(edge.Node.DateCheckOut, out DateTime dateOut) ? dateOut : (DateTime?)null,
+                        edge.Node.Status
+                    ));
+                }
+            }
+
+            return bills;
         }
 
         public async Task<int> GetMaxIDBillAsync()

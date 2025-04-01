@@ -222,7 +222,7 @@ namespace CafePOS
 
             if (dialogResult == ContentDialogResult.Primary)
             {
-                bool success = await BillDAO.Instance.CheckOutAsync(idBill, discount);
+                bool success = await BillDAO.Instance.CheckOutAsync(idBill, discount,(float)finalTotal);
 
                 if (success)
                 {
@@ -299,7 +299,6 @@ namespace CafePOS
                 await ShowDialog("Lỗi", "Không thể chuyển bàn.");
             }
         }
-
 
     }
 }
