@@ -223,7 +223,7 @@
                     <PersonPicture Width="40" Height="40" Grid.Column="0" />
 
                     <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
-                        <TextBlock x:Name="UserNameText" Text="Nguyễn Văn A" FontWeight="SemiBold" FontSize="14" />
+                        <TextBlock x:Name="UserNameText" Text="Admin" FontWeight="SemiBold" FontSize="14" />
                         <TextBlock x:Name="UserRoleText" Text="Quản lý" Opacity="0.7" FontSize="12" />
                     </StackPanel>
 

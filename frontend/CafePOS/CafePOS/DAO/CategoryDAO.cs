@@ -30,5 +30,17 @@ namespace CafePOS.DAO
 
             return categories;
         }
+
+        public async Task<List<Category>> GetCategoryByIdAsync(int id)
+        {
+            var client = DataProvider.Instance.Client;
+            var result = await client.GetCategoryById.ExecuteAsync(id);
+            var categories = result.Data?.AllCategories?.Edges?
+                .Where(e => e.Node != null)
+                .Select(e => new Category(e.Node))
+                .ToList() ?? new List<Category>();
+
+            return categories;
+        }
     }
 }

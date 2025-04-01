@@ -21,13 +21,17 @@
     <GraphQL Remove="Queries\cafetables.graphql" />
     <GraphQL Remove="queries\categories.graphql" />
     <GraphQL Remove="Queries\ChangeTable.graphql" />
+    <GraphQL Remove="Queries\DeleteProduct.graphql" />
     <GraphQL Remove="queries\drinks.graphql" />
     <GraphQL Remove="queries\getMaxIDBill.graphql" />
     <GraphQL Remove="queries\insertBill.graphql" />
     <GraphQL Remove="queries\InsertBillInfo.graphql" />
+    <GraphQL Remove="Queries\insertProduct.graphql" />
     <GraphQL Remove="Queries\UpdateBillStatus.graphql" />
+    <GraphQL Remove="Queries\UpdateProduct.graphql" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="InventoryPage.xaml" />
     <None Remove="LoginPage.xaml" />
     <None Remove="MainPage.xaml" />
     <None Remove="PlaceholderPage.xaml" />
@@ -60,6 +64,11 @@
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250310001" />
     <PackageReference Include="StrawberryShake.Server" Version="15.1.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="InventoryPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="TableManagerPage.xaml">

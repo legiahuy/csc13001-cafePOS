@@ -55,8 +55,8 @@ namespace CafePOS
 
                 case "Inventory":
                     PageTitleText.Text = "Quản lý kho";
-                    PageDescriptionText.Text = "Theo dõi lượng tồn kho và cập nhật số lượng";
-                    // ContentFrame.Navigate(typeof(InventoryPage));
+                    PageDescriptionText.Text = "Theo dõi sản phẩm";
+                    ContentFrame.Navigate(typeof(InventoryPage));
                     break;
 
                 case "Staff":

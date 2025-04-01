@@ -21,6 +21,12 @@ namespace CafePOS.DTO
             Name = node.Name;
         }
 
+        public Category(IGetCategoryById_AllCategories_Edges_Node node)
+        {
+            ID = node.Id;
+            Name = node.Name;
+        }
+
         private string name;
         public string Name
         {
