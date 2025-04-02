@@ -8,8 +8,9 @@ using CafePOS.GraphQL;
 
 namespace CafePOS.DTO
 {
-    internal class Drink
+    public class Drink
     {
+        public Drink() { }
         public Drink(int id, string name, float price)
         {
             this.ID = id;

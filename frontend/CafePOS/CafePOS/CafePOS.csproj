@@ -13,6 +13,9 @@
     <UseWinUI>true</UseWinUI>
     <EnableMsixTooling>true</EnableMsixTooling>
     <Nullable>enable</Nullable>
+	  
+	
+	  
   </PropertyGroup>
   <ItemGroup>
     <GraphQL Remove="queries.graphql" />
@@ -31,7 +34,6 @@
     <GraphQL Remove="Queries\UpdateProduct.graphql" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="InventoryPage.xaml" />
     <None Remove="LoginPage.xaml" />
     <None Remove="MainPage.xaml" />
     <None Remove="PlaceholderPage.xaml" />
@@ -66,7 +68,7 @@
     <PackageReference Include="StrawberryShake.Server" Version="15.1.1" />
   </ItemGroup>
   <ItemGroup>
-    <Page Update="InventoryPage.xaml">
+    <Page Update="ProductPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

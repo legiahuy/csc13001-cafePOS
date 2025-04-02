@@ -9,6 +9,7 @@ namespace CafePOS.DTO
 {
     public class Category
     {
+        public Category() { }
         public Category(int id, string name)
         {
             ID = id;

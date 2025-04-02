@@ -53,10 +53,16 @@ namespace CafePOS
                     ContentFrame.Navigate(typeof(TableManagerPage));
                     break;
 
+                case "Product":
+                    PageTitleText.Text = "Quản lý sản phẩm";
+                    PageDescriptionText.Text = "Tạo và quản lý các sản phẩm";
+                    ContentFrame.Navigate(typeof(ProductPage));
+                    break;
+
                 case "Inventory":
                     PageTitleText.Text = "Quản lý kho";
-                    PageDescriptionText.Text = "Theo dõi sản phẩm";
-                    ContentFrame.Navigate(typeof(InventoryPage));
+                    PageDescriptionText.Text = "Tạo và quản lý các nguyên liệu";
+                    //ContentFrame.Navigate(typeof(InventoryPage));
                     break;
 
                 case "Staff":

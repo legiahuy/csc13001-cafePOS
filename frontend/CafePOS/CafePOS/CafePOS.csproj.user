@@ -5,7 +5,7 @@
     <None Update="App.xaml">
       <SubType>Designer</SubType>
     </None>
-    <Page Update="InventoryPage.xaml">
+    <Page Update="ProductPage.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="TableManagerPage.xaml">
