@@ -8,3 +8,16 @@ query GetCategories {
     }
   }
 }
+
+query GetCategoryById($id: Int) {
+  allCategories(condition: {id: $id}) {
+    edges {
+      node {
+        id
+        name
+        description
+      }
+    }
+  }
+}
+

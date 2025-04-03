@@ -1,0 +1,5 @@
+﻿mutation DeleteProductById($id: Int!) {
+  deleteProductById(input: {id: $id}) {
+    deletedProductId
+  }
+}

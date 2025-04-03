@@ -8,8 +8,9 @@ using CafePOS.GraphQL;
 
 namespace CafePOS.DTO
 {
-    internal class Drink
+    public class Drink
     {
+        public Drink() { }
         public Drink(int id, string name, float price)
         {
             this.ID = id;
@@ -21,6 +22,15 @@ namespace CafePOS.DTO
             this.ID = node.Id;
             this.Name = node.Name;
             this.Price = (float)node.Price;
+            
+        }
+
+        public Drink(IGetListProducts_AllProducts_Edges_Node node)
+        {
+            this.ID = node.Id;
+            this.Name = node.Name;
+            this.Price = (float)node.Price;
+            this.categoryId = node.IdCategory;
         }
 
         private float price;
@@ -43,5 +53,9 @@ namespace CafePOS.DTO
             get { return iD; }
             set { iD = value; }
         }
+
+        public int CategoryId { get => categoryId; set => categoryId = value; }
+
+        private int categoryId;
     }
 }

@@ -105,11 +105,26 @@
                             </Grid>
                         </Button>
 
-                        <!-- Inventory Management -->
-                        <Button x:Name="InventoryButton" 
+                        <!-- Product Management -->
+                        <Button x:Name="ProductButton" 
                                 Style="{StaticResource TextBlockButtonStyle}" 
                                 Click="NavigationButton_Click"
-                                Tag="Inventory">
+                                Tag="Product">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <FontIcon Grid.Column="0" Glyph="&#xE719;" FontFamily="Segoe MDL2 Assets" Margin="15,0,15,0" />
+                                <TextBlock Grid.Column="1" Text="Quản lý sản phẩm" VerticalAlignment="Center" />
+                            </Grid>
+                        </Button>
+
+                        <!-- Inventory Management -->
+                        <Button x:Name="InventoryButton" 
+                            Style="{StaticResource TextBlockButtonStyle}" 
+                            Click="NavigationButton_Click"
+                            Tag="Inventory">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
@@ -223,7 +238,7 @@
                     <PersonPicture Width="40" Height="40" Grid.Column="0" />
 
                     <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
-                        <TextBlock x:Name="UserNameText" Text="Nguyễn Văn A" FontWeight="SemiBold" FontSize="14" />
+                        <TextBlock x:Name="UserNameText" Text="Admin" FontWeight="SemiBold" FontSize="14" />
                         <TextBlock x:Name="UserRoleText" Text="Quản lý" Opacity="0.7" FontSize="12" />
                     </StackPanel>
 

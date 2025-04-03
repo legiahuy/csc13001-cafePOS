@@ -9,6 +9,7 @@ namespace CafePOS.DTO
 {
     public class Category
     {
+        public Category() { }
         public Category(int id, string name)
         {
             ID = id;
@@ -16,6 +17,12 @@ namespace CafePOS.DTO
         }
 
         public Category(IGetCategories_AllCategories_Edges_Node node)
+        {
+            ID = node.Id;
+            Name = node.Name;
+        }
+
+        public Category(IGetCategoryById_AllCategories_Edges_Node node)
         {
             ID = node.Id;
             Name = node.Name;

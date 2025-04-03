@@ -9,3 +9,19 @@ query GetDrinksByCategory($idCategory: Int!) {
     }
   }
 }
+
+query GetListProducts {
+  allProducts {
+    edges {
+      node {
+        id
+        name
+        isAvailable
+        description
+        price
+        idCategory
+      }
+    }
+  }
+}
+
