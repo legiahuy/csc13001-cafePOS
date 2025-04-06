@@ -19,14 +19,13 @@ namespace CafePOS.Tests
                 new Bill(1, new DateTime(2025, 4, 1), new DateTime(2025, 4, 2), 0),
                 new Bill(2, new DateTime(2025, 4, 3), new DateTime(2025, 4, 4), 1),
                 new Bill(3, new DateTime(2025, 4, 5), new DateTime(2025, 4, 6), 0),
-                new Bill(4, null, null, 2) // Invalid bill (for testing)
+                new Bill(4, null, null, 2)
             };
         }
 
         [TestMethod]
         public void FilterBills_ByValidDateRange_ReturnsCorrectBills()
         {
-            // Filter for bills checked in between April 2 and April 4
             DateTime checkIn = new DateTime(2025, 4, 2);
             DateTime checkOut = new DateTime(2025, 4, 4);
 
@@ -41,7 +40,7 @@ namespace CafePOS.Tests
         {
             var result = FilterBillsByDateRange(mockBills, new DateTime(2025, 4, 1), new DateTime(2025, 4, 6));
 
-            Assert.IsFalse(result.Any(b => b.Id == 4)); // ID 4 has null dates
+            Assert.IsFalse(result.Any(b => b.Id == 4));
             Assert.AreEqual(3, result.Count);
         }
 
