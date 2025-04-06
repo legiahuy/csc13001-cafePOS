@@ -71,6 +71,16 @@ exports.up = function(knex) {
         table.float('unitPrice').notNullable();
         table.datetime('date').notNullable().defaultTo(knex.fn.now());
         table.string('note', 500);
+      })
+      .createTable('Staff', (table) => {
+        table.increments('id').primary();
+        table.string('name', 100).notNullable();
+        table.date('dob');
+        table.string('gender', 10);
+        table.string('phone', 20);
+        table.string('email', 100);
+        table.string('position', 50);
+        table.float('salary').defaultTo(0);
       });
   };
 
@@ -88,5 +98,6 @@ exports.down = function(knex) {
       .dropTableIfExists('Material')
       .dropTableIfExists('Category')
       .dropTableIfExists('Account')
-      .dropTableIfExists('CafeTable');
+      .dropTableIfExists('CafeTable')
+      .dropTableIfExists('Staff');
   };
