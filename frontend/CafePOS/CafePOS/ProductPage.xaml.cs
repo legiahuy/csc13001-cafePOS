@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using CafePOS.Converter;
 using CafePOS.DAO;
 using CafePOS.DTO;
 using Microsoft.UI.Xaml;
@@ -190,7 +191,8 @@ namespace CafePOS
             {
                 Path = new PropertyPath("Price"),
                 Mode = BindingMode.TwoWay,
-                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit,
+                Converter = new PriceToCurrencyConverter()
             };
             PriceBox.SetBinding(NumberBox.ValueProperty, priceBinding);
         }
@@ -211,6 +213,20 @@ namespace CafePOS
             if (selectedDrink != null)
             {
                 this.DataContext = selectedDrink;
+                ProductIDBox.Text = selectedDrink.ID.ToString();
+                ProductNameBox.Text = selectedDrink.Name;
+                PriceBox.Value = selectedDrink.Price; 
+
+                _ = SetCategoryComboBoxAsync(selectedDrink.CategoryId);
+            }
+        }
+
+        private async Task SetCategoryComboBoxAsync(int categoryId)
+        {
+            var category = await CategoryDAO.Instance.GetCategoryByIdAsync(categoryId);
+            if (category != null && category.Count > 0)
+            {
+                CategoryComboBox.SelectedValue = category[0].ID;
             }
         }
 

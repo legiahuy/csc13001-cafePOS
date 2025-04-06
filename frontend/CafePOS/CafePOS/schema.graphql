@@ -376,10 +376,11 @@ type Material implements Node {
   id: Int!
   name: String!
   unit: String!
-  currentStock: Float!
-  minStock: Float!
+  currentStock: Int!
+  minStock: Int!
   price: Float!
   description: String
+  imageUrl: String
   "Reads and enables pagination through a set of `ProductMaterial`."
   productMaterialsByIdMaterial("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `ProductMaterial`." orderBy: [ProductMaterialsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: ProductMaterialCondition): ProductMaterialsConnection!
   "Reads and enables pagination through a set of `MaterialItem`."
@@ -672,6 +673,8 @@ enum MaterialsOrderBy {
   PRICE_DESC
   DESCRIPTION_ASC
   DESCRIPTION_DESC
+  IMAGE_URL_ASC
+  IMAGE_URL_DESC
   PRIMARY_KEY_ASC
   PRIMARY_KEY_DESC
 }
@@ -685,13 +688,15 @@ input MaterialCondition {
   "Checks for equality with the object’s `unit` field."
   unit: String
   "Checks for equality with the object’s `currentStock` field."
-  currentStock: Float
+  currentStock: Int
   "Checks for equality with the object’s `minStock` field."
-  minStock: Float
+  minStock: Int
   "Checks for equality with the object’s `price` field."
   price: Float
   "Checks for equality with the object’s `description` field."
   description: String
+  "Checks for equality with the object’s `imageUrl` field."
+  imageUrl: String
 }
 
 "A connection to a list of `KnexMigration` values."
@@ -1087,10 +1092,11 @@ input MaterialInput {
   id: Int
   name: String!
   unit: String!
-  currentStock: Float
-  minStock: Float
+  currentStock: Int
+  minStock: Int
   price: Float
   description: String
+  imageUrl: String
 }
 
 "The output of our create `MaterialItem` mutation."
@@ -1478,10 +1484,11 @@ input MaterialPatch {
   id: Int
   name: String
   unit: String
-  currentStock: Float
-  minStock: Float
+  currentStock: Int
+  minStock: Int
   price: Float
   description: String
+  imageUrl: String
 }
 
 "All input for the `updateMaterialById` mutation."

@@ -1,0 +1,16 @@
+﻿query GetListMaterials {
+  allMaterials {
+    edges {
+      node {
+        id
+        description
+        currentStock
+        minStock
+        name
+        price
+        unit
+        imageUrl
+      }
+    }
+  }
+}

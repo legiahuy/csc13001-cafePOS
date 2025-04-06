@@ -24,18 +24,23 @@
     <GraphQL Remove="Queries\cafetables.graphql" />
     <GraphQL Remove="queries\categories.graphql" />
     <GraphQL Remove="Queries\ChangeTable.graphql" />
+    <GraphQL Remove="Queries\CreateMaterial.graphql" />
+    <GraphQL Remove="Queries\DeleteMaterial.graphql" />
     <GraphQL Remove="Queries\DeleteProduct.graphql" />
     <GraphQL Remove="queries\drinks.graphql" />
     <GraphQL Remove="queries\getMaxIDBill.graphql" />
     <GraphQL Remove="queries\insertBill.graphql" />
     <GraphQL Remove="queries\InsertBillInfo.graphql" />
     <GraphQL Remove="Queries\insertProduct.graphql" />
+    <GraphQL Remove="Queries\Materials.graphql" />
     <GraphQL Remove="Queries\UpdateBillStatus.graphql" />
+    <GraphQL Remove="Queries\UpdateMaterial.graphql" />
     <GraphQL Remove="Queries\UpdateProduct.graphql" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="LoginPage.xaml" />
     <None Remove="MainPage.xaml" />
+    <None Remove="MaterialPage.xaml" />
     <None Remove="PlaceholderPage.xaml" />
     <None Remove="TableManagerPage.xaml" />
   </ItemGroup>
@@ -68,6 +73,11 @@
     <PackageReference Include="StrawberryShake.Server" Version="15.1.1" />
   </ItemGroup>
   <ItemGroup>
+    <Page Update="MaterialPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
     <Page Update="ProductPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -91,6 +101,9 @@
     <Page Update="LoginPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\Material\" />
   </ItemGroup>
 
   <!--

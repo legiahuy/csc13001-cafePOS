@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dto="using:CafePOS.DTO"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:converter="using:CafePOS.Converter"
     mc:Ignorable="d"
     Background="#F5F5F5">
 
@@ -27,6 +28,9 @@
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="MinWidth" Value="0"/>
         </Style>
+
+        <converter:PriceToCurrencyConverter x:Key="PriceConverter"/>
+
     </Page.Resources>
 
     <Grid Padding="20">
@@ -71,12 +75,12 @@
                                             Text="{x:Bind Name}" 
                                             FontSize="24" 
                                             FontWeight="Bold" 
-                                            Foreground="White" 
+                                            Foreground="Black"
                                             HorizontalAlignment="Center"/>
                                         <TextBlock 
                                             Text="{x:Bind Status}" 
                                             FontSize="14" 
-                                            Foreground="White" 
+                                            Foreground="Black"
                                             Opacity="0.7" 
                                             HorizontalAlignment="Center"/>
                                     </StackPanel>
@@ -227,10 +231,10 @@
                                     <TextBlock Text="{x:Bind Count}" 
                                         Grid.Column="1"
                                         HorizontalAlignment="Center"/>
-                                    <TextBlock Text="{x:Bind Price}" 
+                                    <TextBlock Text="{x:Bind Price, Converter={StaticResource PriceConverter}}" 
                                         Grid.Column="2"
                                         HorizontalAlignment="Center"/>
-                                    <TextBlock Text="{x:Bind TotalPrice}" 
+                                    <TextBlock Text="{x:Bind TotalPrice, Converter={StaticResource PriceConverter}}" 
                                         Grid.Column="3"
                                         HorizontalAlignment="Center"/>
                                 </Grid>
@@ -283,7 +287,7 @@
                                 VerticalAlignment="Center"/>
                             <TextBlock 
                                 x:Name="TotalPriceTextBlock" 
-                                Text="0 ₫"
+                                Text="0 đ"
                                 FontSize="16" 
                                 FontWeight="Bold" 
                                 Foreground="#FF5722"

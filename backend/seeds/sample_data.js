@@ -43,8 +43,22 @@ exports.seed = async function(knex) {
 
   // Thêm dữ liệu cho bảng Material
   await knex('Material').insert([
-    { name: 'Cà phê hạt', unit: 'kg', currentStock: 10, minStock: 2, price: 200000 },
-    { name: 'Trà xanh', unit: 'gói', currentStock: 20, minStock: 5, price: 50000 },
+    { 
+      name: 'Cà phê hạt', 
+      unit: 'kg', 
+      currentStock: 10, 
+      minStock: 2, 
+      price: 200000,
+      imageUrl: '/Assets/Material/ca-phe-hat.jpeg' 
+    },
+    { 
+      name: 'Trà xanh', 
+      unit: 'gói', 
+      currentStock: 20, 
+      minStock: 5, 
+      price: 50000,
+      imageUrl: '/Assets/Material/tra-xanh.jpg' 
+    },
   ]);
 
   // Thêm dữ liệu cho bảng Product
