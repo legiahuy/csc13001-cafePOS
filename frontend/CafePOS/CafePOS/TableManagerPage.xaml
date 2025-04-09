@@ -6,7 +6,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dto="using:CafePOS.DTO"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:converter="using:CafePOS.Converter"
     mc:Ignorable="d"
     Background="#F5F5F5">
 
@@ -28,9 +27,6 @@
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="MinWidth" Value="0"/>
         </Style>
-
-        <converter:PriceToCurrencyConverter x:Key="PriceConverter"/>
-
     </Page.Resources>
 
     <Grid Padding="20">
@@ -75,12 +71,12 @@
                                             Text="{x:Bind Name}" 
                                             FontSize="24" 
                                             FontWeight="Bold" 
-                                            Foreground="Black"
+                                            Foreground="Black" 
                                             HorizontalAlignment="Center"/>
                                         <TextBlock 
                                             Text="{x:Bind Status}" 
                                             FontSize="14" 
-                                            Foreground="Black"
+                                            Foreground="Black" 
                                             Opacity="0.7" 
                                             HorizontalAlignment="Center"/>
                                     </StackPanel>
@@ -176,10 +172,10 @@
                     <!-- Column Headers -->
                     <Grid Background="#EFEFEF" BorderBrush="#E0E0E0" BorderThickness="1" Margin="10,0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="100" />
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="Tên món"
                            FontWeight="Bold"
@@ -220,10 +216,10 @@
                             <DataTemplate x:DataType="dto:Menu">
                                 <Grid Padding="5">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="100"/>
+                                        <ColumnDefinition Width="100"/>
+                                        <ColumnDefinition Width="100"/>
+                                        <ColumnDefinition Width="100"/>
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock Text="{x:Bind ProductName}" 
@@ -231,10 +227,10 @@
                                     <TextBlock Text="{x:Bind Count}" 
                                         Grid.Column="1"
                                         HorizontalAlignment="Center"/>
-                                    <TextBlock Text="{x:Bind Price, Converter={StaticResource PriceConverter}}" 
+                                    <TextBlock Text="{x:Bind Price}" 
                                         Grid.Column="2"
                                         HorizontalAlignment="Center"/>
-                                    <TextBlock Text="{x:Bind TotalPrice, Converter={StaticResource PriceConverter}}" 
+                                    <TextBlock Text="{x:Bind TotalPrice}" 
                                         Grid.Column="3"
                                         HorizontalAlignment="Center"/>
                                 </Grid>
@@ -245,7 +241,7 @@
 
                 <!-- Bottom Section -->
                 <Grid Grid.Row="2" ColumnSpacing="10">
-                    
+
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*" />
                         <ColumnDefinition Width="1*" />
@@ -253,7 +249,7 @@
 
                     <!-- Left: Table & Discount -->
                     <StackPanel Grid.Column="0" Spacing="10">
-                     
+
                         <ComboBox 
                         x:Name="MoveTableComboBox" 
                         PlaceholderText="Chuyển bàn" 
@@ -264,7 +260,7 @@
                         Background="#FF9800" 
                         Foreground="White" 
                         Style="{StaticResource ButtonStyle}" 
-                        Click="btnChangeTable_Click"/>      
+                        Click="btnChangeTable_Click"/>
 
                         <StackPanel Orientation="Horizontal" Spacing="10" >
                             <TextBlock 
@@ -277,8 +273,12 @@
                                 Width="100" 
                                 Minimum="0" 
                                 Maximum="100"/>
+                            <TextBlock 
+                             Text="₫" 
+                             VerticalAlignment="Center" 
+                             Foreground="#666666"/>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,20,0,0">
                             <TextBlock 
                                 Text="Tổng tiền:" 
                                 FontSize="16" 
@@ -287,7 +287,7 @@
                                 VerticalAlignment="Center"/>
                             <TextBlock 
                                 x:Name="TotalPriceTextBlock" 
-                                Text="0 đ"
+                                Text="0 ₫"
                                 FontSize="16" 
                                 FontWeight="Bold" 
                                 Foreground="#FF5722"

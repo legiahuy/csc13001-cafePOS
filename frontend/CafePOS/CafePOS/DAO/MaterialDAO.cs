@@ -16,19 +16,6 @@ namespace CafePOS.DAO
             private set { MaterialDAO.instance = value; }
         }
         private MaterialDAO() { }
-        //public async Task<List<Drink>> GetDrinkByCategoryIDAsync(int idCategory)
-        //{
-        //    var client = DataProvider.Instance.Client;
-        //    var result = await client.GetDrinksByCategory.ExecuteAsync(idCategory);
-
-        //    var drinks = result.Data?.AllProducts?.Edges?
-        //        .Where(e => e.Node != null)
-        //        .Select(e => new Drink(e.Node))
-        //        .ToList() ?? new List<Drink>();
-
-        //    return drinks;
-        //}
-
         public async Task<List<Material>> GetListMaterialAsync()
         {
             var client = DataProvider.Instance.Client;

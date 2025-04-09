@@ -38,6 +38,7 @@ exports.up = function(knex) {
         table.float('price').notNullable().defaultTo(0);
         table.string('description', 500);
         table.boolean('isAvailable').notNullable().defaultTo(true);
+        table.string('imageUrl', 255);
       })
       .createTable('ProductMaterial', (table) => {
         table.increments('id').primary();

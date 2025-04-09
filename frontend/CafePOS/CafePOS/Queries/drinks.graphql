@@ -5,10 +5,12 @@ query GetDrinksByCategory($idCategory: Int!) {
         id
         name
         price
+        imageUrl
       }
     }
   }
 }
+
 
 query GetListProducts {
   allProducts {
@@ -20,6 +22,7 @@ query GetListProducts {
         description
         price
         idCategory
+        imageUrl
       }
     }
   }

@@ -29,6 +29,8 @@ type Query implements Node {
   allProducts("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `Product`." orderBy: [ProductsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: ProductCondition): ProductsConnection
   "Reads and enables pagination through a set of `ProductMaterial`."
   allProductMaterials("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `ProductMaterial`." orderBy: [ProductMaterialsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: ProductMaterialCondition): ProductMaterialsConnection
+  "Reads and enables pagination through a set of `Staff`."
+  allStaff("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `Staff`." orderBy: [StaffOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: StaffCondition): StaffConnection
   "Reads and enables pagination through a set of `KnexMigration`."
   allKnexMigrations("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `KnexMigration`." orderBy: [KnexMigrationsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: KnexMigrationCondition): KnexMigrationsConnection
   "Reads and enables pagination through a set of `KnexMigrationsLock`."
@@ -42,6 +44,7 @@ type Query implements Node {
   materialItemById(id: Int!): MaterialItem
   productById(id: Int!): Product
   productMaterialById(id: Int!): ProductMaterial
+  staffById(id: Int!): Staff
   knexMigrationById(id: Int!): KnexMigration
   knexMigrationsLockByIndex(index: Int!): KnexMigrationsLock
   "Reads a single `Account` using its globally unique `ID`."
@@ -62,6 +65,8 @@ type Query implements Node {
   product("The globally unique `ID` to be used in selecting a single `Product`." nodeId: ID!): Product
   "Reads a single `ProductMaterial` using its globally unique `ID`."
   productMaterial("The globally unique `ID` to be used in selecting a single `ProductMaterial`." nodeId: ID!): ProductMaterial
+  "Reads a single `Staff` using its globally unique `ID`."
+  staff("The globally unique `ID` to be used in selecting a single `Staff`." nodeId: ID!): Staff
   "Reads a single `KnexMigration` using its globally unique `ID`."
   knexMigration("The globally unique `ID` to be used in selecting a single `KnexMigration`." nodeId: ID!): KnexMigration
   "Reads a single `KnexMigrationsLock` using its globally unique `ID`."
@@ -272,6 +277,7 @@ type Product implements Node {
   price: Float!
   description: String
   isAvailable: Boolean!
+  imageUrl: String
   "Reads a single `Category` that is related to this `Product`."
   categoryByIdCategory: Category
   "Reads and enables pagination through a set of `ProductMaterial`."
@@ -325,6 +331,8 @@ enum ProductsOrderBy {
   DESCRIPTION_DESC
   IS_AVAILABLE_ASC
   IS_AVAILABLE_DESC
+  IMAGE_URL_ASC
+  IMAGE_URL_DESC
   PRIMARY_KEY_ASC
   PRIMARY_KEY_DESC
 }
@@ -343,6 +351,8 @@ input ProductCondition {
   description: String
   "Checks for equality with the object’s `isAvailable` field."
   isAvailable: Boolean
+  "Checks for equality with the object’s `imageUrl` field."
+  imageUrl: String
 }
 
 "A connection to a list of `ProductMaterial` values."
@@ -699,6 +709,85 @@ input MaterialCondition {
   imageUrl: String
 }
 
+"A connection to a list of `Staff` values."
+type StaffConnection {
+  "A list of `Staff` objects."
+  nodes: [Staff]!
+  "A list of edges which contains the `Staff` and cursor to aid in pagination."
+  edges: [StaffEdge!]!
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "The count of *all* `Staff` you could get from the connection."
+  totalCount: Int!
+}
+
+type Staff implements Node {
+  "A globally unique identifier. Can be used in various places throughout the system to identify this single value."
+  nodeId: ID!
+  id: Int!
+  name: String!
+  dob: Date
+  gender: String
+  phone: String
+  email: String
+  position: String
+  salary: Float
+}
+
+"The day, does not include a time."
+scalar Date
+
+"A `Staff` edge in the connection."
+type StaffEdge {
+  "A cursor for use in pagination."
+  cursor: Cursor
+  "The `Staff` at the end of the edge."
+  node: Staff
+}
+
+"Methods to use when ordering `Staff`."
+enum StaffOrderBy {
+  NATURAL
+  ID_ASC
+  ID_DESC
+  NAME_ASC
+  NAME_DESC
+  DOB_ASC
+  DOB_DESC
+  GENDER_ASC
+  GENDER_DESC
+  PHONE_ASC
+  PHONE_DESC
+  EMAIL_ASC
+  EMAIL_DESC
+  POSITION_ASC
+  POSITION_DESC
+  SALARY_ASC
+  SALARY_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"A condition to be used against `Staff` object types. All fields are tested for equality and combined with a logical ‘and.’"
+input StaffCondition {
+  "Checks for equality with the object’s `id` field."
+  id: Int
+  "Checks for equality with the object’s `name` field."
+  name: String
+  "Checks for equality with the object’s `dob` field."
+  dob: Date
+  "Checks for equality with the object’s `gender` field."
+  gender: String
+  "Checks for equality with the object’s `phone` field."
+  phone: String
+  "Checks for equality with the object’s `email` field."
+  email: String
+  "Checks for equality with the object’s `position` field."
+  position: String
+  "Checks for equality with the object’s `salary` field."
+  salary: Float
+}
+
 "A connection to a list of `KnexMigration` values."
 type KnexMigrationsConnection {
   "A list of `KnexMigration` objects."
@@ -821,6 +910,8 @@ type Mutation {
   createProduct("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: CreateProductInput!): CreateProductPayload
   "Creates a single `ProductMaterial`."
   createProductMaterial("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: CreateProductMaterialInput!): CreateProductMaterialPayload
+  "Creates a single `Staff`."
+  createStaff("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: CreateStaffInput!): CreateStaffPayload
   "Creates a single `KnexMigration`."
   createKnexMigration("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: CreateKnexMigrationInput!): CreateKnexMigrationPayload
   "Creates a single `KnexMigrationsLock`."
@@ -861,6 +952,10 @@ type Mutation {
   updateProductMaterial("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateProductMaterialInput!): UpdateProductMaterialPayload
   "Updates a single `ProductMaterial` using a unique key and a patch."
   updateProductMaterialById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateProductMaterialByIdInput!): UpdateProductMaterialPayload
+  "Updates a single `Staff` using its globally unique id and a patch."
+  updateStaff("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateStaffInput!): UpdateStaffPayload
+  "Updates a single `Staff` using a unique key and a patch."
+  updateStaffById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateStaffByIdInput!): UpdateStaffPayload
   "Updates a single `KnexMigration` using its globally unique id and a patch."
   updateKnexMigration("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateKnexMigrationInput!): UpdateKnexMigrationPayload
   "Updates a single `KnexMigration` using a unique key and a patch."
@@ -905,6 +1000,10 @@ type Mutation {
   deleteProductMaterial("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteProductMaterialInput!): DeleteProductMaterialPayload
   "Deletes a single `ProductMaterial` using a unique key."
   deleteProductMaterialById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteProductMaterialByIdInput!): DeleteProductMaterialPayload
+  "Deletes a single `Staff` using its globally unique id."
+  deleteStaff("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteStaffInput!): DeleteStaffPayload
+  "Deletes a single `Staff` using a unique key."
+  deleteStaffById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteStaffByIdInput!): DeleteStaffPayload
   "Deletes a single `KnexMigration` using its globally unique id."
   deleteKnexMigration("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteKnexMigrationInput!): DeleteKnexMigrationPayload
   "Deletes a single `KnexMigration` using a unique key."
@@ -1162,6 +1261,7 @@ input ProductInput {
   price: Float
   description: String
   isAvailable: Boolean
+  imageUrl: String
 }
 
 "The output of our create `ProductMaterial` mutation."
@@ -1194,6 +1294,38 @@ input ProductMaterialInput {
   idProduct: Int!
   idMaterial: Int!
   quantity: Float!
+}
+
+"The output of our create `Staff` mutation."
+type CreateStaffPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `Staff` that was created by this mutation."
+  staff: Staff
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `Staff`. May be used by Relay 1."
+  staffEdge("The method to use when ordering `Staff`." orderBy: [StaffOrderBy!] = [ PRIMARY_KEY_ASC ]): StaffEdge
+}
+
+"All input for the create `Staff` mutation."
+input CreateStaffInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The `Staff` to be created by this mutation."
+  staff: StaffInput!
+}
+
+"An input for mutations affecting `Staff`"
+input StaffInput {
+  id: Int
+  name: String!
+  dob: Date
+  gender: String
+  phone: String
+  email: String
+  position: String
+  salary: Float
 }
 
 "The output of our create `KnexMigration` mutation."
@@ -1576,6 +1708,7 @@ input ProductPatch {
   price: Float
   description: String
   isAvailable: Boolean
+  imageUrl: String
 }
 
 "All input for the `updateProductById` mutation."
@@ -1627,6 +1760,49 @@ input UpdateProductMaterialByIdInput {
   clientMutationId: String
   "An object where the defined keys will be set on the `ProductMaterial` being updated."
   productMaterialPatch: ProductMaterialPatch!
+  id: Int!
+}
+
+"The output of our update `Staff` mutation."
+type UpdateStaffPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `Staff` that was updated by this mutation."
+  staff: Staff
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `Staff`. May be used by Relay 1."
+  staffEdge("The method to use when ordering `Staff`." orderBy: [StaffOrderBy!] = [ PRIMARY_KEY_ASC ]): StaffEdge
+}
+
+"All input for the `updateStaff` mutation."
+input UpdateStaffInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `Staff` to be updated."
+  nodeId: ID!
+  "An object where the defined keys will be set on the `Staff` being updated."
+  staffPatch: StaffPatch!
+}
+
+"Represents an update to a `Staff`. Fields that are set will be updated."
+input StaffPatch {
+  id: Int
+  name: String
+  dob: Date
+  gender: String
+  phone: String
+  email: String
+  position: String
+  salary: Float
+}
+
+"All input for the `updateStaffById` mutation."
+input UpdateStaffByIdInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "An object where the defined keys will be set on the `Staff` being updated."
+  staffPatch: StaffPatch!
   id: Int!
 }
 
@@ -1967,6 +2143,34 @@ input DeleteProductMaterialInput {
 
 "All input for the `deleteProductMaterialById` mutation."
 input DeleteProductMaterialByIdInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  id: Int!
+}
+
+"The output of our delete `Staff` mutation."
+type DeleteStaffPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `Staff` that was deleted by this mutation."
+  staff: Staff
+  deletedStaffId: ID
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `Staff`. May be used by Relay 1."
+  staffEdge("The method to use when ordering `Staff`." orderBy: [StaffOrderBy!] = [ PRIMARY_KEY_ASC ]): StaffEdge
+}
+
+"All input for the `deleteStaff` mutation."
+input DeleteStaffInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `Staff` to be deleted."
+  nodeId: ID!
+}
+
+"All input for the `deleteStaffById` mutation."
+input DeleteStaffByIdInput {
   "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
   clientMutationId: String
   id: Int!

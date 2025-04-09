@@ -63,8 +63,8 @@ exports.seed = async function(knex) {
 
   // Thêm dữ liệu cho bảng Product
   await knex('Product').insert([
-    { name: 'Cà phê sữa', idCategory: 1, price: 30000, description: 'Cà phê pha sữa đặc', isAvailable: true },
-    { name: 'Trà chanh', idCategory: 2, price: 25000, description: 'Trà xanh pha chanh', isAvailable: true },
+    { name: 'Cà phê sữa', idCategory: 1, price: 30000, description: 'Cà phê pha sữa đặc', isAvailable: true, imageUrl: '/Assets/Product/cafe-sua.jpeg'  },
+    { name: 'Trà chanh', idCategory: 2, price: 25000, description: 'Trà xanh pha chanh', isAvailable: true, imageUrl: '/Assets/Product/tra-chanh.jpg' },
   ]);
 
   // Thêm dữ liệu cho bảng ProductMaterial
