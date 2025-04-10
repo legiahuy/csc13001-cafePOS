@@ -21,11 +21,13 @@ using Windows.Foundation.Collections;
 
 namespace CafePOS
 {
+    
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
     public partial class App : Application
     {
+        public static Window MainAppWindow { get; private set; }
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -42,9 +44,11 @@ namespace CafePOS
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             m_window = new MainWindow();
+            MainAppWindow = m_window;
             m_window.Activate();
         }
 
         private Window? m_window;
+
     }
 }

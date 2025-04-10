@@ -22,7 +22,7 @@ namespace CafePOS.DTO
             this.ID = node.Id;
             this.Name = node.Name;
             this.Price = (float)node.Price;
-            
+            this.imageUrl = node.ImageUrl!;
         }
 
         public Drink(IGetListProducts_AllProducts_Edges_Node node)
@@ -31,6 +31,7 @@ namespace CafePOS.DTO
             this.Name = node.Name;
             this.Price = (float)node.Price;
             this.categoryId = node.IdCategory;
+            this.imageUrl = node.ImageUrl!;
         }
 
         private float price;
@@ -55,7 +56,10 @@ namespace CafePOS.DTO
         }
 
         public int CategoryId { get => categoryId; set => categoryId = value; }
+        public string ImageUrl { get => imageUrl; set => imageUrl = value; }
 
         private int categoryId;
+
+        private string imageUrl;
     }
 }
