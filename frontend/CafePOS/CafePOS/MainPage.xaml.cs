@@ -93,7 +93,7 @@ namespace CafePOS
                 case "Reports":
                     PageTitleText.Text = "Báo cáo bán hàng";
                     PageDescriptionText.Text = "Xem thống kê và báo cáo doanh thu";
-                    // ContentFrame.Navigate(typeof(ReportsPage));
+                    ContentFrame.Navigate(typeof(StatisticPage));
                     break;
             }
 

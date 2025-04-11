@@ -1,0 +1,17 @@
+﻿query GetAllFullBills {
+  allBills {
+    edges {
+      node {
+        id
+        idTable
+        dateCheckIn
+        dateCheckOut
+        status
+        totalAmount
+        discount
+        finalAmount
+        paymentMethod
+      }
+    }
+  }
+}

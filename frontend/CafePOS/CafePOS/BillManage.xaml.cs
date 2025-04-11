@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -20,12 +21,15 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Media.Protection.PlayReady;
 
-
 namespace CafePOS.Views
 {
     public sealed partial class BillManage : Page
     {
+        private int currentPage = 1;
+        private int pageSize = 3;
+        private int totalPages = 1;
         public List<Bill> Bills { get; set; } = new List<Bill>();
+        public List<FullBill> FullBills { get; set; } = new List<FullBill>();
 
         public BillManage()
         {
@@ -38,7 +42,7 @@ namespace CafePOS.Views
             DateTime today = DateTime.Today;
             CheckInDatePicker.Date = today;
             CheckOutDatePicker.Date = today;
-            await LoadBillsByDate(today, today);
+            await LoadFullBillsByDate(today, today);
         }
 
         private async void SearchButton_Click(object sender, RoutedEventArgs e)
@@ -51,7 +55,7 @@ namespace CafePOS.Views
 
             DateTime checkIn = CheckInDatePicker.Date.DateTime;
             DateTime checkOut = CheckOutDatePicker.Date.DateTime;
-            await LoadBillsByDate(checkIn, checkOut);
+            await LoadFullBillsByDate(checkIn, checkOut);
         }
         private async Task LoadBillsByDate(DateTime checkIn, DateTime checkOut)
         {
@@ -107,6 +111,72 @@ namespace CafePOS.Views
                     Debug.WriteLine("Checkout failed.");
                 }
             }
+        }
+
+        private async Task LoadFullBillsByDate(DateTime checkIn, DateTime checkOut)
+        {
+            var client = DataProvider.Instance.Client;
+            var response = await client.GetAllFullBills.ExecuteAsync();
+
+            if (response.Data?.AllBills?.Edges == null)
+            {
+                Debug.WriteLine("Error: No data received from GraphQL (FullBills).");
+                return;
+            }
+
+            // ✅ Keep raw FullBill objects
+            FullBills = response.Data.AllBills.Edges
+                .Select(edge => new FullBill(edge.Node))
+                .Where(bill => bill.DateCheckIn.HasValue &&
+                               bill.DateCheckIn.Value.Date >= checkIn.Date &&
+                               bill.DateCheckIn.Value.Date <= checkOut.Date)
+                .ToList();
+
+            currentPage = 1;
+            DisplayPagedBills(FullBills);
+        }
+
+        private void NextPage_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentPage < totalPages)
+            {
+                currentPage++;
+                DisplayPagedBills(FullBills);
+            }
+        }
+
+        private void PreviousPage_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentPage > 1)
+            {
+                currentPage--;
+                DisplayPagedBills(FullBills);
+            }
+        }
+        private void DisplayPagedBills(List<FullBill> list)
+        {
+            totalPages = (int)Math.Ceiling((double)list.Count / pageSize);
+
+            var pageData = list
+                .Skip((currentPage - 1) * pageSize)
+                .Take(pageSize)
+                .Select(bill => new
+                {
+                    bill.Id,
+                    bill.IdTable,
+                    DateCheckIn = bill.DateCheckIn?.ToString("dd/MM/yyyy HH:mm"),
+                    DateCheckOut = bill.DateCheckOut?.ToString("dd/MM/yyyy HH:mm"),
+                    StatusText = bill.Status == 1 ? "Đã thanh toán" : "Chưa thanh toán",
+                    TotalAmount = bill.TotalAmount.ToString("C0", CultureInfo.GetCultureInfo("vi-VN")),
+                    Discount = bill.Discount.ToString("P0"),
+                    FinalAmount = bill.FinalAmount.ToString("C0", CultureInfo.GetCultureInfo("vi-VN")),
+                    TableLabel = $"Bàn {bill.IdTable}",
+                    bill.PaymentMethod
+                })
+                .ToList();
+
+            BillListView.ItemsSource = pageData;
+            PageIndicator.Text = $"Page {currentPage} of {totalPages}";
         }
     }
 }

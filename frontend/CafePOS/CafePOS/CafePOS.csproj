@@ -22,6 +22,7 @@
     <GraphQL Remove="queries\categories.graphql" />
     <GraphQL Remove="Queries\ChangeTable.graphql" />
     <GraphQL Remove="queries\drinks.graphql" />
+    <GraphQL Remove="Queries\GetAllFullBills.graphql" />
     <GraphQL Remove="queries\GetBillsByDate.graphql" />
     <GraphQL Remove="queries\getMaxIDBill.graphql" />
     <GraphQL Remove="queries\insertBill.graphql" />
@@ -33,6 +34,7 @@
     <None Remove="LoginPage.xaml" />
     <None Remove="MainPage.xaml" />
     <None Remove="PlaceholderPage.xaml" />
+    <None Remove="StatisticPage.xaml" />
     <None Remove="TableManagerPage.xaml" />
   </ItemGroup>
 
@@ -62,6 +64,11 @@
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250310001" />
     <PackageReference Include="StrawberryShake.Server" Version="15.1.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="StatisticPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="BillManage.xaml">

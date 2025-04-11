@@ -1,0 +1,44 @@
+<Page
+    x:Class="CafePOS.Views.StatisticPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CafePOS"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dto="using:CafePOS.DTO"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <StackPanel Padding="20" Spacing="20">
+
+        <Pivot>
+
+            <!-- Tổng Quan -->
+            <PivotItem Header="Tổng quan">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="Tổng hóa đơn: 7" />
+                    <TextBlock Text="Số đơn hủy: 0" />
+                    <TextBlock Text="Số lượng mặt hàng: 26" />
+                    <TextBlock Text="Tỉ lệ trung bình: 3.71" />
+                    <TextBlock Text="Tổng doanh thu: 155,000đ" />
+                </StackPanel>
+            </PivotItem>
+
+            <!-- Báo cáo mặt hàng -->
+            <PivotItem Header="Mặt hàng">
+                <ListView>
+                    <ListViewItem Content="Espresso - 25 đơn - 1,000,000đ" />
+                    <ListViewItem Content="Trà đào - 12 đơn - 320,000đ" />
+                </ListView>
+            </PivotItem>
+
+            <!-- Tồn kho -->
+            <PivotItem Header="Tồn kho">
+                <ListView>
+                    <ListViewItem Content="Cà phê: Đầu kỳ 100g - Nhập 50g - Tiêu thụ 95g - Còn 55g" />
+                    <ListViewItem Content="Sữa: Đầu kỳ 2L - Nhập 1L - Tiêu thụ 2.5L - Còn 0.5L" />
+                </ListView>
+            </PivotItem>
+
+        </Pivot>
+    </StackPanel>
+</Page>
