@@ -12,6 +12,7 @@ namespace CafePOS.DTO
         public string? Email { get; set; }
         public string? Position { get; set; }
         public float Salary { get; set; }
+        public string? UserName { get; set; }
 
         public Staff() { }
         public string SalaryFormatted => string.Format("{0:N0} VNĐ", Salary);
@@ -26,7 +27,7 @@ namespace CafePOS.DTO
             Email = node.Email;
             Position = node.Position;
             Salary = (float)(node.Salary ?? 0);
-
+            UserName = node.UserName;
         }
     }
 }

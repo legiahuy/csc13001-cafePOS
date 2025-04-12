@@ -9,6 +9,7 @@
       email 
       position
       salary
+      userName
     }
   }
 }
@@ -21,6 +22,7 @@ mutation CreateStaff(
   $email: String!
   $position: String!
   $salary: Float!
+  $userName: String!   # ✅ Thêm dòng này
 ) {
   createStaff(input: {
     staff: {
@@ -31,11 +33,13 @@ mutation CreateStaff(
       email: $email
       position: $position
       salary: $salary
+      userName: $userName  
     }
   }) {
     staff {
       id
       name
+      userName 
     }
   }
 }

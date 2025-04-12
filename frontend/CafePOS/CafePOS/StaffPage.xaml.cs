@@ -75,8 +75,14 @@ namespace CafePOS
                     bool success = await StaffDAO.Instance.DeleteStaffAsync(staff.Id);
                     if (success)
                     {
+                        if (!string.IsNullOrEmpty(staff.UserName))
+                        {
+                            await AccountDAO.Instance.DeleteAccountByUserNameAsync(staff.UserName);
+                        }
+
                         await LoadStaffAsync();
                     }
+
                     else
                     {
                         await ShowMessageAsync("Không thể xoá nhân viên.");
@@ -95,6 +101,10 @@ namespace CafePOS
             string position = PositionTextBox.Text.Trim();
             float.TryParse(SalaryTextBox.Text, out float salary);
 
+            string username = UsernameTextBox.Text.Trim();
+            string password = PasswordBox.Password.Trim();
+
+            // Kiểm tra rỗng
             if (string.IsNullOrWhiteSpace(name))
             {
                 args.Cancel = true;
@@ -102,26 +112,60 @@ namespace CafePOS
                 return;
             }
 
-            bool success;
-            if (selectedStaff == null)
+            if (selectedStaff == null) // Thêm mới
             {
-                success = await StaffDAO.Instance.AddStaffAsync(name, dob, gender, phone, email, position, salary);
-            }
-            else
-            {
-                success = await StaffDAO.Instance.UpdateStaffAsync(selectedStaff.Id, name, dob, gender, phone, email, position, salary);
+                if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+                {
+                    args.Cancel = true;
+                    await ShowMessageAsync("Vui lòng nhập tên đăng nhập và mật khẩu.");
+                    return;
+                }
+
+                // 👉 1. Tạo tài khoản trước
+                string displayName = name;
+                bool accountCreated = await AccountDAO.Instance.CreateAccountAsync(username, displayName, password, 0);
+
+                if (!accountCreated)
+                {
+                    args.Cancel = true;
+                    await ShowMessageAsync("Tạo tài khoản đăng nhập thất bại.");
+                    return;
+                }
+
+                // 👉 2. Sau đó mới tạo Staff
+                bool success = await StaffDAO.Instance.AddStaffAsync(name, dob, gender, phone, email, position, salary, username);
+
+                if (success)
+                {
+                    await LoadStaffAsync();
+                }
+                else
+                {
+                    args.Cancel = true;
+
+                    // ❗Nếu tạo Staff thất bại sau khi tạo tài khoản → rollback xóa account
+                    await AccountDAO.Instance.DeleteAccountByUserNameAsync(username);
+                    await ShowMessageAsync("Lưu thông tin thất bại. Tài khoản đã được rollback.");
+                }
             }
 
-            if (success)
+            else // Cập nhật
             {
-                await LoadStaffAsync();
-            }
-            else
-            {
-                args.Cancel = true;
-                await ShowMessageAsync("Lưu thông tin thất bại.");
+                bool success = await StaffDAO.Instance.UpdateStaffAsync(selectedStaff.Id, name, dob, gender, phone, email, position, salary);
+
+                if (success)
+                {
+                    await LoadStaffAsync();
+                }
+                else
+                {
+                    args.Cancel = true;
+                    await ShowMessageAsync("Cập nhật thông tin thất bại.");
+                }
+
             }
         }
+
 
         private void CancelStaffDialog_Click(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
@@ -137,7 +181,11 @@ namespace CafePOS
             EmailTextBox.Text = "";
             PositionTextBox.Text = "";
             SalaryTextBox.Text = "";
+
+            UsernameTextBox.Text = "";
+            PasswordBox.Password = "";
         }
+
 
         private async Task ShowMessageAsync(string message)
         {

@@ -46,6 +46,12 @@ namespace CafePOS
                 }
                 else
                 {
+                    var userInfo = await AccountDAO.Instance.GetAccountByUserNameAsync(username);
+
+                    // Gán để dùng toàn cục
+                    DataProvider.CurrentUserName = userInfo.UserName;
+                    DataProvider.CurrentDisplayName = userInfo.DisplayName;
+                    DataProvider.CurrentUserType = userInfo.Type;
                     ErrorMessage.Visibility = Visibility.Collapsed;
                     if (this.Parent is Frame frame)
                     {

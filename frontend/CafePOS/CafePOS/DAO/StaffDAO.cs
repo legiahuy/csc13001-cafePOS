@@ -27,7 +27,7 @@ namespace CafePOS.DAO
             return list ?? new List<Staff>();
         }
 
-        public async Task<bool> AddStaffAsync(string name, string dob, string gender, string phone, string email, string position, float salary)
+        public async Task<bool> AddStaffAsync(string name, string dob, string gender, string phone, string email, string position, float salary, string userName)
         {
             var client = DataProvider.Instance.Client;
 
@@ -38,7 +38,8 @@ namespace CafePOS.DAO
                 phone,
                 email,
                 position,
-                salary
+                salary, 
+                userName
             );
 
             return result.Data?.CreateStaff?.Staff?.Id > 0;
