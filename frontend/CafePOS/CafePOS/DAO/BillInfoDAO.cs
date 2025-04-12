@@ -16,7 +16,7 @@ namespace CafePOS.DAO
             private set { instance = value; }
         }
 
-        private BillInfoDAO() { }
+        public BillInfoDAO() { }
 
         public async Task<List<BillInfo>> GetListBillInfoAsync(int id)
         {
@@ -51,5 +51,26 @@ namespace CafePOS.DAO
                 .Select(e => e.Node.Id)
                 .FirstOrDefault() ?? -1;
         }
+        public async Task<List<BillInfo>> GetBillInfoByBillIdAsync(int billId)
+        {
+            try
+            {
+                var client = DataProvider.Instance.Client;
+                var result = await client.GetBillInfoByBillId.ExecuteAsync(billId);
+
+                var billInfos = result.Data?.AllBillInfos?.Edges?
+                    .Where(e => e.Node != null)
+                    .Select(e => new BillInfo(e.Node))
+                    .ToList() ?? new List<BillInfo>();
+
+                return billInfos;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error in GetBillInfoByBillIdAsync: {ex.Message}");
+                return new List<BillInfo>();
+            }
+        }
+
     }
 }

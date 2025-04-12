@@ -22,6 +22,12 @@ namespace CafePOS.DTO
             this.Name = node.Name;
             this.Price = (float)node.Price;
         }
+        public Drink(IGetAllDrinks_AllProducts_Edges_Node node)
+        {
+            ID = node.Id;
+            Name = node.Name;
+            Price = (float)node.Price;
+        }
 
         private float price;
         public float Price

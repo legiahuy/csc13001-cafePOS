@@ -17,7 +17,7 @@ namespace CafePOS.DAO
             private set { instance = value; }
         }
 
-        private BillDAO() { }
+        public BillDAO() { }
 
         /// <summary>
         /// Success: bill ID
@@ -115,6 +115,38 @@ namespace CafePOS.DAO
             return bills;
         }
 
+        public async Task<List<Bill>> GetAllBillsAsync()
+        {
+            try
+            {
+                var client = DataProvider.Instance.Client;
+                var result = await client.GetAllBills.ExecuteAsync(); 
+
+                var bills = new List<Bill>();
+                if (result.Data?.AllBills?.Edges != null)
+                {
+                    foreach (var edge in result.Data.AllBills.Edges)
+                    {
+                        bills.Add(new Bill(
+                            edge.Node.Id,
+                            DateTime.TryParse(edge.Node.DateCheckIn, out DateTime dateIn) ? dateIn : (DateTime?)null,
+                            DateTime.TryParse(edge.Node.DateCheckOut, out DateTime dateOut) ? dateOut : (DateTime?)null,
+                            edge.Node.Status
+                        ));
+                    }
+                }
+
+                return bills;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error in GetAllBillsAsync: {ex.Message}");
+                return new List<Bill>();
+            }
+        }
+
+
+
         public async Task<int> GetMaxIDBillAsync()
         {
             var client = DataProvider.Instance.Client;
@@ -122,7 +154,7 @@ namespace CafePOS.DAO
 
             var maxId = result.Data?.AllBills?.Edges?
                 .Where(e => e.Node != null)  
-                .Select(e => e.Node.Id)     
+                .Select(e => e.Node?.Id)     
                 .DefaultIfEmpty(1)          
                 .Max() ?? 1;                      
 
@@ -143,7 +175,71 @@ namespace CafePOS.DAO
                 return false;
             }
         }
+        public async Task<List<Bill>> GetBillsByDateAndStatusAsync(DateTime endDate, int status)
+        {
+            try
+            {
+                var client = DataProvider.Instance.Client;
 
+                // Get the target date in UTC
+                DateTime targetDate = endDate.Date.ToUniversalTime();
+
+                Debug.WriteLine($"Attempting to retrieve bills for UTC date: {targetDate:yyyy-MM-dd} and status: {status}");
+
+                // Execute the query to get all bills
+                var result = await client.GetAllBills.ExecuteAsync();
+
+                var bills = new List<Bill>();
+                if (result.Data?.AllBills?.Edges != null)
+                {
+                    Debug.WriteLine($"Found {result.Data.AllBills.Edges.Count} bills in total");
+                    
+                    foreach (var edge in result.Data.AllBills.Edges)
+                    {
+                        Debug.WriteLine($"Processing bill ID: {edge.Node.Id}");
+                        Debug.WriteLine($"DateCheckOut: {edge.Node.DateCheckOut}");
+                        Debug.WriteLine($"Status: {edge.Node.Status}");
+
+                        // Parse the dateCheckOut string and keep it in UTC
+                        if (DateTime.TryParse(edge.Node.DateCheckOut, null, System.Globalization.DateTimeStyles.RoundtripKind, out DateTime dateCheckOut))
+                        {
+                            // Keep the date in UTC
+                            DateTime utcDateCheckOut = dateCheckOut.ToUniversalTime();
+                            Debug.WriteLine($"Successfully parsed date (UTC): {utcDateCheckOut:yyyy-MM-dd HH:mm:ss}");
+                            
+                            // Compare UTC dates
+                            if (utcDateCheckOut.Date == targetDate.Date && edge.Node.Status == status)
+                            {
+                                bills.Add(new Bill(
+                                    edge.Node.Id,
+                                    DateTime.TryParse(edge.Node.DateCheckIn, null, System.Globalization.DateTimeStyles.RoundtripKind, out DateTime dateIn) ? dateIn : (DateTime?)null,
+                                    dateCheckOut,
+                                    edge.Node.Status
+                                ));
+                                Debug.WriteLine($"Added bill ID: {edge.Node.Id} to filtered list");
+                            }
+                        }
+                        else
+                        {
+                            Debug.WriteLine($"Failed to parse date for bill ID: {edge.Node.Id}");
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine("No bills found in the response");
+                }
+
+                Debug.WriteLine($"Retrieved {bills.Count} bills from the database for date {targetDate.Date:yyyy-MM-dd} and status {status}");
+                return bills;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error in GetBillsByDateAndStatusAsync: {ex.Message}");
+                Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                return new List<Bill>();
+            }
+        }
     }
 }
 

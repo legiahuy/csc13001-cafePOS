@@ -33,7 +33,6 @@ namespace CafePOS.DTO
         public int Id { get => _id; set => _id = value; }
         public DateTime? DateCheckOut { get => _dateCheckOut; set => _dateCheckOut = value; }
         public int Status { get => _status; set => _status = value; }
-
         public string StatusText => DateCheckOut == null ? "Chưa thanh toán" : "Đã thanh toán";
     }
 }
