@@ -34,15 +34,25 @@ namespace CafePOS
         {
             selectedStaff = null;
             ClearForm();
+
             StaffDialog.Title = "Thêm nhân viên";
+
+            UsernameTextBox.Visibility = Visibility.Visible;
+            PasswordBox.Visibility = Visibility.Visible;
+            UsernameTextReadonlyBox.Visibility = Visibility.Collapsed;
+            PasswordTextReadonlyBox.Visibility = Visibility.Collapsed;
+
+
             _ = StaffDialog.ShowAsync();
         }
 
-        private void EditStaff_Click(object sender, RoutedEventArgs e)
+
+        private async void EditStaff_Click(object sender, RoutedEventArgs e)
         {
             if ((sender as Button)?.DataContext is Staff staff)
             {
                 selectedStaff = staff;
+
                 NameTextBox.Text = staff.Name ?? "";
                 DobDatePicker.Date = DateTime.TryParse(staff.Dob, out var date) ? date : DateTime.Today;
                 GenderComboBox.SelectedItem = staff.Gender ?? "Nam";
@@ -51,10 +61,29 @@ namespace CafePOS
                 PositionTextBox.Text = staff.Position ?? "";
                 SalaryTextBox.Text = staff.Salary.ToString();
 
+                UsernameTextBox.Visibility = Visibility.Collapsed;
+                PasswordBox.Visibility = Visibility.Collapsed;
+                UsernameTextReadonlyBox.Visibility = Visibility.Visible;
+                PasswordTextReadonlyBox.Visibility = Visibility.Visible;
+
+                UsernameTextReadonlyBox.Text = staff.UserName ?? "";
+
+                try
+                {
+                    var account = await AccountDAO.Instance.GetAccountByUserNameAsync(staff.UserName ?? "");
+                    PasswordTextReadonlyBox.Text = account?.Password ?? "(không có)";
+                }
+                catch (Exception ex)
+                {
+                    PasswordTextReadonlyBox.Text = "(lỗi tải mật khẩu)";
+                }
+
                 StaffDialog.Title = "Chỉnh sửa nhân viên";
                 _ = StaffDialog.ShowAsync();
             }
         }
+
+
 
         private async void DeleteStaff_Click(object sender, RoutedEventArgs e)
         {
@@ -91,8 +120,47 @@ namespace CafePOS
             }
         }
 
+
+        private async Task<bool> ValidateInputs(ContentDialogButtonClickEventArgs args)
+        {
+            string name = NameTextBox.Text.Trim();
+            string phone = PhoneTextBox.Text.Trim();
+            string email = EmailTextBox.Text.Trim();
+            string position = PositionTextBox.Text.Trim();
+            string salaryText = SalaryTextBox.Text.Trim();
+            string username = UsernameTextBox.Text.Trim();
+            string password = PasswordBox.Password.Trim();
+
+            bool isCreateMode = selectedStaff == null;
+
+            if (string.IsNullOrWhiteSpace(name) ||
+                DobDatePicker.Date == null ||
+                GenderComboBox.SelectedItem == null ||
+                string.IsNullOrWhiteSpace(phone) ||
+                string.IsNullOrWhiteSpace(email) ||
+                string.IsNullOrWhiteSpace(position) ||
+                string.IsNullOrWhiteSpace(salaryText) ||
+                (isCreateMode && (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))))
+            {
+                args.Cancel = true;
+
+                ValidationInfoBar.Message = "Vui lòng nhập đầy đủ tất cả các thông tin.";
+                ValidationInfoBar.IsOpen = true;
+
+                return false;
+            }
+
+            ValidationInfoBar.IsOpen = false;
+            return true;
+        }
+
+
+
         private async void SaveStaffDialog_Click(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
+            if (!await ValidateInputs(args))
+                return;
+
             string name = NameTextBox.Text.Trim();
             string dob = DobDatePicker.Date.ToString("yyyy-MM-dd");
             string gender = (GenderComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Nam";
@@ -100,28 +168,11 @@ namespace CafePOS
             string email = EmailTextBox.Text.Trim();
             string position = PositionTextBox.Text.Trim();
             float.TryParse(SalaryTextBox.Text, out float salary);
-
             string username = UsernameTextBox.Text.Trim();
             string password = PasswordBox.Password.Trim();
 
-            // Kiểm tra rỗng
-            if (string.IsNullOrWhiteSpace(name))
+            if (selectedStaff == null)
             {
-                args.Cancel = true;
-                await ShowMessageAsync("Vui lòng nhập tên nhân viên.");
-                return;
-            }
-
-            if (selectedStaff == null) // Thêm mới
-            {
-                if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
-                {
-                    args.Cancel = true;
-                    await ShowMessageAsync("Vui lòng nhập tên đăng nhập và mật khẩu.");
-                    return;
-                }
-
-                // 👉 1. Tạo tài khoản trước
                 string displayName = name;
                 bool accountCreated = await AccountDAO.Instance.CreateAccountAsync(username, displayName, password, 0);
 
@@ -132,7 +183,6 @@ namespace CafePOS
                     return;
                 }
 
-                // 👉 2. Sau đó mới tạo Staff
                 bool success = await StaffDAO.Instance.AddStaffAsync(name, dob, gender, phone, email, position, salary, username);
 
                 if (success)
@@ -142,17 +192,13 @@ namespace CafePOS
                 else
                 {
                     args.Cancel = true;
-
-                    // ❗Nếu tạo Staff thất bại sau khi tạo tài khoản → rollback xóa account
                     await AccountDAO.Instance.DeleteAccountByUserNameAsync(username);
                     await ShowMessageAsync("Lưu thông tin thất bại. Tài khoản đã được rollback.");
                 }
             }
-
-            else // Cập nhật
+            else
             {
                 bool success = await StaffDAO.Instance.UpdateStaffAsync(selectedStaff.Id, name, dob, gender, phone, email, position, salary);
-
                 if (success)
                 {
                     await LoadStaffAsync();
@@ -162,9 +208,9 @@ namespace CafePOS
                     args.Cancel = true;
                     await ShowMessageAsync("Cập nhật thông tin thất bại.");
                 }
-
             }
         }
+
 
 
         private void CancelStaffDialog_Click(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -182,13 +228,22 @@ namespace CafePOS
             PositionTextBox.Text = "";
             SalaryTextBox.Text = "";
 
-            UsernameTextBox.Text = "";
-            PasswordBox.Password = "";
+            UsernameTextReadonlyBox.Text = "";
+            PasswordTextReadonlyBox.Text = "";
+            UsernameTextReadonlyBox.Visibility = Visibility.Collapsed;
+            PasswordTextReadonlyBox.Visibility = Visibility.Collapsed;
+
         }
 
 
         private async Task ShowMessageAsync(string message)
         {
+            if (this.XamlRoot == null)
+            {
+                System.Diagnostics.Debug.WriteLine("❌ XamlRoot is null. Cannot show dialog.");
+                return;
+            }
+
             ContentDialog dialog = new ContentDialog
             {
                 Title = "Thông báo",
@@ -196,7 +251,9 @@ namespace CafePOS
                 CloseButtonText = "Đóng",
                 XamlRoot = this.XamlRoot
             };
+
             await dialog.ShowAsync();
         }
+
     }
 }

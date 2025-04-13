@@ -69,7 +69,6 @@ namespace CafePOS.DAO
 
             var result = await client.DeleteStaff.ExecuteAsync(id);
 
-            // Kiểm tra nếu có deletedStaffId thì coi là thành công
             return result.Data?.DeleteStaffById?.DeletedStaffId != null;
         }
     }

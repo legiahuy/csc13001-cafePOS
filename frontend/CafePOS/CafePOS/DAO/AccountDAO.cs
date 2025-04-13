@@ -71,6 +71,7 @@ namespace CafePOS.DAO
             public string UserName { get; set; } = "";
             public string DisplayName { get; set; } = "";
             public int Type { get; set; } = 0;
+            public string Password { get; set; }
         }
 
         public async Task<AccountInfo> GetAccountByUserNameAsync(string userName)
@@ -83,7 +84,8 @@ namespace CafePOS.DAO
             {
                 UserName = acc?.UserName ?? "",
                 DisplayName = acc?.DisplayName ?? "",
-                Type = acc?.Type ?? 0
+                Type = acc?.Type ?? 0,
+                Password = acc?.Password ?? ""
             };
         }
         public async Task<bool> UpdateDisplayNameAsync(string userName, string newDisplayName)
