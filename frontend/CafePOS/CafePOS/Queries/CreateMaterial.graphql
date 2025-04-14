@@ -1,0 +1,15 @@
+﻿mutation CreateMaterial($name: String!, $description: String, $price: Float!, $minStock: Int!, $unit: String!, $currentStock: Int, $imageUrl: String!) {
+  createMaterial(
+    input: {material: {name: $name, description: $description, price: $price, unit: $unit, imageUrl: $imageUrl, minStock: $minStock, currentStock: $currentStock}}
+  ) {
+    material {
+      currentStock
+      description
+      imageUrl
+      id
+      minStock
+      name
+      price
+    }
+  }
+}

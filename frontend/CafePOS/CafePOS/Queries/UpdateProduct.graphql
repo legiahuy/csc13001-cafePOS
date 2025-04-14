@@ -1,6 +1,6 @@
-﻿mutation UpdateProduct($id: Int!, $name: String, $description: String, $categoryId: Int!, $price: Float, $isAvailable: Boolean) {
+﻿mutation UpdateProduct($id: Int!, $name: String, $description: String, $categoryId: Int!, $price: Float, $isAvailable: Boolean, $imageUrl: String!) {
   updateProductById(
-    input: {productPatch: {name: $name, isAvailable: $isAvailable, idCategory: $categoryId, price: $price, description: $description}, id: $id}
+    input: {productPatch: {name: $name, isAvailable: $isAvailable, idCategory: $categoryId, price: $price, description: $description, imageUrl: $imageUrl}, id: $id}
   ) {
     product {
       id
@@ -9,6 +9,7 @@
       idCategory
       price
       isAvailable
+      imageUrl
     }
   }
 }

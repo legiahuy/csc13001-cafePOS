@@ -5,7 +5,11 @@
     <None Update="App.xaml">
       <SubType>Designer</SubType>
     </None>
+
     <Page Update="StaffPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="MaterialPage.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="ProductPage.xaml">
