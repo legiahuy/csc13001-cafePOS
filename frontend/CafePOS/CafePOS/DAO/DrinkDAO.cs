@@ -43,19 +43,20 @@ namespace CafePOS.DAO
             return products;
         }
 
-        public async Task<int> InsertProductAsync(String name, int categoryId, int price)
+        public async Task<int> InsertProductAsync(String name, int categoryId, int price, string ImageUrl)
         {
+            if (ImageUrl.Equals("") || string.IsNullOrEmpty(ImageUrl)) ImageUrl = "/Assets/default-image.jpg";
             var client = DataProvider.Instance.Client;
 
-            var result = await client.CreateProduct.ExecuteAsync(name, "", categoryId, price, true);
+            var result = await client.CreateProduct.ExecuteAsync(name, "", categoryId, price, true, ImageUrl);
 
             return result.Data?.CreateProduct?.Product?.Id ?? -1;
         }
 
-        public async Task<bool> UpdateProductAsync(int id, string name, string description, int categoryId, int price, bool isAvailable)
+        public async Task<bool> UpdateProductAsync(int id, string name, string description, int categoryId, int price, bool isAvailable, string ImageUrl)
         {
             var client = DataProvider.Instance.Client;
-            var result = await client.UpdateProduct.ExecuteAsync(id, name, description, categoryId, price, isAvailable);
+            var result = await client.UpdateProduct.ExecuteAsync(id, name, description, categoryId, price, isAvailable, ImageUrl);
             return result.Data?.UpdateProductById?.Product?.Id == id;
         }
 

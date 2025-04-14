@@ -43,14 +43,28 @@ exports.seed = async function(knex) {
 
   // Thêm dữ liệu cho bảng Material
   await knex('Material').insert([
-    { name: 'Cà phê hạt', unit: 'kg', currentStock: 10, minStock: 2, price: 200000 },
-    { name: 'Trà xanh', unit: 'gói', currentStock: 20, minStock: 5, price: 50000 },
+    { 
+      name: 'Cà phê hạt', 
+      unit: 'kg', 
+      currentStock: 10, 
+      minStock: 2, 
+      price: 200000,
+      imageUrl: '/Assets/Material/ca-phe-hat.jpeg' 
+    },
+    { 
+      name: 'Trà xanh', 
+      unit: 'gói', 
+      currentStock: 20, 
+      minStock: 5, 
+      price: 50000,
+      imageUrl: '/Assets/Material/tra-xanh.jpg' 
+    },
   ]);
 
   // Thêm dữ liệu cho bảng Product
   await knex('Product').insert([
-    { name: 'Cà phê sữa', idCategory: 1, price: 30000, description: 'Cà phê pha sữa đặc', isAvailable: true },
-    { name: 'Trà chanh', idCategory: 2, price: 25000, description: 'Trà xanh pha chanh', isAvailable: true },
+    { name: 'Cà phê sữa', idCategory: 1, price: 30000, description: 'Cà phê pha sữa đặc', isAvailable: true, imageUrl: '/Assets/Product/cafe-sua.jpeg'  },
+    { name: 'Trà chanh', idCategory: 2, price: 25000, description: 'Trà xanh pha chanh', isAvailable: true, imageUrl: '/Assets/Product/tra-chanh.jpg' },
   ]);
 
   // Thêm dữ liệu cho bảng ProductMaterial

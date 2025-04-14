@@ -25,10 +25,11 @@ exports.up = function(knex) {
         table.increments('id').primary();
         table.string('name', 100).notNullable();
         table.string('unit', 50).notNullable();
-        table.float('currentStock').notNullable().defaultTo(0);
-        table.float('minStock').notNullable().defaultTo(0);
+        table.integer('currentStock').notNullable().defaultTo(0);
+        table.integer('minStock').notNullable().defaultTo(0);
         table.float('price').notNullable().defaultTo(0);
         table.string('description', 500);
+        table.string('imageUrl', 255);
       })
       .createTable('Product', (table) => {
         table.increments('id').primary();
@@ -37,6 +38,7 @@ exports.up = function(knex) {
         table.float('price').notNullable().defaultTo(0);
         table.string('description', 500);
         table.boolean('isAvailable').notNullable().defaultTo(true);
+        table.string('imageUrl', 255);
       })
       .createTable('ProductMaterial', (table) => {
         table.increments('id').primary();

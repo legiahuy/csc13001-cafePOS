@@ -1,20 +1,6 @@
-﻿mutation CreateProduct(
-  $name: String,
-  $description: String,
-  $categoryId: Int!,
-  $price: Float,
-  $isAvailable: Boolean
-) {
+﻿mutation CreateProduct($name: String, $description: String, $categoryId: Int!, $price: Float, $isAvailable: Boolean, $imageUrl: String!) {
   createProduct(
-    input: { 
-      product: {
-        description: $description,
-        idCategory: $categoryId,
-        name: $name,
-        isAvailable: $isAvailable,
-        price: $price
-      }
-    }
+    input: {product: {description: $description, idCategory: $categoryId, name: $name, isAvailable: $isAvailable, price: $price, imageUrl: $imageUrl}}
   ) {
     product {
       id
@@ -23,6 +9,7 @@
       idCategory
       price
       isAvailable
+      imageUrl
     }
   }
 }
