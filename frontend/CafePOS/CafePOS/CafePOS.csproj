@@ -32,6 +32,7 @@
     <GraphQL Remove="queries\insertBill.graphql" />
     <GraphQL Remove="queries\InsertBillInfo.graphql" />
     <GraphQL Remove="Queries\insertProduct.graphql" />
+    <GraphQL Remove="Queries\staffs.graphql" />
     <GraphQL Remove="Queries\Materials.graphql" />
     <GraphQL Remove="Queries\UpdateBillStatus.graphql" />
     <GraphQL Remove="Queries\UpdateMaterial.graphql" />
@@ -42,6 +43,7 @@
     <None Remove="MainPage.xaml" />
     <None Remove="MaterialPage.xaml" />
     <None Remove="PlaceholderPage.xaml" />
+    <None Remove="StaffPage.xaml" />
     <None Remove="TableManagerPage.xaml" />
   </ItemGroup>
 
@@ -72,6 +74,11 @@
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250310001" />
     <PackageReference Include="StrawberryShake.Server" Version="15.1.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="StaffPage.xaml">
+       <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="MaterialPage.xaml">
