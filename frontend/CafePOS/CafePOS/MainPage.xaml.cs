@@ -13,10 +13,6 @@ namespace CafePOS
         {
             this.InitializeComponent();
 
-            UserNameText.Text = DataProvider.CurrentDisplayName;
-            UserRoleText.Text = DataProvider.CurrentUserType == 1 ? "Quản lý" : "Nhân viên";
-
-
             // Set initial selection
             NavigateToPage("Dashboard");
             SetSelectedButton(DashboardButton);
@@ -70,22 +66,9 @@ namespace CafePOS
                     break;
 
                 case "Staff":
-                    if (DataProvider.CurrentUserType != 1)
-                    {
-                        ContentDialog dialog = new ContentDialog
-                        {
-                            Title = "Không có quyền",
-                            Content = "Bạn không có quyền truy cập trang quản lý nhân viên.",
-                            CloseButtonText = "Đóng",
-                            XamlRoot = this.XamlRoot
-                        };
-                        _ = dialog.ShowAsync();
-                        return;
-                    }
-
                     PageTitleText.Text = "Quản lý nhân viên";
                     PageDescriptionText.Text = "Quản lý thông tin và hoạt động của nhân viên";
-                    ContentFrame.Navigate(typeof(StaffPage));
+                    // ContentFrame.Navigate(typeof(StaffPage));
                     break;
 
                 case "Customers":
