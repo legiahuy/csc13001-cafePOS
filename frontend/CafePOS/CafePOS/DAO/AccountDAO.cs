@@ -52,5 +52,55 @@ namespace CafePOS.DAO
                 }
             }
         }
+
+        public async Task<bool> CreateAccountAsync(string userName, string displayName, string password, int type)
+        {
+            var client = DataProvider.Instance.Client;
+            var result = await client.CreateAccount.ExecuteAsync(userName, displayName, password, type);
+            return result.Data?.CreateAccount?.Account?.UserName != null;
+        }
+
+        public async Task<int> GetAccountTypeAsync(string userName)
+        {
+            var client = DataProvider.Instance.Client;
+            var result = await client.GetAccountByUserName.ExecuteAsync(userName);
+            return result.Data?.AccountByUserName?.Type ?? 0;
+        }
+        public class AccountInfo
+        {
+            public string UserName { get; set; } = "";
+            public string DisplayName { get; set; } = "";
+            public int Type { get; set; } = 0;
+            public string Password { get; set; }
+        }
+
+        public async Task<AccountInfo> GetAccountByUserNameAsync(string userName)
+        {
+            var client = DataProvider.Instance.Client;
+            var result = await client.GetAccountByUserName.ExecuteAsync(userName);
+            var acc = result.Data?.AccountByUserName;
+
+            return new AccountInfo
+            {
+                UserName = acc?.UserName ?? "",
+                DisplayName = acc?.DisplayName ?? "",
+                Type = acc?.Type ?? 0,
+                Password = acc?.Password ?? ""
+            };
+        }
+        public async Task<bool> UpdateDisplayNameAsync(string userName, string newDisplayName)
+        {
+            var client = DataProvider.Instance.Client;
+            var result = await client.UpdateAccountDisplayName.ExecuteAsync(userName, newDisplayName);
+            return result.Data?.UpdateAccountByUserName?.Account?.DisplayName == newDisplayName;
+        }
+
+        public async Task<bool> DeleteAccountByUserNameAsync(string userName)
+        {
+            var client = DataProvider.Instance.Client;
+            var result = await client.DeleteAccountByUserName.ExecuteAsync(userName);
+            return result.Data?.DeleteAccountByUserName?.Account?.UserName != null;
+        }
+
     }
 }
