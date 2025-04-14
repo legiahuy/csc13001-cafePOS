@@ -17,67 +17,66 @@ namespace CafePOS.Tests
             $"test_{Guid.NewGuid().ToString("N").Substring(0, 6)}@example.com";
 
         [TestMethod]
-        public async Task AddStaff_WithAccount_ShouldIncreaseCount()
+        public async Task AddStaff_ShouldSucceedAndAppearInList()
         {
             var beforeList = await StaffDAO.Instance.GetAllStaffAsync();
-            Assert.IsNotNull(beforeList, "Danh sách trước khi thêm bị null");
+            Assert.IsNotNull(beforeList, "Danh sách nhân viên trước khi thêm là null");
 
             string username = GenerateRandomUsername();
-            string name = "Test User";
-            string dob = DateTime.Today.AddYears(-25).ToString("yyyy-MM-dd");
-            string gender = "Nam";
-            string phone = "0123" + new Random().Next(1000000, 9999999);
             string email = GenerateRandomEmail();
-            string position = "Tester";
-            float salary = 5000000f;
-            string password = "123456";
 
-            bool accountCreated = await AccountDAO.Instance.CreateAccountAsync(username, name, password, 0);
-            Assert.IsTrue(accountCreated, "Tạo tài khoản thất bại");
+            bool accCreated = await AccountDAO.Instance.CreateAccountAsync(username, "Test Display", "123456", 0);
+            Assert.IsTrue(accCreated, "Tạo tài khoản thất bại");
 
-            bool staffAdded = await StaffDAO.Instance.AddStaffAsync(name, dob, gender, phone, email, position, salary, username);
-            Assert.IsTrue(staffAdded, "Thêm nhân viên thất bại");
+            bool added = await StaffDAO.Instance.AddStaffAsync(
+                name: "Nguyễn Văn A",
+                dob: "2000-01-01",
+                gender: "Nam",
+                phone: "0987654321",
+                email: email,
+                position: "Nhân viên",
+                salary: 6000000,
+                userName: username
+            );
+            Assert.IsTrue(added, "Thêm nhân viên thất bại");
 
             var afterList = await StaffDAO.Instance.GetAllStaffAsync();
-            var addedStaff = afterList.FirstOrDefault(s => s.Email == email);
+            var addedStaff = afterList.FirstOrDefault(s => s.UserName == username);
             Assert.IsNotNull(addedStaff, "Không tìm thấy nhân viên vừa thêm");
 
-            if (addedStaff != null)
-            {
-                await StaffDAO.Instance.DeleteStaffAsync(addedStaff.Id);
-            }
+            await StaffDAO.Instance.DeleteStaffAsync(addedStaff.Id);
             await AccountDAO.Instance.DeleteAccountByUserNameAsync(username);
         }
 
         [TestMethod]
-        public async Task UpdateStaff_ShouldChangeDetails()
+        public async Task UpdateStaff_ShouldReflectNewData()
         {
             string username = GenerateRandomUsername();
             string email = GenerateRandomEmail();
 
-            bool acc = await AccountDAO.Instance.CreateAccountAsync(username, "Temp", "123", 0);
-            Assert.IsTrue(acc);
+            await AccountDAO.Instance.CreateAccountAsync(username, "Display", "123", 0);
+            await StaffDAO.Instance.AddStaffAsync("Tên cũ", "1990-05-05", "Nam", "0123456789", email, "NV", 4500000, username);
 
-            bool added = await StaffDAO.Instance.AddStaffAsync("Temp", "1995-01-01", "Nam", "0999999999", email, "NV", 4000000, username);
-            Assert.IsTrue(added);
+            var staff = (await StaffDAO.Instance.GetAllStaffAsync()).FirstOrDefault(s => s.UserName == username);
+            Assert.IsNotNull(staff, "Không tìm thấy nhân viên để cập nhật");
 
-            var staffList = await StaffDAO.Instance.GetAllStaffAsync();
-            var staff = staffList.FirstOrDefault(s => s.Email == email);
-            Assert.IsNotNull(staff);
+            string newName = "Tên mới";
+            string newPhone = "0988123123";
 
-            string newName = "Updated Name";
-            bool updated = await StaffDAO.Instance.UpdateStaffAsync(staff.Id, newName, staff.Dob, staff.Gender, staff.Phone, staff.Email, staff.Position, staff.Salary);
+            bool updated = await StaffDAO.Instance.UpdateStaffAsync(
+                staff.Id, newName, staff.Dob, staff.Gender, newPhone, staff.Email, staff.Position, staff.Salary);
+            Assert.IsTrue(updated, "Cập nhật nhân viên thất bại");
 
-            var updatedStaff = (await StaffDAO.Instance.GetAllStaffAsync()).FirstOrDefault(s => s.Id == staff.Id);
-            Assert.IsTrue(updated);
-            Assert.AreEqual(newName, updatedStaff?.Name);
+            var afterUpdate = (await StaffDAO.Instance.GetAllStaffAsync()).FirstOrDefault(s => s.Id == staff.Id);
+            Assert.AreEqual(newName, afterUpdate?.Name, "Tên không được cập nhật đúng");
+            Assert.AreEqual(newPhone, afterUpdate?.Phone, "SĐT không được cập nhật đúng");
 
             await StaffDAO.Instance.DeleteStaffAsync(staff.Id);
             await AccountDAO.Instance.DeleteAccountByUserNameAsync(username);
         }
 
         [TestMethod]
-        public async Task DeleteStaff_ShouldRemoveFromList_AndDeleteAccount()
+        public async Task DeleteStaff_ShouldAlsoRemoveAccount()
         {
             string username = GenerateRandomUsername();
             string email = GenerateRandomEmail();
@@ -85,18 +84,16 @@ namespace CafePOS.Tests
             await AccountDAO.Instance.CreateAccountAsync(username, "ToDelete", "123", 0);
             await StaffDAO.Instance.AddStaffAsync("ToDelete", "1999-12-12", "Nữ", "0888888888", email, "NV", 3000000, username);
 
-            var list = await StaffDAO.Instance.GetAllStaffAsync();
-            var toDelete = list.FirstOrDefault(s => s.UserName == username);
-            Assert.IsNotNull(toDelete);
+            var staff = (await StaffDAO.Instance.GetAllStaffAsync()).FirstOrDefault(s => s.UserName == username);
+            Assert.IsNotNull(staff, "Không tìm thấy nhân viên để xoá");
 
-            bool deleted = await StaffDAO.Instance.DeleteStaffAsync(toDelete.Id);
+            bool deletedStaff = await StaffDAO.Instance.DeleteStaffAsync(staff.Id);
+            Assert.IsTrue(deletedStaff, "Xoá nhân viên thất bại");
+
             await AccountDAO.Instance.DeleteAccountByUserNameAsync(username);
 
-            var listAfterDelete = await StaffDAO.Instance.GetAllStaffAsync();
-            var stillExists = listAfterDelete.Any(s => s.Id == toDelete.Id);
-
-            Assert.IsTrue(deleted);
-            Assert.IsFalse(stillExists);
+            var stillExists = (await StaffDAO.Instance.GetAllStaffAsync()).Any(s => s.Id == staff.Id);
+            Assert.IsFalse(stillExists, "Nhân viên vẫn còn tồn tại sau khi xoá");
         }
     }
 }
