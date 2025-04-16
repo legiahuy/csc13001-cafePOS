@@ -5,7 +5,9 @@
     <None Update="App.xaml">
       <SubType>Designer</SubType>
     </None>
-
+    <Page Update="CheckoutWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="StaffPage.xaml">
       <SubType>Designer</SubType>
     </Page>

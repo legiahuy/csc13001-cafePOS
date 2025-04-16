@@ -7,21 +7,17 @@ exports.seed = async function(knex) {
   await knex('MaterialItem').del();
   await knex('BillInfo').del();
   await knex('Bill').del();
+  await knex('PaymentMethod').del();
+  await knex('Guest').del();
   await knex('ProductMaterial').del();
   await knex('Product').del();
   await knex('Material').del();
   await knex('Category').del();
+  await knex('Staff').del();
   await knex('Account').del();
   await knex('CafeTable').del();
-  await knex('Staff').del();
 
   // Thêm dữ liệu cho bảng CafeTable
-  // await knex('CafeTable').insert([
-  //   { name: 'Bàn 1', status: 'Trống', location: 'Tầng 1' },
-  //   { name: 'Bàn 2', status: 'Có khách', location: 'Tầng 1' },
-  //   { name: 'Bàn 3', status: 'Trống', location: 'Tầng 2' },
-  // ]);
-
   const cafeTables = Array.from({ length: 20 }, (_, i) => ({
     name: `Bàn ${i + 1}`,
     status: i % 3 === 0 ? 'Trống' : 'Có khách',
@@ -32,7 +28,126 @@ exports.seed = async function(knex) {
 
   // Thêm dữ liệu cho bảng Account
   await knex('Account').insert([
-    { userName: 'admin', displayName: 'Admin', password: 'admin123', type: 1 }
+    { userName: 'admin', displayName: 'Admin', password: 'admin123', type: 1 },
+    {
+      userName: 'staff1',
+      displayName: 'Phạm Hồng Minh',
+      password: '123', 
+      type: 0 
+    },
+    {
+      userName: 'staff2',
+      displayName: 'Nguyễn Thị Lan',
+      password: '123',
+      type: 0 
+    },
+    {
+      userName: 'staff3',
+      displayName: 'Trần Quốc Bảo',
+      password: '123',
+      type: 0
+    }
+  ]);
+
+  // Thêm dữ liệu cho bảng Staff
+  await knex('Staff').insert([
+    {
+      name: 'Phạm Hồng Minh',
+      dob: '1990-04-12',
+      gender: 'Male',
+      phone: '0909123456',
+      email: 'minh.pham@example.com',
+      position: 'Thu ngân',
+      userName: 'staff1',
+      salary: 15000000
+    },
+    {
+      name: 'Nguyễn Thị Lan',
+      dob: '1995-09-30',
+      gender: 'Female',
+      phone: '0934567890',
+      email: 'lan.nguyen@example.com',
+      position: 'Thu ngân',
+      userName: 'staff2',
+      salary: 8500000
+    },
+    {
+      name: 'Trần Quốc Bảo',
+      dob: '1998-06-22',
+      gender: 'Male',
+      phone: '0987123456',
+      email: 'bao.tran@example.com',
+      position: 'Phục vụ',
+      userName: 'staff3',
+      salary: 7000000
+    }
+  ]);
+
+  // Thêm dữ liệu cho bảng Guest
+  await knex('Guest').insert([
+    {
+      name: 'Lê Thị Hương',
+      phone: '0912345678',
+      email: 'huong.le@example.com',
+      points: 150,
+      memberSince: '2024-01-15',
+      membershipLevel: 'Silver',
+      notes: 'Khách hàng thường xuyên'
+    },
+    {
+      name: 'Đỗ Văn Nam',
+      phone: '0987654321',
+      email: 'nam.do@example.com',
+      points: 320,
+      memberSince: '2023-11-20',
+      membershipLevel: 'Gold',
+      notes: 'Thích đồ uống không đường'
+    },
+    {
+      name: 'Trần Thanh Hà',
+      phone: '0976543210',
+      email: 'ha.tran@example.com',
+      points: 50,
+      memberSince: '2024-03-05',
+      membershipLevel: 'Regular',
+      notes: ''
+    }
+  ]);
+
+  // Thêm dữ liệu cho bảng PaymentMethod
+  await knex('PaymentMethod').insert([
+    {
+      name: 'Tiền mặt',
+      description: 'Thanh toán bằng tiền mặt',
+      isActive: true,
+      iconUrl: '/Assets/Payment/cash.png',
+      processingFee: 0,
+      requiresVerification: false
+    },
+    {
+      name: 'Thẻ ngân hàng',
+      description: 'Thanh toán bằng thẻ ATM/Visa/Mastercard',
+      isActive: true,
+      iconUrl: '/Assets/Payment/card.png',
+      processingFee: 0.015, // 1.5% fee
+      requiresVerification: true
+    },
+    {
+      name: 'Momo',
+      description: 'Thanh toán qua ví điện tử Momo',
+      isActive: true,
+      iconUrl: '/Assets/Payment/momo.png',
+      processingFee: 0.01, // 1% fee
+      requiresVerification: false
+    },
+    {
+      name: 'ZaloPay',
+      description: 'Thanh toán qua ví điện tử ZaloPay',
+      isActive: true,
+      iconUrl: '/Assets/Payment/zalopay.png',
+      processingFee: 0.01, // 1% fee
+      requiresVerification: false
+    }
   ]);
 
   // Thêm dữ liệu cho bảng Category
@@ -75,9 +190,37 @@ exports.seed = async function(knex) {
 
   // Thêm dữ liệu cho bảng Bill
   await knex('Bill').insert([
-    { dateCheckIn: knex.fn.now(), idTable: 2, status: 1, totalAmount: 80000, paymentMethod: 'Tiền mặt', finalAmount: 80000 },
-    { dateCheckIn: knex.fn.now(), idTable: 1, status: 0, totalAmount: 755000, paymentMethod: 'Tiền mặt', finalAmount: 755000 },
-    { dateCheckIn: knex.fn.now(), idTable: 3, status: 0, totalAmount: 50000, paymentMethod: 'Tiền mặt', finalAmount: 50000 },
+    { 
+      dateCheckIn: knex.fn.now(), 
+      idTable: 2, 
+      idStaff: 1, 
+      idGuest: 1, 
+      paymentMethod: 1, // Tiền mặt
+      status: 1, 
+      totalAmount: 80000, 
+      finalAmount: 80000 
+    },
+    { 
+      dateCheckIn: knex.fn.now(), 
+      idTable: 1, 
+      idStaff: 2, 
+      idGuest: 2, 
+      paymentMethod: 3, // Momo
+      status: 0, 
+      totalAmount: 755000, 
+      finalAmount: 755000,
+      paymentNotes: 'Thanh toán qua Momo SĐT: 0987654321'
+    },
+    { 
+      dateCheckIn: knex.fn.now(), 
+      idTable: 3, 
+      idStaff: 3, 
+      paymentMethod: 2, // Thẻ ngân hàng
+      status: 0, 
+      totalAmount: 50000, 
+      finalAmount: 50000,
+      paymentNotes: 'Thẻ Vietcombank'
+    },
   ]);
 
   // Thêm dữ liệu cho bảng BillInfo
@@ -92,60 +235,4 @@ exports.seed = async function(knex) {
     { idMaterial: 1, type: 'Import', quantity: 5, unitPrice: 200000, note: 'Nhập hàng tháng 3' },
     { idMaterial: 2, type: 'Import', quantity: 10, unitPrice: 50000, note: 'Nhập hàng tháng 3' },
   ]);
-
-  await knex('Account').insert([
-    {
-      userName: 'staff1',
-      displayName: 'Phạm Hồng Minh',
-      password: '123', 
-      type: 0 
-    },
-    {
-      userName: 'staff2',
-      displayName: 'Nguyễn Thị Lan',
-      password: '123',
-      type: 0 
-    },
-    {
-      userName: 'staff3',
-      displayName: 'Trần Quốc Bảo',
-      password: '123',
-      type: 0
-    }
-  ]);
-
-  await knex('Staff').insert([
-    {
-      name: 'Phạm Hồng Minh',
-      dob: '1990-04-12',
-      gender: 'Male',
-      phone: '0909123456',
-      email: 'minh.pham@example.com',
-      position: 'Thu ngân',
-      userName: 'staff1',
-      salary: 15000000
-    },
-    {
-      name: 'Nguyễn Thị Lan',
-      dob: '1995-09-30',
-      gender: 'Female',
-      phone: '0934567890',
-      email: 'lan.nguyen@example.com',
-      position: 'Thu ngân',
-      userName: 'staff2',
-      salary: 8500000
-    },
-    {
-      name: 'Trần Quốc Bảo',
-      dob: '1998-06-22',
-      gender: 'Male',
-      phone: '0987123456',
-      email: 'bao.tran@example.com',
-      position: 'Phục vụ',
-      userName: 'staff3',
-      salary: 7000000
-    }
-  ]);
-
-  
 };

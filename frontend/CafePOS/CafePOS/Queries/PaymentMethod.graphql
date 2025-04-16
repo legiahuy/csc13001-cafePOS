@@ -1,0 +1,15 @@
+﻿query GetAllPaymentMethod {
+  allPaymentMethods {
+    edges {
+      node {
+        description
+        iconUrl
+        id
+        isActive
+        name
+        processingFee
+        requiresVerification
+      }
+    }
+  }
+}

@@ -1,0 +1,52 @@
+﻿query GetAllGuest {
+  allGuests {
+    edges {
+      node {
+        email
+        id
+        memberSince
+        membershipLevel
+        name
+        notes
+        phone
+        points
+      }
+    }
+  }
+}
+
+mutation CreateGuest(
+  $name: String!, 
+  $email: String!, 
+  $phone: String!, 
+  $points: Int!, 
+  $notes: String, 
+  $membershipLevel: String, 
+  $memberSince: Date, 
+) {
+  createGuest(
+    input: {
+      guest: {
+        name: $name,
+        email: $email,
+        phone: $phone,
+        points: $points,
+        notes: $notes,
+        membershipLevel: $membershipLevel,
+        memberSince: $memberSince,
+      }
+    }
+  ) {
+    guest {
+      id
+      name
+      email
+      phone
+      points
+      notes
+      membershipLevel
+      memberSince
+    }
+  }
+}
+

@@ -21,10 +21,14 @@ type Query implements Node {
   allCafeTables("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `CafeTable`." orderBy: [CafeTablesOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: CafeTableCondition): CafeTablesConnection
   "Reads and enables pagination through a set of `Category`."
   allCategories("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `Category`." orderBy: [CategoriesOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: CategoryCondition): CategoriesConnection
+  "Reads and enables pagination through a set of `Guest`."
+  allGuests("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `Guest`." orderBy: [GuestsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: GuestCondition): GuestsConnection
   "Reads and enables pagination through a set of `Material`."
   allMaterials("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `Material`." orderBy: [MaterialsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: MaterialCondition): MaterialsConnection
   "Reads and enables pagination through a set of `MaterialItem`."
   allMaterialItems("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `MaterialItem`." orderBy: [MaterialItemsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: MaterialItemCondition): MaterialItemsConnection
+  "Reads and enables pagination through a set of `PaymentMethod`."
+  allPaymentMethods("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `PaymentMethod`." orderBy: [PaymentMethodsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: PaymentMethodCondition): PaymentMethodsConnection
   "Reads and enables pagination through a set of `Product`."
   allProducts("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `Product`." orderBy: [ProductsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: ProductCondition): ProductsConnection
   "Reads and enables pagination through a set of `ProductMaterial`."
@@ -40,8 +44,10 @@ type Query implements Node {
   billInfoById(id: Int!): BillInfo
   cafeTableById(id: Int!): CafeTable
   categoryById(id: Int!): Category
+  guestById(id: Int!): Guest
   materialById(id: Int!): Material
   materialItemById(id: Int!): MaterialItem
+  paymentMethodById(id: Int!): PaymentMethod
   productById(id: Int!): Product
   productMaterialById(id: Int!): ProductMaterial
   staffById(id: Int!): Staff
@@ -57,10 +63,14 @@ type Query implements Node {
   cafeTable("The globally unique `ID` to be used in selecting a single `CafeTable`." nodeId: ID!): CafeTable
   "Reads a single `Category` using its globally unique `ID`."
   category("The globally unique `ID` to be used in selecting a single `Category`." nodeId: ID!): Category
+  "Reads a single `Guest` using its globally unique `ID`."
+  guest("The globally unique `ID` to be used in selecting a single `Guest`." nodeId: ID!): Guest
   "Reads a single `Material` using its globally unique `ID`."
   material("The globally unique `ID` to be used in selecting a single `Material`." nodeId: ID!): Material
   "Reads a single `MaterialItem` using its globally unique `ID`."
   materialItem("The globally unique `ID` to be used in selecting a single `MaterialItem`." nodeId: ID!): MaterialItem
+  "Reads a single `PaymentMethod` using its globally unique `ID`."
+  paymentMethod("The globally unique `ID` to be used in selecting a single `PaymentMethod`." nodeId: ID!): PaymentMethod
   "Reads a single `Product` using its globally unique `ID`."
   product("The globally unique `ID` to be used in selecting a single `Product`." nodeId: ID!): Product
   "Reads a single `ProductMaterial` using its globally unique `ID`."
@@ -128,115 +138,12 @@ type Staff implements Node {
   salary: Float
   "Reads a single `Account` that is related to this `Staff`."
   accountByUserName: Account
+  "Reads and enables pagination through a set of `Bill`."
+  billsByIdStaff("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `Bill`." orderBy: [BillsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: BillCondition): BillsConnection!
 }
 
 "The day, does not include a time."
 scalar Date
-
-"A `Staff` edge in the connection."
-type StaffEdge {
-  "A cursor for use in pagination."
-  cursor: Cursor
-  "The `Staff` at the end of the edge."
-  node: Staff
-}
-
-"A location in a connection that can be used for resuming pagination."
-scalar Cursor
-
-"Information about pagination in a connection."
-type PageInfo {
-  "When paginating forwards, are there more items?"
-  hasNextPage: Boolean!
-  "When paginating backwards, are there more items?"
-  hasPreviousPage: Boolean!
-  "When paginating backwards, the cursor to continue."
-  startCursor: Cursor
-  "When paginating forwards, the cursor to continue."
-  endCursor: Cursor
-}
-
-"Methods to use when ordering `Staff`."
-enum StaffOrderBy {
-  NATURAL
-  ID_ASC
-  ID_DESC
-  NAME_ASC
-  NAME_DESC
-  DOB_ASC
-  DOB_DESC
-  GENDER_ASC
-  GENDER_DESC
-  PHONE_ASC
-  PHONE_DESC
-  EMAIL_ASC
-  EMAIL_DESC
-  POSITION_ASC
-  POSITION_DESC
-  USER_NAME_ASC
-  USER_NAME_DESC
-  SALARY_ASC
-  SALARY_DESC
-  PRIMARY_KEY_ASC
-  PRIMARY_KEY_DESC
-}
-
-"A condition to be used against `Staff` object types. All fields are tested for equality and combined with a logical ‘and.’"
-input StaffCondition {
-  "Checks for equality with the object’s `id` field."
-  id: Int
-  "Checks for equality with the object’s `name` field."
-  name: String
-  "Checks for equality with the object’s `dob` field."
-  dob: Date
-  "Checks for equality with the object’s `gender` field."
-  gender: String
-  "Checks for equality with the object’s `phone` field."
-  phone: String
-  "Checks for equality with the object’s `email` field."
-  email: String
-  "Checks for equality with the object’s `position` field."
-  position: String
-  "Checks for equality with the object’s `userName` field."
-  userName: String
-  "Checks for equality with the object’s `salary` field."
-  salary: Float
-}
-
-"A `Account` edge in the connection."
-type AccountsEdge {
-  "A cursor for use in pagination."
-  cursor: Cursor
-  "The `Account` at the end of the edge."
-  node: Account
-}
-
-"Methods to use when ordering `Account`."
-enum AccountsOrderBy {
-  NATURAL
-  USER_NAME_ASC
-  USER_NAME_DESC
-  DISPLAY_NAME_ASC
-  DISPLAY_NAME_DESC
-  PASSWORD_ASC
-  PASSWORD_DESC
-  TYPE_ASC
-  TYPE_DESC
-  PRIMARY_KEY_ASC
-  PRIMARY_KEY_DESC
-}
-
-"A condition to be used against `Account` object types. All fields are tested for equality and combined with a logical ‘and.’"
-input AccountCondition {
-  "Checks for equality with the object’s `userName` field."
-  userName: String
-  "Checks for equality with the object’s `displayName` field."
-  displayName: String
-  "Checks for equality with the object’s `password` field."
-  password: String
-  "Checks for equality with the object’s `type` field."
-  type: Int
-}
 
 "A connection to a list of `Bill` values."
 type BillsConnection {
@@ -257,13 +164,22 @@ type Bill implements Node {
   dateCheckIn: Datetime!
   dateCheckOut: Datetime
   idTable: Int!
+  idStaff: Int!
+  idGuest: Int
+  paymentMethod: Int
   status: Int!
   totalAmount: Float!
-  paymentMethod: String
   discount: Float
   finalAmount: Float!
+  paymentNotes: String
   "Reads a single `CafeTable` that is related to this `Bill`."
   cafeTableByIdTable: CafeTable
+  "Reads a single `Staff` that is related to this `Bill`."
+  staffByIdStaff: Staff
+  "Reads a single `Guest` that is related to this `Bill`."
+  guestByIdGuest: Guest
+  "Reads a single `PaymentMethod` that is related to this `Bill`."
+  paymentMethodByPaymentMethod: PaymentMethod
   "Reads and enables pagination through a set of `BillInfo`."
   billInfosByIdBill("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `BillInfo`." orderBy: [BillInfosOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: BillInfoCondition): BillInfosConnection!
 }
@@ -282,6 +198,9 @@ type CafeTable implements Node {
   billsByIdTable("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `Bill`." orderBy: [BillsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: BillCondition): BillsConnection!
 }
 
+"A location in a connection that can be used for resuming pagination."
+scalar Cursor
+
 "Methods to use when ordering `Bill`."
 enum BillsOrderBy {
   NATURAL
@@ -293,16 +212,22 @@ enum BillsOrderBy {
   DATE_CHECK_OUT_DESC
   ID_TABLE_ASC
   ID_TABLE_DESC
+  ID_STAFF_ASC
+  ID_STAFF_DESC
+  ID_GUEST_ASC
+  ID_GUEST_DESC
+  PAYMENT_METHOD_ASC
+  PAYMENT_METHOD_DESC
   STATUS_ASC
   STATUS_DESC
   TOTAL_AMOUNT_ASC
   TOTAL_AMOUNT_DESC
-  PAYMENT_METHOD_ASC
-  PAYMENT_METHOD_DESC
   DISCOUNT_ASC
   DISCOUNT_DESC
   FINAL_AMOUNT_ASC
   FINAL_AMOUNT_DESC
+  PAYMENT_NOTES_ASC
+  PAYMENT_NOTES_DESC
   PRIMARY_KEY_ASC
   PRIMARY_KEY_DESC
 }
@@ -317,16 +242,51 @@ input BillCondition {
   dateCheckOut: Datetime
   "Checks for equality with the object’s `idTable` field."
   idTable: Int
+  "Checks for equality with the object’s `idStaff` field."
+  idStaff: Int
+  "Checks for equality with the object’s `idGuest` field."
+  idGuest: Int
+  "Checks for equality with the object’s `paymentMethod` field."
+  paymentMethod: Int
   "Checks for equality with the object’s `status` field."
   status: Int
   "Checks for equality with the object’s `totalAmount` field."
   totalAmount: Float
-  "Checks for equality with the object’s `paymentMethod` field."
-  paymentMethod: String
   "Checks for equality with the object’s `discount` field."
   discount: Float
   "Checks for equality with the object’s `finalAmount` field."
   finalAmount: Float
+  "Checks for equality with the object’s `paymentNotes` field."
+  paymentNotes: String
+}
+
+type Guest implements Node {
+  "A globally unique identifier. Can be used in various places throughout the system to identify this single value."
+  nodeId: ID!
+  id: Int!
+  name: String!
+  phone: String
+  email: String
+  points: Int!
+  memberSince: Date!
+  membershipLevel: String
+  notes: String
+  "Reads and enables pagination through a set of `Bill`."
+  billsByIdGuest("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `Bill`." orderBy: [BillsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: BillCondition): BillsConnection!
+}
+
+type PaymentMethod implements Node {
+  "A globally unique identifier. Can be used in various places throughout the system to identify this single value."
+  nodeId: ID!
+  id: Int!
+  name: String!
+  description: String
+  isActive: Boolean!
+  iconUrl: String
+  processingFee: Float
+  requiresVerification: Boolean
+  "Reads and enables pagination through a set of `Bill`."
+  billsByPaymentMethod("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `Bill`." orderBy: [BillsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: BillCondition): BillsConnection!
 }
 
 "A connection to a list of `BillInfo` values."
@@ -402,6 +362,18 @@ type ProductsEdge {
   cursor: Cursor
   "The `Product` at the end of the edge."
   node: Product
+}
+
+"Information about pagination in a connection."
+type PageInfo {
+  "When paginating forwards, are there more items?"
+  hasNextPage: Boolean!
+  "When paginating backwards, are there more items?"
+  hasPreviousPage: Boolean!
+  "When paginating backwards, the cursor to continue."
+  startCursor: Cursor
+  "When paginating forwards, the cursor to continue."
+  endCursor: Cursor
 }
 
 "Methods to use when ordering `Product`."
@@ -644,6 +616,96 @@ type BillsEdge {
   node: Bill
 }
 
+"A `Staff` edge in the connection."
+type StaffEdge {
+  "A cursor for use in pagination."
+  cursor: Cursor
+  "The `Staff` at the end of the edge."
+  node: Staff
+}
+
+"Methods to use when ordering `Staff`."
+enum StaffOrderBy {
+  NATURAL
+  ID_ASC
+  ID_DESC
+  NAME_ASC
+  NAME_DESC
+  DOB_ASC
+  DOB_DESC
+  GENDER_ASC
+  GENDER_DESC
+  PHONE_ASC
+  PHONE_DESC
+  EMAIL_ASC
+  EMAIL_DESC
+  POSITION_ASC
+  POSITION_DESC
+  USER_NAME_ASC
+  USER_NAME_DESC
+  SALARY_ASC
+  SALARY_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"A condition to be used against `Staff` object types. All fields are tested for equality and combined with a logical ‘and.’"
+input StaffCondition {
+  "Checks for equality with the object’s `id` field."
+  id: Int
+  "Checks for equality with the object’s `name` field."
+  name: String
+  "Checks for equality with the object’s `dob` field."
+  dob: Date
+  "Checks for equality with the object’s `gender` field."
+  gender: String
+  "Checks for equality with the object’s `phone` field."
+  phone: String
+  "Checks for equality with the object’s `email` field."
+  email: String
+  "Checks for equality with the object’s `position` field."
+  position: String
+  "Checks for equality with the object’s `userName` field."
+  userName: String
+  "Checks for equality with the object’s `salary` field."
+  salary: Float
+}
+
+"A `Account` edge in the connection."
+type AccountsEdge {
+  "A cursor for use in pagination."
+  cursor: Cursor
+  "The `Account` at the end of the edge."
+  node: Account
+}
+
+"Methods to use when ordering `Account`."
+enum AccountsOrderBy {
+  NATURAL
+  USER_NAME_ASC
+  USER_NAME_DESC
+  DISPLAY_NAME_ASC
+  DISPLAY_NAME_DESC
+  PASSWORD_ASC
+  PASSWORD_DESC
+  TYPE_ASC
+  TYPE_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"A condition to be used against `Account` object types. All fields are tested for equality and combined with a logical ‘and.’"
+input AccountCondition {
+  "Checks for equality with the object’s `userName` field."
+  userName: String
+  "Checks for equality with the object’s `displayName` field."
+  displayName: String
+  "Checks for equality with the object’s `password` field."
+  password: String
+  "Checks for equality with the object’s `type` field."
+  type: Int
+}
+
 "A connection to a list of `CafeTable` values."
 type CafeTablesConnection {
   "A list of `CafeTable` objects."
@@ -734,6 +796,69 @@ input CategoryCondition {
   description: String
 }
 
+"A connection to a list of `Guest` values."
+type GuestsConnection {
+  "A list of `Guest` objects."
+  nodes: [Guest]!
+  "A list of edges which contains the `Guest` and cursor to aid in pagination."
+  edges: [GuestsEdge!]!
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "The count of *all* `Guest` you could get from the connection."
+  totalCount: Int!
+}
+
+"A `Guest` edge in the connection."
+type GuestsEdge {
+  "A cursor for use in pagination."
+  cursor: Cursor
+  "The `Guest` at the end of the edge."
+  node: Guest
+}
+
+"Methods to use when ordering `Guest`."
+enum GuestsOrderBy {
+  NATURAL
+  ID_ASC
+  ID_DESC
+  NAME_ASC
+  NAME_DESC
+  PHONE_ASC
+  PHONE_DESC
+  EMAIL_ASC
+  EMAIL_DESC
+  POINTS_ASC
+  POINTS_DESC
+  MEMBER_SINCE_ASC
+  MEMBER_SINCE_DESC
+  MEMBERSHIP_LEVEL_ASC
+  MEMBERSHIP_LEVEL_DESC
+  NOTES_ASC
+  NOTES_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"A condition to be used against `Guest` object types. All fields are tested for equality and combined with a logical ‘and.’"
+input GuestCondition {
+  "Checks for equality with the object’s `id` field."
+  id: Int
+  "Checks for equality with the object’s `name` field."
+  name: String
+  "Checks for equality with the object’s `phone` field."
+  phone: String
+  "Checks for equality with the object’s `email` field."
+  email: String
+  "Checks for equality with the object’s `points` field."
+  points: Int
+  "Checks for equality with the object’s `memberSince` field."
+  memberSince: Date
+  "Checks for equality with the object’s `membershipLevel` field."
+  membershipLevel: String
+  "Checks for equality with the object’s `notes` field."
+  notes: String
+}
+
 "A connection to a list of `Material` values."
 type MaterialsConnection {
   "A list of `Material` objects."
@@ -795,6 +920,65 @@ input MaterialCondition {
   description: String
   "Checks for equality with the object’s `imageUrl` field."
   imageUrl: String
+}
+
+"A connection to a list of `PaymentMethod` values."
+type PaymentMethodsConnection {
+  "A list of `PaymentMethod` objects."
+  nodes: [PaymentMethod]!
+  "A list of edges which contains the `PaymentMethod` and cursor to aid in pagination."
+  edges: [PaymentMethodsEdge!]!
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "The count of *all* `PaymentMethod` you could get from the connection."
+  totalCount: Int!
+}
+
+"A `PaymentMethod` edge in the connection."
+type PaymentMethodsEdge {
+  "A cursor for use in pagination."
+  cursor: Cursor
+  "The `PaymentMethod` at the end of the edge."
+  node: PaymentMethod
+}
+
+"Methods to use when ordering `PaymentMethod`."
+enum PaymentMethodsOrderBy {
+  NATURAL
+  ID_ASC
+  ID_DESC
+  NAME_ASC
+  NAME_DESC
+  DESCRIPTION_ASC
+  DESCRIPTION_DESC
+  IS_ACTIVE_ASC
+  IS_ACTIVE_DESC
+  ICON_URL_ASC
+  ICON_URL_DESC
+  PROCESSING_FEE_ASC
+  PROCESSING_FEE_DESC
+  REQUIRES_VERIFICATION_ASC
+  REQUIRES_VERIFICATION_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"A condition to be used against `PaymentMethod` object types. All fields are\ntested for equality and combined with a logical ‘and.’"
+input PaymentMethodCondition {
+  "Checks for equality with the object’s `id` field."
+  id: Int
+  "Checks for equality with the object’s `name` field."
+  name: String
+  "Checks for equality with the object’s `description` field."
+  description: String
+  "Checks for equality with the object’s `isActive` field."
+  isActive: Boolean
+  "Checks for equality with the object’s `iconUrl` field."
+  iconUrl: String
+  "Checks for equality with the object’s `processingFee` field."
+  processingFee: Float
+  "Checks for equality with the object’s `requiresVerification` field."
+  requiresVerification: Boolean
 }
 
 "A connection to a list of `KnexMigration` values."
@@ -911,10 +1095,14 @@ type Mutation {
   createCafeTable("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: CreateCafeTableInput!): CreateCafeTablePayload
   "Creates a single `Category`."
   createCategory("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: CreateCategoryInput!): CreateCategoryPayload
+  "Creates a single `Guest`."
+  createGuest("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: CreateGuestInput!): CreateGuestPayload
   "Creates a single `Material`."
   createMaterial("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: CreateMaterialInput!): CreateMaterialPayload
   "Creates a single `MaterialItem`."
   createMaterialItem("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: CreateMaterialItemInput!): CreateMaterialItemPayload
+  "Creates a single `PaymentMethod`."
+  createPaymentMethod("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: CreatePaymentMethodInput!): CreatePaymentMethodPayload
   "Creates a single `Product`."
   createProduct("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: CreateProductInput!): CreateProductPayload
   "Creates a single `ProductMaterial`."
@@ -945,6 +1133,10 @@ type Mutation {
   updateCategory("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateCategoryInput!): UpdateCategoryPayload
   "Updates a single `Category` using a unique key and a patch."
   updateCategoryById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateCategoryByIdInput!): UpdateCategoryPayload
+  "Updates a single `Guest` using its globally unique id and a patch."
+  updateGuest("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateGuestInput!): UpdateGuestPayload
+  "Updates a single `Guest` using a unique key and a patch."
+  updateGuestById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateGuestByIdInput!): UpdateGuestPayload
   "Updates a single `Material` using its globally unique id and a patch."
   updateMaterial("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateMaterialInput!): UpdateMaterialPayload
   "Updates a single `Material` using a unique key and a patch."
@@ -953,6 +1145,10 @@ type Mutation {
   updateMaterialItem("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateMaterialItemInput!): UpdateMaterialItemPayload
   "Updates a single `MaterialItem` using a unique key and a patch."
   updateMaterialItemById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateMaterialItemByIdInput!): UpdateMaterialItemPayload
+  "Updates a single `PaymentMethod` using its globally unique id and a patch."
+  updatePaymentMethod("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdatePaymentMethodInput!): UpdatePaymentMethodPayload
+  "Updates a single `PaymentMethod` using a unique key and a patch."
+  updatePaymentMethodById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdatePaymentMethodByIdInput!): UpdatePaymentMethodPayload
   "Updates a single `Product` using its globally unique id and a patch."
   updateProduct("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateProductInput!): UpdateProductPayload
   "Updates a single `Product` using a unique key and a patch."
@@ -993,6 +1189,10 @@ type Mutation {
   deleteCategory("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteCategoryInput!): DeleteCategoryPayload
   "Deletes a single `Category` using a unique key."
   deleteCategoryById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteCategoryByIdInput!): DeleteCategoryPayload
+  "Deletes a single `Guest` using its globally unique id."
+  deleteGuest("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteGuestInput!): DeleteGuestPayload
+  "Deletes a single `Guest` using a unique key."
+  deleteGuestById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteGuestByIdInput!): DeleteGuestPayload
   "Deletes a single `Material` using its globally unique id."
   deleteMaterial("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteMaterialInput!): DeleteMaterialPayload
   "Deletes a single `Material` using a unique key."
@@ -1001,6 +1201,10 @@ type Mutation {
   deleteMaterialItem("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteMaterialItemInput!): DeleteMaterialItemPayload
   "Deletes a single `MaterialItem` using a unique key."
   deleteMaterialItemById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteMaterialItemByIdInput!): DeleteMaterialItemPayload
+  "Deletes a single `PaymentMethod` using its globally unique id."
+  deletePaymentMethod("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeletePaymentMethodInput!): DeletePaymentMethodPayload
+  "Deletes a single `PaymentMethod` using a unique key."
+  deletePaymentMethodById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeletePaymentMethodByIdInput!): DeletePaymentMethodPayload
   "Deletes a single `Product` using its globally unique id."
   deleteProduct("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteProductInput!): DeleteProductPayload
   "Deletes a single `Product` using a unique key."
@@ -1061,6 +1265,12 @@ type CreateBillPayload {
   query: Query
   "Reads a single `CafeTable` that is related to this `Bill`."
   cafeTableByIdTable: CafeTable
+  "Reads a single `Staff` that is related to this `Bill`."
+  staffByIdStaff: Staff
+  "Reads a single `Guest` that is related to this `Bill`."
+  guestByIdGuest: Guest
+  "Reads a single `PaymentMethod` that is related to this `Bill`."
+  paymentMethodByPaymentMethod: PaymentMethod
   "An edge for our `Bill`. May be used by Relay 1."
   billEdge("The method to use when ordering `Bill`." orderBy: [BillsOrderBy!] = [ PRIMARY_KEY_ASC ]): BillsEdge
 }
@@ -1079,11 +1289,14 @@ input BillInput {
   dateCheckIn: Datetime
   dateCheckOut: Datetime
   idTable: Int!
+  idStaff: Int!
+  idGuest: Int
+  paymentMethod: Int
   status: Int
   totalAmount: Float
-  paymentMethod: String
   discount: Float
   finalAmount: Float
+  paymentNotes: String
 }
 
 "The output of our create `BillInfo` mutation."
@@ -1175,6 +1388,38 @@ input CategoryInput {
   description: String
 }
 
+"The output of our create `Guest` mutation."
+type CreateGuestPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `Guest` that was created by this mutation."
+  guest: Guest
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `Guest`. May be used by Relay 1."
+  guestEdge("The method to use when ordering `Guest`." orderBy: [GuestsOrderBy!] = [ PRIMARY_KEY_ASC ]): GuestsEdge
+}
+
+"All input for the create `Guest` mutation."
+input CreateGuestInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The `Guest` to be created by this mutation."
+  guest: GuestInput!
+}
+
+"An input for mutations affecting `Guest`"
+input GuestInput {
+  id: Int
+  name: String!
+  phone: String
+  email: String
+  points: Int
+  memberSince: Date
+  membershipLevel: String
+  notes: String
+}
+
 "The output of our create `Material` mutation."
 type CreateMaterialPayload {
   "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
@@ -1238,6 +1483,37 @@ input MaterialItemInput {
   unitPrice: Float!
   date: Datetime
   note: String
+}
+
+"The output of our create `PaymentMethod` mutation."
+type CreatePaymentMethodPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `PaymentMethod` that was created by this mutation."
+  paymentMethod: PaymentMethod
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `PaymentMethod`. May be used by Relay 1."
+  paymentMethodEdge("The method to use when ordering `PaymentMethod`." orderBy: [PaymentMethodsOrderBy!] = [ PRIMARY_KEY_ASC ]): PaymentMethodsEdge
+}
+
+"All input for the create `PaymentMethod` mutation."
+input CreatePaymentMethodInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The `PaymentMethod` to be created by this mutation."
+  paymentMethod: PaymentMethodInput!
+}
+
+"An input for mutations affecting `PaymentMethod`"
+input PaymentMethodInput {
+  id: Int
+  name: String!
+  description: String
+  isActive: Boolean
+  iconUrl: String
+  processingFee: Float
+  requiresVerification: Boolean
 }
 
 "The output of our create `Product` mutation."
@@ -1443,6 +1719,12 @@ type UpdateBillPayload {
   query: Query
   "Reads a single `CafeTable` that is related to this `Bill`."
   cafeTableByIdTable: CafeTable
+  "Reads a single `Staff` that is related to this `Bill`."
+  staffByIdStaff: Staff
+  "Reads a single `Guest` that is related to this `Bill`."
+  guestByIdGuest: Guest
+  "Reads a single `PaymentMethod` that is related to this `Bill`."
+  paymentMethodByPaymentMethod: PaymentMethod
   "An edge for our `Bill`. May be used by Relay 1."
   billEdge("The method to use when ordering `Bill`." orderBy: [BillsOrderBy!] = [ PRIMARY_KEY_ASC ]): BillsEdge
 }
@@ -1463,11 +1745,14 @@ input BillPatch {
   dateCheckIn: Datetime
   dateCheckOut: Datetime
   idTable: Int
+  idStaff: Int
+  idGuest: Int
+  paymentMethod: Int
   status: Int
   totalAmount: Float
-  paymentMethod: String
   discount: Float
   finalAmount: Float
+  paymentNotes: String
 }
 
 "All input for the `updateBillById` mutation."
@@ -1601,6 +1886,49 @@ input UpdateCategoryByIdInput {
   id: Int!
 }
 
+"The output of our update `Guest` mutation."
+type UpdateGuestPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `Guest` that was updated by this mutation."
+  guest: Guest
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `Guest`. May be used by Relay 1."
+  guestEdge("The method to use when ordering `Guest`." orderBy: [GuestsOrderBy!] = [ PRIMARY_KEY_ASC ]): GuestsEdge
+}
+
+"All input for the `updateGuest` mutation."
+input UpdateGuestInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `Guest` to be updated."
+  nodeId: ID!
+  "An object where the defined keys will be set on the `Guest` being updated."
+  guestPatch: GuestPatch!
+}
+
+"Represents an update to a `Guest`. Fields that are set will be updated."
+input GuestPatch {
+  id: Int
+  name: String
+  phone: String
+  email: String
+  points: Int
+  memberSince: Date
+  membershipLevel: String
+  notes: String
+}
+
+"All input for the `updateGuestById` mutation."
+input UpdateGuestByIdInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "An object where the defined keys will be set on the `Guest` being updated."
+  guestPatch: GuestPatch!
+  id: Int!
+}
+
 "The output of our update `Material` mutation."
 type UpdateMaterialPayload {
   "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
@@ -1685,6 +2013,48 @@ input UpdateMaterialItemByIdInput {
   clientMutationId: String
   "An object where the defined keys will be set on the `MaterialItem` being updated."
   materialItemPatch: MaterialItemPatch!
+  id: Int!
+}
+
+"The output of our update `PaymentMethod` mutation."
+type UpdatePaymentMethodPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `PaymentMethod` that was updated by this mutation."
+  paymentMethod: PaymentMethod
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `PaymentMethod`. May be used by Relay 1."
+  paymentMethodEdge("The method to use when ordering `PaymentMethod`." orderBy: [PaymentMethodsOrderBy!] = [ PRIMARY_KEY_ASC ]): PaymentMethodsEdge
+}
+
+"All input for the `updatePaymentMethod` mutation."
+input UpdatePaymentMethodInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `PaymentMethod` to be updated."
+  nodeId: ID!
+  "An object where the defined keys will be set on the `PaymentMethod` being updated."
+  paymentMethodPatch: PaymentMethodPatch!
+}
+
+"Represents an update to a `PaymentMethod`. Fields that are set will be updated."
+input PaymentMethodPatch {
+  id: Int
+  name: String
+  description: String
+  isActive: Boolean
+  iconUrl: String
+  processingFee: Float
+  requiresVerification: Boolean
+}
+
+"All input for the `updatePaymentMethodById` mutation."
+input UpdatePaymentMethodByIdInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "An object where the defined keys will be set on the `PaymentMethod` being updated."
+  paymentMethodPatch: PaymentMethodPatch!
   id: Int!
 }
 
@@ -1936,6 +2306,12 @@ type DeleteBillPayload {
   query: Query
   "Reads a single `CafeTable` that is related to this `Bill`."
   cafeTableByIdTable: CafeTable
+  "Reads a single `Staff` that is related to this `Bill`."
+  staffByIdStaff: Staff
+  "Reads a single `Guest` that is related to this `Bill`."
+  guestByIdGuest: Guest
+  "Reads a single `PaymentMethod` that is related to this `Bill`."
+  paymentMethodByPaymentMethod: PaymentMethod
   "An edge for our `Bill`. May be used by Relay 1."
   billEdge("The method to use when ordering `Bill`." orderBy: [BillsOrderBy!] = [ PRIMARY_KEY_ASC ]): BillsEdge
 }
@@ -2043,6 +2419,34 @@ input DeleteCategoryByIdInput {
   id: Int!
 }
 
+"The output of our delete `Guest` mutation."
+type DeleteGuestPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `Guest` that was deleted by this mutation."
+  guest: Guest
+  deletedGuestId: ID
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `Guest`. May be used by Relay 1."
+  guestEdge("The method to use when ordering `Guest`." orderBy: [GuestsOrderBy!] = [ PRIMARY_KEY_ASC ]): GuestsEdge
+}
+
+"All input for the `deleteGuest` mutation."
+input DeleteGuestInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `Guest` to be deleted."
+  nodeId: ID!
+}
+
+"All input for the `deleteGuestById` mutation."
+input DeleteGuestByIdInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  id: Int!
+}
+
 "The output of our delete `Material` mutation."
 type DeleteMaterialPayload {
   "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
@@ -2096,6 +2500,34 @@ input DeleteMaterialItemInput {
 
 "All input for the `deleteMaterialItemById` mutation."
 input DeleteMaterialItemByIdInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  id: Int!
+}
+
+"The output of our delete `PaymentMethod` mutation."
+type DeletePaymentMethodPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `PaymentMethod` that was deleted by this mutation."
+  paymentMethod: PaymentMethod
+  deletedPaymentMethodId: ID
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "An edge for our `PaymentMethod`. May be used by Relay 1."
+  paymentMethodEdge("The method to use when ordering `PaymentMethod`." orderBy: [PaymentMethodsOrderBy!] = [ PRIMARY_KEY_ASC ]): PaymentMethodsEdge
+}
+
+"All input for the `deletePaymentMethod` mutation."
+input DeletePaymentMethodInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `PaymentMethod` to be deleted."
+  nodeId: ID!
+}
+
+"All input for the `deletePaymentMethodById` mutation."
+input DeletePaymentMethodByIdInput {
   "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
   clientMutationId: String
   id: Int!

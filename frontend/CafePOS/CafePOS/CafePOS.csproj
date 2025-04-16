@@ -30,9 +30,11 @@
     <GraphQL Remove="Queries\DeleteProduct.graphql" />
     <GraphQL Remove="queries\drinks.graphql" />
     <GraphQL Remove="queries\getMaxIDBill.graphql" />
+    <GraphQL Remove="Queries\Guest.graphql" />
     <GraphQL Remove="queries\insertBill.graphql" />
     <GraphQL Remove="queries\InsertBillInfo.graphql" />
     <GraphQL Remove="Queries\insertProduct.graphql" />
+    <GraphQL Remove="Queries\PaymentMethod.graphql" />
     <GraphQL Remove="Queries\staffs.graphql" />
     <GraphQL Remove="Queries\Materials.graphql" />
     <GraphQL Remove="Queries\UpdateBillStatus.graphql" />
@@ -40,12 +42,17 @@
     <GraphQL Remove="Queries\UpdateProduct.graphql" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="CheckoutWindow.xaml" />
     <None Remove="LoginPage.xaml" />
     <None Remove="MainPage.xaml" />
     <None Remove="MaterialPage.xaml" />
     <None Remove="PlaceholderPage.xaml" />
     <None Remove="StaffPage.xaml" />
     <None Remove="TableManagerPage.xaml" />
+    <None Remove="Themes\Styles.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Remove="Themes\Styles.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -56,6 +63,9 @@
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
+    <Content Include="Themes\Styles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -113,6 +123,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\Material\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="CheckoutWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <!--

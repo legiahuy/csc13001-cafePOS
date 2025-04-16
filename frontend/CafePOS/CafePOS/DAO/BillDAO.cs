@@ -49,12 +49,16 @@ namespace CafePOS.DAO
         }
 
 
-        public async Task<bool> CheckOutAsync(int id, float discount)
+        public async Task<bool> CheckOutAsync(int id, float discount, int paymentMethod, int? guestId, string? note)
         {
             try
             {
+
                 var client = DataProvider.Instance.Client;
-                var result = await client.UpdateBillStatus.ExecuteAsync(id, discount);
+
+                var dateCheckOut = DateTime.UtcNow.ToString("o");
+
+                var result = await client.UpdateBillStatus.ExecuteAsync(id, discount, paymentMethod, guestId, note, dateCheckOut);
                 var updatedBill = result.Data?.UpdateBillById?.Bill;
                 return updatedBill?.Status == 1;
             }
@@ -94,12 +98,12 @@ namespace CafePOS.DAO
 
             return tableList;
         }
-        public async Task<int> InsertBillAsync(int idTable)
+        public async Task<int> InsertBillAsync(int idTable, int idStaff)
         {
             var client = DataProvider.Instance.Client;
             var dateCheckIn = DateTime.UtcNow.ToString("o");
 
-            var result = await client.CreateBill.ExecuteAsync(idTable, 0, dateCheckIn);
+            var result = await client.CreateBill.ExecuteAsync(idTable, 0, dateCheckIn, idStaff, null);
 
             return result.Data?.CreateBill?.Bill?.Id ?? -1;
         }

@@ -121,7 +121,8 @@ namespace CafePOS
 
             if (idBill == -1)
             {
-                int newBillId = await BillDAO.Instance.InsertBillAsync(table.Id);
+                int newBillId = await BillDAO.Instance.InsertBillAsync(table.Id, Account.CurrentUserStaffId);
+                Debug.WriteLine("ADD NEW BILL", newBillId);
                 if (newBillId > 0)
                 {
                     await BillInfoDAO.Instance.InsertBillInfoAsync(newBillId, foodID, count, unitPrice, totalPrice);
@@ -180,6 +181,67 @@ namespace CafePOS
         }
 
 
+        //private async void btnCheckOut_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (OrderListView.Tag is not CafeTable table)
+        //    {
+        //        await ShowDialog("Thông báo", "Vui lòng chọn bàn để thanh toán.");
+        //        return;
+        //    }
+
+        //    int idBill = await BillDAO.Instance.GetUncheckBillIDByTableID(table.Id, 0);
+        //    if (idBill == -1)
+        //    {
+        //        await ShowDialog("Thông báo", $"Không tìm thấy hóa đơn chưa thanh toán cho bàn {table.Name}.");
+        //        return;
+        //    }
+
+        //    float discount = (float)DiscountBox.Value;
+        //    double originalTotal = 0;
+        //    if (OrderListView.ItemsSource is IEnumerable<Menu> items)
+        //    {
+        //        originalTotal = items.Sum(item => item.TotalPrice);
+        //    }
+        //    double finalTotal = originalTotal * (100 - discount) / 100;
+        //    var culture = new System.Globalization.CultureInfo("vi-VN");
+        //    string originalStr = originalTotal.ToString("C0", culture);
+        //    string finalStr = finalTotal.ToString("C0", culture);
+
+        //    string content = $"Bạn có chắc chắn muốn thanh toán hóa đơn cho bàn {table.Name}?\n" +
+        //                     $"Tổng tiền: {originalStr}\n" +
+        //                     $"Giảm giá: {discount}%\n" +
+        //                     $"Thanh toán: {finalStr}";
+
+        //    var dialogResult = await new ContentDialog
+        //    {
+        //        Title = "Xác nhận thanh toán",
+        //        Content = content,
+        //        PrimaryButtonText = "OK",
+        //        CloseButtonText = "Hủy",
+        //        XamlRoot = this.XamlRoot
+        //    }.ShowAsync();
+
+        //    if (dialogResult == ContentDialogResult.Primary)
+        //    {
+        //        bool success = await BillDAO.Instance.CheckOutAsync(idBill, discount);
+
+        //        if (success)
+        //        {
+        //            OrderListView.ItemsSource = null;
+        //            OrderListView.Tag = null;
+        //            TotalPriceTextBlock.Text = "0 ₫";
+        //            DiscountBox.Value = 0;
+
+        //            await LoadTable();
+
+        //            await ShowDialog("Thành công", $"Đã thanh toán cho bàn {table.Name}.");
+        //        }
+        //        else
+        //        {
+        //            await ShowDialog("Lỗi", "Không thể cập nhật trạng thái hóa đơn.");
+        //        }
+        //    }
+        //}
         private async void btnCheckOut_Click(object sender, RoutedEventArgs e)
         {
             if (OrderListView.Tag is not CafeTable table)
@@ -195,53 +257,40 @@ namespace CafePOS
                 return;
             }
 
-            float discount = (float)DiscountBox.Value;
+            // Lấy danh sách các món trong hóa đơn
             double originalTotal = 0;
+            List<Menu> orderItems = new List<Menu>();
             if (OrderListView.ItemsSource is IEnumerable<Menu> items)
             {
+                orderItems = items.ToList();
                 originalTotal = items.Sum(item => item.TotalPrice);
             }
-            double finalTotal = originalTotal * (100 - discount) / 100;
-            var culture = new System.Globalization.CultureInfo("vi-VN");
-            string originalStr = originalTotal.ToString("C0", culture);
-            string finalStr = finalTotal.ToString("C0", culture);
 
-            string content = $"Bạn có chắc chắn muốn thanh toán hóa đơn cho bàn {table.Name}?\n" +
-                             $"Tổng tiền: {originalStr}\n" +
-                             $"Giảm giá: {discount}%\n" +
-                             $"Thanh toán: {finalStr}";
+            // Tạo cửa sổ thanh toán mới
+            var checkoutWindow = new CheckoutWindow();
 
-            var dialogResult = await new ContentDialog
+            // Đăng ký sự kiện hoàn thành thanh toán
+            checkoutWindow.CheckoutCompleted += async (s, success) =>
             {
-                Title = "Xác nhận thanh toán",
-                Content = content,
-                PrimaryButtonText = "OK",
-                CloseButtonText = "Hủy",
-                XamlRoot = this.XamlRoot
-            }.ShowAsync();
-
-            if (dialogResult == ContentDialogResult.Primary)
-            {
-                bool success = await BillDAO.Instance.CheckOutAsync(idBill, discount);
-
                 if (success)
                 {
+                    // Xóa thông tin đơn hàng hiện tại
                     OrderListView.ItemsSource = null;
                     OrderListView.Tag = null;
                     TotalPriceTextBlock.Text = "0 ₫";
                     DiscountBox.Value = 0;
 
+                    // Cập nhật lại dữ liệu bàn
                     await LoadTable();
+                }
+            };
 
-                    await ShowDialog("Thành công", $"Đã thanh toán cho bàn {table.Name}.");
-                }
-                else
-                {
-                    await ShowDialog("Lỗi", "Không thể cập nhật trạng thái hóa đơn.");
-                }
-            }
+            // Khởi tạo dữ liệu cho cửa sổ thanh toán
+            checkoutWindow.Initialize(table, idBill, orderItems, originalTotal);
+
+            // Hiển thị cửa sổ thanh toán
+            checkoutWindow.Activate();
         }
-
         private async void btnCancel_Click(object sender, RoutedEventArgs e)
         {
             if (OrderListView.Tag is not CafeTable table)
