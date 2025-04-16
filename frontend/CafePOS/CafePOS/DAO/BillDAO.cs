@@ -65,6 +65,22 @@ namespace CafePOS.DAO
             }
         }
 
+        public async Task<bool> CancelAsync(int id)
+        {
+            try
+            {
+                var client = DataProvider.Instance.Client;
+                var result = await client.DeleteBillById.ExecuteAsync(id);
+                var deletedBill = result.Data?.DeleteBillById?.DeletedBillId;
+                return !string.IsNullOrEmpty(deletedBill);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error in CancelAsync: {ex.Message}");
+                return false;
+            }
+        }
+
 
         public async Task<List<CafeTable>> GetAllCafeTablesAsync()
         {

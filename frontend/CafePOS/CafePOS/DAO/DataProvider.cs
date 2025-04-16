@@ -6,9 +6,7 @@ namespace CafePOS.DAO
 {
     public class DataProvider
     {
-        public static string CurrentUserName { get; set; } = "";
-        public static string CurrentDisplayName { get; set; } = "";
-        public static int CurrentUserType { get; set; } = 0; // 0: Nhân viên, 1: Admin
+
         private static DataProvider? instance;
         public static DataProvider Instance
         {

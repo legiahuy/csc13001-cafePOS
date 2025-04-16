@@ -83,7 +83,7 @@ exports.up = function(knex) {
         table.string('email', 100);
         table.string('position', 50);
         table.string('userName', 100)
-            .references('userName')      // 🔗 Tham chiếu đến Account.userName
+            .references('userName') 
             .inTable('Account')
             .onDelete('SET NULL');  
         table.float('salary').defaultTo(0);

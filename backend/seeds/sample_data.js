@@ -13,6 +13,7 @@ exports.seed = async function(knex) {
   await knex('Category').del();
   await knex('Account').del();
   await knex('CafeTable').del();
+  await knex('Staff').del();
 
   // Thêm dữ liệu cho bảng CafeTable
   // await knex('CafeTable').insert([
@@ -31,8 +32,7 @@ exports.seed = async function(knex) {
 
   // Thêm dữ liệu cho bảng Account
   await knex('Account').insert([
-    { userName: 'admin', displayName: 'Admin', password: 'admin123', type: 1 },
-    { userName: 'staff1', displayName: 'Nhân viên 1', password: 'staff123', type: 0 },
+    { userName: 'admin', displayName: 'Admin', password: 'admin123', type: 1 }
   ]);
 
   // Thêm dữ liệu cho bảng Category
@@ -92,4 +92,60 @@ exports.seed = async function(knex) {
     { idMaterial: 1, type: 'Import', quantity: 5, unitPrice: 200000, note: 'Nhập hàng tháng 3' },
     { idMaterial: 2, type: 'Import', quantity: 10, unitPrice: 50000, note: 'Nhập hàng tháng 3' },
   ]);
+
+  await knex('Account').insert([
+    {
+      userName: 'staff1',
+      displayName: 'Phạm Hồng Minh',
+      password: '123', 
+      type: 0 
+    },
+    {
+      userName: 'staff2',
+      displayName: 'Nguyễn Thị Lan',
+      password: '123',
+      type: 0 
+    },
+    {
+      userName: 'staff3',
+      displayName: 'Trần Quốc Bảo',
+      password: '123',
+      type: 0
+    }
+  ]);
+
+  await knex('Staff').insert([
+    {
+      name: 'Phạm Hồng Minh',
+      dob: '1990-04-12',
+      gender: 'Male',
+      phone: '0909123456',
+      email: 'minh.pham@example.com',
+      position: 'Thu ngân',
+      userName: 'staff1',
+      salary: 15000000
+    },
+    {
+      name: 'Nguyễn Thị Lan',
+      dob: '1995-09-30',
+      gender: 'Female',
+      phone: '0934567890',
+      email: 'lan.nguyen@example.com',
+      position: 'Thu ngân',
+      userName: 'staff2',
+      salary: 8500000
+    },
+    {
+      name: 'Trần Quốc Bảo',
+      dob: '1998-06-22',
+      gender: 'Male',
+      phone: '0987123456',
+      email: 'bao.tran@example.com',
+      position: 'Phục vụ',
+      userName: 'staff3',
+      salary: 7000000
+    }
+  ]);
+
+  
 };

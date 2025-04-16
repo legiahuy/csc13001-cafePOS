@@ -241,6 +241,53 @@ namespace CafePOS
                 }
             }
         }
+
+        private async void btnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            if (OrderListView.Tag is not CafeTable table)
+            {
+                await ShowDialog("Thông báo", "Vui lòng chọn bàn để hủy.");
+                return;
+            }
+
+            int idBill = await BillDAO.Instance.GetUncheckBillIDByTableID(table.Id, 0);
+            if (idBill == -1)
+            {
+                await ShowDialog("Thông báo", $"Không tìm thấy hóa đơn chưa thanh toán cho bàn {table.Name}.");
+                return;
+            }
+
+            string content = $"Bạn có chắc chắn muốn hủy hóa đơn cho bàn {table.Name}?";
+
+            var dialogResult = await new ContentDialog
+            {
+                Title = "Xác nhận hủy",
+                Content = content,
+                PrimaryButtonText = "OK",
+                CloseButtonText = "Thoát",
+                XamlRoot = this.XamlRoot
+            }.ShowAsync();
+
+            if (dialogResult == ContentDialogResult.Primary)
+            {
+                bool success = await BillDAO.Instance.CancelAsync(idBill);
+                if (success)
+                {
+                    OrderListView.ItemsSource = null;
+                    OrderListView.Tag = null;
+                    TotalPriceTextBlock.Text = "0 ₫";
+                    DiscountBox.Value = 0;
+
+                    await LoadTable();
+
+                    await ShowDialog("Thành công", $"Đã hủy thanh toán cho bàn {table.Name}.");
+                }
+                else
+                {
+                    await ShowDialog("Lỗi", "Không thể cập nhật trạng thái hóa đơn.");
+                }
+            }
+        }
         private async void btnChangeTable_Click(object sender, RoutedEventArgs e)
         {
             if (OrderListView.Tag is not CafeTable currentTable)

@@ -125,16 +125,17 @@
 
                         <StackPanel Grid.Column="0" Margin="0,0,10,0">
                             <ComboBox 
-                        x:Name="FoodComboBox" 
-                        PlaceholderText="Chọn món" 
-                        Style="{StaticResource ComboBoxStyle}"
-                        Margin="0,0,0,5"/>
+                                x:Name="CategoryComboBox" 
+                                PlaceholderText="Loại món" 
+                                Style="{StaticResource ComboBoxStyle}"
+                                SelectionChanged="CategoryComboBox_SelectionChanged"
+                                Margin="0,0,0,5"
+                            />
                             <ComboBox 
-                        x:Name="CategoryComboBox" 
-                        PlaceholderText="Loại món" 
-                        Style="{StaticResource ComboBoxStyle}"
-                        SelectionChanged="CategoryComboBox_SelectionChanged"
-                        />
+                                x:Name="FoodComboBox" 
+                                PlaceholderText="Chọn món" 
+                                Style="{StaticResource ComboBoxStyle}"
+                            />
                         </StackPanel>
 
                         <Button 
@@ -308,7 +309,8 @@
                             Content="Hủy" 
                             Background="#F44336" 
                             Foreground="White" 
-                            Style="{StaticResource ButtonStyle}" 
+                            Style="{StaticResource ButtonStyle}"
+                            Click="btnCancel_Click"
                         />
                     </StackPanel>
                 </Grid>

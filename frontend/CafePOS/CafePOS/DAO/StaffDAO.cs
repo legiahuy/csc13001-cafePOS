@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using CafePOS.DTO;
 using CafePOS.GraphQL;
 using System;
+using System.Diagnostics;
 
 namespace CafePOS.DAO
 {
@@ -25,6 +26,17 @@ namespace CafePOS.DAO
                 .ToList();
 
             return list ?? new List<Staff>();
+        }
+
+        public async Task<int> GetStaffIdByUserName(string userName)
+        {
+            var client = DataProvider.Instance.Client;
+            var result = await client.GetStaffIdByUserName.ExecuteAsync(userName);
+           
+            var staffId = result.Data?.AllStaff?.Edges?.FirstOrDefault()?.Node?.Id ?? 0;
+
+            Debug.WriteLine($"staffId '{staffId}' session");
+            return staffId;
         }
 
         public async Task<bool> AddStaffAsync(string name, string dob, string gender, string phone, string email, string position, float salary, string userName)

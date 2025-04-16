@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
 using Windows.UI.Xaml;
 using CafePOS.DAO;
+using CafePOS.DTO;
 
 
 namespace CafePOS
@@ -13,8 +14,8 @@ namespace CafePOS
         {
             this.InitializeComponent();
 
-            UserNameText.Text = DataProvider.CurrentDisplayName;
-            UserRoleText.Text = DataProvider.CurrentUserType == 1 ? "Quản lý" : "Nhân viên";
+            UserNameText.Text = Account.CurrentDisplayName;
+            UserRoleText.Text = Account.CurrentUserType == 1 ? "Quản lý" : "Nhân viên";
 
 
             // Set initial selection
@@ -70,7 +71,7 @@ namespace CafePOS
                     break;
 
                 case "Staff":
-                    if (DataProvider.CurrentUserType != 1)
+                    if (Account.CurrentUserType != 1)
                     {
                         ContentDialog dialog = new ContentDialog
                         {
@@ -84,7 +85,7 @@ namespace CafePOS
                     }
 
                     PageTitleText.Text = "Quản lý nhân viên";
-                    PageDescriptionText.Text = "Quản lý thông tin và hoạt động của nhân viên";
+                    PageDescriptionText.Text = "Quản lý thông tin nhân viên";
                     ContentFrame.Navigate(typeof(StaffPage));
                     break;
 

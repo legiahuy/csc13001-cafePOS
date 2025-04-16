@@ -185,12 +185,6 @@
                                HorizontalAlignment="Center"
                                Margin="0,15,0,0"
                                TextWrapping="Wrap"/>
-
-                    <!-- Forgot password link with static color -->
-                    <HyperlinkButton Content="Quên mật khẩu?" 
-                                     Foreground="#5C6B73" 
-                                     HorizontalAlignment="Center"
-                                     Margin="0,15,0,0"/>
                 </StackPanel>
             </Border>
 

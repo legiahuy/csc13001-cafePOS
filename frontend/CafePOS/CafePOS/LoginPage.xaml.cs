@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using CafePOS.DAO;
+using CafePOS.DTO;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -48,9 +49,14 @@ namespace CafePOS
                 {
                     var userInfo = await AccountDAO.Instance.GetAccountByUserNameAsync(username);
 
-                    DataProvider.CurrentUserName = userInfo.UserName;
-                    DataProvider.CurrentDisplayName = userInfo.DisplayName;
-                    DataProvider.CurrentUserType = userInfo.Type;
+                    int staffId = await StaffDAO.Instance.GetStaffIdByUserName(username);
+
+                    Account.CurrentUserName = userInfo.UserName;
+                    Account.CurrentDisplayName = userInfo.DisplayName;
+                    Account.CurrentUserType = userInfo.Type;
+                    Account.CurrentUserStaffId = staffId;
+                    
+
                     ErrorMessage.Visibility = Visibility.Collapsed;
                     if (this.Parent is Frame frame)
                     {

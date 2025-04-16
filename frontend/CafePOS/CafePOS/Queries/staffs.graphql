@@ -22,7 +22,7 @@ mutation CreateStaff(
   $email: String!
   $position: String!
   $salary: Float!
-  $userName: String!   # ✅ Thêm dòng này
+  $userName: String!   
 ) {
   createStaff(input: {
     staff: {
@@ -80,3 +80,23 @@ mutation DeleteStaff($id: Int!) {
     deletedStaffId
   }
 }
+
+query GetStaffIdByUserName($userName: String!) {
+  allStaff(condition: {userName: $userName}) {
+    edges {
+      node {
+        userName
+        salary
+        position
+        phone
+        name
+        id
+        gender
+        email
+      }
+    }
+  }
+}
+
+
+

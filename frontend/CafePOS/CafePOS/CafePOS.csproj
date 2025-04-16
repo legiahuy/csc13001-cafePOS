@@ -25,6 +25,7 @@
     <GraphQL Remove="queries\categories.graphql" />
     <GraphQL Remove="Queries\ChangeTable.graphql" />
     <GraphQL Remove="Queries\CreateMaterial.graphql" />
+    <GraphQL Remove="Queries\DeleteBill.graphql" />
     <GraphQL Remove="Queries\DeleteMaterial.graphql" />
     <GraphQL Remove="Queries\DeleteProduct.graphql" />
     <GraphQL Remove="queries\drinks.graphql" />

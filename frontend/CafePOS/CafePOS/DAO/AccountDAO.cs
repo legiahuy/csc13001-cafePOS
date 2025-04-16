@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using CafePOS.DTO;
 
 namespace CafePOS.DAO
 {
@@ -66,21 +67,14 @@ namespace CafePOS.DAO
             var result = await client.GetAccountByUserName.ExecuteAsync(userName);
             return result.Data?.AccountByUserName?.Type ?? 0;
         }
-        public class AccountInfo
-        {
-            public string UserName { get; set; } = "";
-            public string DisplayName { get; set; } = "";
-            public int Type { get; set; } = 0;
-            public string Password { get; set; }
-        }
 
-        public async Task<AccountInfo> GetAccountByUserNameAsync(string userName)
+        public async Task<Account> GetAccountByUserNameAsync(string userName)
         {
             var client = DataProvider.Instance.Client;
             var result = await client.GetAccountByUserName.ExecuteAsync(userName);
             var acc = result.Data?.AccountByUserName;
 
-            return new AccountInfo
+            return new Account
             {
                 UserName = acc?.UserName ?? "",
                 DisplayName = acc?.DisplayName ?? "",
