@@ -16,6 +16,8 @@ using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.Graphics;
 using WinRT.Interop;
+using System.IO;
+
 
 namespace CafePOS
 {
@@ -63,7 +65,7 @@ namespace CafePOS
             {
                 TableNameTextBlock.Text = $"Bàn: {_currentTable.Name}";
                 OrderSummaryListView.ItemsSource = _orderItems;
-                UpdatePrices(0);
+                UpdatePrices();
             }
         }
 
@@ -85,7 +87,7 @@ namespace CafePOS
             {
                 TableNameTextBlock.Text = $"Bàn: {table.Name}";
                 OrderSummaryListView.ItemsSource = orderItems;
-                UpdatePrices(0);
+                UpdatePrices();
             }
         }
 
@@ -149,32 +151,108 @@ namespace CafePOS
             }
         }
 
-        private void UpdatePrices(double discountPercent)
+        private void UpdatePrices()
         {
             if (TotalPriceTextBlock != null)
             {
                 TotalPriceTextBlock.Text = _originalTotal.ToString("C0", _culture);
             }
 
-            double finalAmount = _originalTotal * (100 - discountPercent) / 100;
+            double finalAmount = _originalTotal;
+            double discountFromPoints = 0;
+
+            if (_selectedGuest != null && UsePointsPanel.Visibility == Visibility.Visible)
+            {
+                int pointsToUse = (int)UsePointsBox.Value;
+                discountFromPoints = (pointsToUse / 50) * 10000;
+                finalAmount -= discountFromPoints;
+            }
+
+            // Update Discount Text
+            if (DiscountFromPointsTextBlock != null)
+            {
+                if (discountFromPoints > 0)
+                {
+                    DiscountFromPointsTextBlock.Visibility = Visibility.Visible;
+                    DiscountFromPointsTextBlock.Text = $"- {discountFromPoints.ToString("N0", _culture)} ₫";
+                }
+                else
+                {
+                    DiscountFromPointsTextBlock.Visibility = Visibility.Collapsed;
+                }
+            }
 
             if (FinalPriceTextBlock != null)
             {
-                FinalPriceTextBlock.Text = finalAmount.ToString("C0", _culture);
+                FinalPriceTextBlock.Text = Math.Max(finalAmount, 0).ToString("C0", _culture);
             }
 
             if (_selectedGuest != null && PointsEarnedTextBlock != null)
             {
-                // Calculate points earned (example: 1 point per 10,000 VND)
-                int pointsEarned = (int)(finalAmount / 10000);
+                int pointsEarned = (int)(_originalTotal / 10000);
                 PointsEarnedTextBlock.Text = $"Điểm tích lũy từ hóa đơn này: {pointsEarned}";
             }
         }
 
-        private void DiscountBox_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
+
+
+        private void UsePointsBox_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
         {
-            UpdatePrices((double)sender.Value);
+            int pointsToUse = (int)sender.Value;
+
+            // Validate luôn khi thay đổi
+            if (pointsToUse > 0 && (pointsToUse < 50 || pointsToUse % 50 != 0))
+            {
+                _ = ShowDialog("Lưu ý", "Bạn cần nhập bội số của 50 điểm để đổi!");
+                sender.Value = 0;
+                return;
+            }
+
+            UpdatePrices();
         }
+        private async void UsePointsBox_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == Windows.System.VirtualKey.Enter)
+            {
+                int pointsToUse = (int)UsePointsBox.Value;
+
+                if (pointsToUse == 0)
+                    return;
+
+                double discountFromPoints = (pointsToUse / 50) * 10000;
+                string formattedDiscount = discountFromPoints.ToString("C0", _culture);
+
+                ContentDialog confirmDialog = new ContentDialog
+                {
+                    Title = "Xác nhận đổi điểm",
+                    Content = $"Bạn muốn đổi {pointsToUse} điểm để giảm {formattedDiscount}?",
+                    PrimaryButtonText = "Đồng ý",
+                    CloseButtonText = "Hủy",
+                };
+
+                FrameworkElement rootElement = this.Content as FrameworkElement;
+                if (rootElement != null)
+                {
+                    confirmDialog.XamlRoot = rootElement.XamlRoot;
+                }
+
+                var result = await confirmDialog.ShowAsync();
+
+                if (result == ContentDialogResult.Primary)
+                {
+                    DiscountFromPointsTextBlock.Text = $"Giảm từ đổi điểm: {formattedDiscount}";
+                    DiscountFromPointsTextBlock.Visibility = Visibility.Visible;
+                    UpdatePrices();
+                }
+                else
+                {
+                    UsePointsBox.Value = 0;
+                    DiscountFromPointsTextBlock.Visibility = Visibility.Collapsed;
+                    UpdatePrices();
+                }
+            }
+        }
+
 
         private void GuestSearchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
@@ -182,19 +260,10 @@ namespace CafePOS
             {
                 string query = sender.Text.ToLower();
                 var suggestions = _guestList
-                    .Where(g => g.Name.ToLower().Contains(query) ||
-                           (g.Phone != null && g.Phone.Contains(query)))
+                    .Where(g => g.Name.ToLower().Contains(query) || (g.Phone != null && g.Phone.Contains(query)))
                     .ToList();
 
                 sender.ItemsSource = suggestions;
-            }
-        }
-
-        private void GuestSearchBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
-        {
-            if (args.ChosenSuggestion != null && args.ChosenSuggestion is Guest guest)
-            {
-                SelectGuest(guest);
             }
         }
 
@@ -206,21 +275,41 @@ namespace CafePOS
             }
         }
 
+        private void GuestSearchBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        {
+            if (args.ChosenSuggestion is Guest guest)
+            {
+                SelectGuest(guest);
+            }
+        }
+
+
         private void SelectGuest(Guest guest)
         {
             _selectedGuest = guest;
             GuestNameTextBlock.Text = guest.Name;
             GuestPhoneTextBlock.Text = guest.Phone ?? "Không có SĐT";
-            GuestPointsTextBlock.Text = $"Điểm: {guest.Points}";
-            GuestLevelTextBlock.Text = $"Hạng: {guest.MembershipLevel}";
+            GuestPointsTextBlock.Text = $"Điểm: {guest.TotalPoints}";
+            GuestAvailablePointsTextBlock.Text = $"Điểm khả dụng: {guest.AvailablePoints}";
+            GuestLevelTextBlock.Text = $"Hạng: {Guest.GetMembershipLevel(guest.TotalPoints)}";
 
-            // Calculate points earned (example: 1 point per 10,000 VND)
-            double finalAmount = _originalTotal * (100 - (double)DiscountBox.Value) / 100;
-            int pointsEarned = (int)(finalAmount / 10000);
-            PointsEarnedTextBlock.Text = $"Điểm tích lũy từ hóa đơn này: {pointsEarned}";
+            // Nếu khách đủ 50 điểm thì hiện box nhập UsePoints
+            if (guest.AvailablePoints >= 50)
+            {
+                UsePointsPanel.Visibility = Visibility.Visible;
+                UsePointsBox.Maximum = guest.AvailablePoints;
+                UsePointsBox.Value = 0;
+            }
+            else
+            {
+                UsePointsPanel.Visibility = Visibility.Collapsed;
+                UsePointsBox.Value = 0;
+            }
 
             SelectedGuestPanel.Visibility = Visibility.Visible;
             GuestSearchBox.Text = guest.Name;
+
+            UpdatePrices();
         }
 
         private void ClearGuestButton_Click(object sender, RoutedEventArgs e)
@@ -309,12 +398,13 @@ namespace CafePOS
                         Phone = phone,
                         Email = email,
                         Notes = notes,
-                        Points = 0,
-                        MembershipLevel = "Regular",
+                        TotalPoints = 0,
+                        AvailablePoints = 0,
+                        MembershipLevel = Guest.GetMembershipLevel(0),
                         MemberSince = DateTime.Now
                     };
 
-                    int guestId = await GuestDAO.Instance.AddGuestAsync(name, phone, email, notes, 0, "Regular", DateOnly.FromDateTime(DateTime.Now));
+                    int guestId = await GuestDAO.Instance.AddGuestAsync(name, phone, email, notes, 0, 0, "Regular", DateOnly.FromDateTime(DateTime.Now));
                     
                     if (guestId > 0)
                     {
@@ -345,29 +435,61 @@ namespace CafePOS
                 return;
             }
 
+            // ⚡ Thêm check: nếu đang nhập điểm nhưng chưa xác nhận (DiscountFromPointsTextBlock bị ẩn)
+            if (UsePointsPanel.Visibility == Visibility.Visible && UsePointsBox.Value > 0 && DiscountFromPointsTextBlock.Visibility == Visibility.Collapsed)
+            {
+                await ShowDialog("Thông báo", "Bạn cần nhấn Enter để xác nhận đổi điểm trước khi thanh toán.");
+                return;
+            }
+
             var selectedPaymentMethod = PaymentMethodComboBox.SelectedItem as PaymentMethod;
-            float discount = (float)DiscountBox.Value;
             string paymentNotes = PaymentNotesTextBox.Text;
 
             try
             {
-                // Update bill information
+                double finalAmount = _originalTotal;
+                int pointsUsed = 0;
+
+                if (_selectedGuest != null && UsePointsPanel.Visibility == Visibility.Visible)
+                {
+                    int pointsToUse = (int)UsePointsBox.Value;
+                    int redeemablePoints = Math.Min(pointsToUse, _selectedGuest.AvailablePoints);
+                    int redeemableUnits = redeemablePoints / 50;
+                    double discountByPoints = redeemableUnits * 10000;
+
+                    if (discountByPoints > finalAmount)
+                    {
+                        redeemableUnits = (int)(finalAmount / 10000);
+                        discountByPoints = redeemableUnits * 10000;
+                    }
+
+                    pointsUsed = redeemableUnits * 50;
+                    finalAmount -= discountByPoints;
+                }
+
                 bool success = await BillDAO.Instance.CheckOutAsync(
-                    _currentBillId,
-                    discount,
-                    selectedPaymentMethod.Id,
-                    _selectedGuest?.Id,
-                    paymentNotes
-                );
+                     _currentBillId,
+                     _originalTotal,
+                     finalAmount,
+                     selectedPaymentMethod.Id,
+                     _selectedGuest?.Id,
+                     paymentNotes,
+                     Account.CurrentUserStaffId    // 🆕 ID của Staff đang đăng nhập
+                 );
+
+
 
                 if (success)
                 {
-                    // Update guest points if selected
                     if (_selectedGuest != null)
                     {
-                        double finalAmount = _originalTotal * (100 - discount) / 100;
-                        int pointsEarned = (int)(finalAmount / 10000);
-                        //await GuestDAO.Instance.AddPointsAsync(_selectedGuest.Id, pointsEarned);
+                        int pointsEarned = (int)(_originalTotal / 10000);
+                        await GuestDAO.Instance.AddPointsAsync(_selectedGuest.Id, pointsEarned);
+
+                        if (pointsUsed > 0)
+                        {
+                            await GuestDAO.Instance.DeductAvailablePointsAsync(_selectedGuest.Id, pointsUsed);
+                        }
                     }
 
                     await ShowDialog("Thành công", $"Đã thanh toán cho bàn {_currentTable.Name}.");
@@ -384,6 +506,145 @@ namespace CafePOS
                 await ShowDialog("Lỗi", $"Đã xảy ra lỗi: {ex.Message}");
             }
         }
+        private async void PrintButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var pdf = new PdfSharpCore.Pdf.PdfDocument();
+                var page = pdf.AddPage();
+                var gfx = PdfSharpCore.Drawing.XGraphics.FromPdfPage(page);
+                var fontRegular = new PdfSharpCore.Drawing.XFont("Arial", 12, PdfSharpCore.Drawing.XFontStyle.Regular);
+                var fontBold = new PdfSharpCore.Drawing.XFont("Arial", 14, PdfSharpCore.Drawing.XFontStyle.Bold);
+
+                int y = 20;
+                int pageWidth = (int)page.Width;
+
+                // Header
+                gfx.DrawString("CHẠM CAFÉ", new PdfSharpCore.Drawing.XFont("Arial", 20, PdfSharpCore.Drawing.XFontStyle.Bold),
+                    PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(pageWidth / 2, y),
+                    PdfSharpCore.Drawing.XStringFormats.Center);
+
+                y += 30;
+                gfx.DrawString("18 Tô Hiến Thành, Quận 10, TP.Hồ Chí Minh", fontRegular,
+                    PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(pageWidth / 2, y),
+                    PdfSharpCore.Drawing.XStringFormats.Center);
+
+                y += 30;
+
+                // Bill Info
+                gfx.DrawString($"Số: {_currentBillId}", fontBold, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(pageWidth / 2, y),
+                    PdfSharpCore.Drawing.XStringFormats.Center);
+                y += 20;
+                gfx.DrawString($"Thời gian: {DateTime.Now:dd.MM.yyyy HH:mm}", fontRegular, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(20, y));
+                y += 20;
+                gfx.DrawString($"Thu ngân: {Account.CurrentDisplayName}", fontRegular, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(20, y));
+                y += 20;
+                gfx.DrawString($"{_currentTable?.Name}", fontRegular, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(20, y));
+                y += 20;
+
+                if (_selectedGuest != null)
+                {
+                    gfx.DrawString($"Khách hàng: {_selectedGuest.Name}", fontRegular, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(20, y));
+                    y += 20;
+                    gfx.DrawString($"Hạng: {Guest.GetMembershipLevel(_selectedGuest.TotalPoints)}", fontRegular, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(20, y));
+                    y += 20;
+                }
+
+                y += 10;
+                gfx.DrawLine(PdfSharpCore.Drawing.XPens.Black, 20, y, pageWidth - 20, y); // Line ngay sau header
+                y += 20;
+
+                // Cột bảng món
+                int xTT = 40;
+                int xProductName = 100;
+                int xSL = 260;
+                int xPrice = 370;
+                int xTotalPrice = 500;
+
+                // Tiêu đề cột
+                gfx.DrawString("STT", fontBold, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(xTT, y));
+                gfx.DrawString("Tên món", fontBold, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(xProductName, y));
+                gfx.DrawString("SL", fontBold, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(xSL, y));
+                gfx.DrawString("Đơn giá", fontBold, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(xPrice, y));
+                gfx.DrawString("T.Tiền", fontBold, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(xTotalPrice, y));
+
+                y += 20;
+                gfx.DrawLine(PdfSharpCore.Drawing.XPens.Black, 20, y, pageWidth - 20, y); // Line sau tiêu đề cột
+                y += 20;
+
+                // Danh sách món
+                int stt = 1;
+                foreach (var item in _orderItems)
+                {
+                    gfx.DrawString($"{stt}", fontRegular, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(xTT + 5, y));
+                    gfx.DrawString($"{item.ProductName}", fontRegular, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(xProductName + 5, y));
+                    gfx.DrawString($"{item.Count}", fontRegular, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(xSL + 5, y));
+                    gfx.DrawString($"{item.Price:N0}", fontRegular, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(xPrice + 5, y));
+                    gfx.DrawString($"{item.TotalPrice:N0}", fontRegular, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(xTotalPrice + 5, y));
+                    y += 20;
+                    stt++;
+                }
+
+                y += 5;
+                gfx.DrawLine(PdfSharpCore.Drawing.XPens.Black, 20, y, pageWidth - 20, y); // Line sau danh sách món
+                y += 20;
+
+                // Tổng cộng
+                gfx.DrawString("Tổng số lượng:", fontBold, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(20, y));
+                gfx.DrawString($"{_orderItems.Sum(i => i.Count)}", fontBold, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(xSL + 5, y));
+                y += 20;
+
+                // Sau phần in "Thành tiền" và trước "Thanh toán":
+
+                gfx.DrawString("Thành tiền:", fontBold, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(20, y));
+                gfx.DrawString($"{_originalTotal.ToString("N0", _culture)} ₫", fontBold, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(xTotalPrice, y));
+                y += 20;
+
+                // ➡️ Nếu có giảm giá từ đổi điểm thì in thêm dòng
+                if (UsePointsPanel.Visibility == Visibility.Visible && UsePointsBox.Value > 0)
+                {
+                    double discountFromPoints = (UsePointsBox.Value / 50) * 10000;
+
+                    gfx.DrawString("Giảm từ đổi điểm:", fontBold, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(20, y));
+                    gfx.DrawString($"-{discountFromPoints:N0} ₫", fontBold, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(xTotalPrice, y));
+                    y += 20;
+                }
+
+                // Sau đó in "Thanh toán" như bình thường
+                gfx.DrawString("Thanh toán:", fontBold, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(20, y));
+                gfx.DrawString($"{FinalPriceTextBlock.Text}", fontBold, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(xTotalPrice, y));
+                y += 20;
+
+
+                y += 5;
+                gfx.DrawLine(PdfSharpCore.Drawing.XPens.Black, 20, y, pageWidth - 20, y); // Line sau tổng cộng
+                y += 10;
+
+                // Footer
+                gfx.DrawString("Giá sản phẩm đã bao gồm VAT 8%.", fontRegular, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(pageWidth / 2, y), PdfSharpCore.Drawing.XStringFormats.Center);
+                y += 20;
+                gfx.DrawString("Nếu bạn cần xuất hóa đơn, hãy liên hệ cửa hàng.", fontRegular, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(pageWidth / 2, y), PdfSharpCore.Drawing.XStringFormats.Center);
+                y += 20;
+                gfx.DrawString("Mọi thắc mắc xin liên hệ: 02871 087 088.", fontRegular, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(pageWidth / 2, y), PdfSharpCore.Drawing.XStringFormats.Center);
+                y += 20;
+                gfx.DrawString("Password Wifi: touchthetaste", fontBold, PdfSharpCore.Drawing.XBrushes.Black, new PdfSharpCore.Drawing.XPoint(pageWidth / 2, y), PdfSharpCore.Drawing.XStringFormats.Center);
+
+                // Save file
+                var folder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                var filePath = Path.Combine(folder, $"Bill_{_currentBillId}.pdf");
+                using (var stream = File.Create(filePath))
+                {
+                    pdf.Save(stream, false);
+                }
+
+                await ShowDialog("Thành công", $"Đã in hóa đơn ra file:\n{filePath}");
+            }
+            catch (Exception ex)
+            {
+                await ShowDialog("Lỗi", ex.Message);
+            }
+        }
+
 
         private async Task ShowDialog(string title, string content)
         {

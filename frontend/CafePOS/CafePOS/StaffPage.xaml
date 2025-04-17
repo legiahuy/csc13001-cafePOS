@@ -77,12 +77,12 @@
         </StackPanel>
 
         <ContentDialog
-    x:Name="StaffDialog"
-    Title="Thông tin nhân viên"
-    PrimaryButtonText="Lưu"
-    SecondaryButtonText="Hủy"
-    PrimaryButtonClick="SaveStaffDialog_Click"
-    SecondaryButtonClick="CancelStaffDialog_Click">
+            x:Name="StaffDialog"
+            Title="Thông tin nhân viên"
+            PrimaryButtonText="Lưu"
+            SecondaryButtonText="Hủy"
+            PrimaryButtonClick="SaveStaffDialog_Click"
+            SecondaryButtonClick="CancelStaffDialog_Click">
 
             <ScrollViewer MaxHeight="500" VerticalScrollBarVisibility="Auto">
                 <StackPanel Spacing="10" Width="300">

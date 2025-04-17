@@ -74,38 +74,37 @@
 
                         <Rectangle Height="1" Fill="#E8D0C0" Margin="0,18,0,18"/>
 
+                        <!-- Tổng tiền + giảm giá -->
                         <Grid Margin="5,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
                             <TextBlock Text="Tổng tiền:" Grid.Row="0" Grid.Column="0" FontSize="15" Foreground="#555555"/>
                             <TextBlock x:Name="TotalPriceTextBlock" Text="0 ₫" Grid.Row="0" Grid.Column="1" FontSize="15" Foreground="#555555"/>
 
-                            <TextBlock Text="Giảm giá:" Grid.Row="1" Grid.Column="0" FontSize="15" Foreground="#555555" Margin="0,12,0,12"/>
-                            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="5" Margin="0,10,0,10">
-                                <NumberBox x:Name="DiscountBox"
-                                   Style="{StaticResource CafeNumberBoxStyle}"
-                                   Value="0" 
-                                   Minimum="0" 
-                                   Maximum="100" 
-                                   SmallChange="5" 
-                                   LargeChange="10" 
-                                   Width="100" 
-                                   VerticalAlignment="Center"
-                                   SpinButtonPlacementMode="Compact"
-                                   ValueChanged="DiscountBox_ValueChanged"/>
-                                <TextBlock Text="%" VerticalAlignment="Center" Foreground="#555555"/>
+            
+                            <TextBlock Text="Đổi điểm (50 điểm = 10.000đ):" Grid.Row="2" Grid.Column="0" FontSize="15" Foreground="#555555" Margin="0,8,0,8"/>
+                            <StackPanel x:Name="UsePointsPanel" Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="5" Visibility="Collapsed">
+                                <NumberBox x:Name="UsePointsBox"
+                                    Value="0" Minimum="0" Maximum="0" Width="100"
+                                    ValueChanged="UsePointsBox_ValueChanged"
+                                    KeyDown="UsePointsBox_KeyDown"/>
+                                <TextBlock Text="điểm" VerticalAlignment="Center"/>
                             </StackPanel>
+                            <TextBlock Text="Số tiền được giảm:" Grid.Row="3" Grid.Column="0" FontSize="15" Foreground="#555555" Margin="0,8,0,8"/>
+                            <TextBlock x:Name="DiscountFromPointsTextBlock" Text="- 0 ₫" Grid.Row="3" Grid.Column="1" FontSize="15" Foreground="Green" Margin="0,8,0,8" Visibility="Collapsed"/>
 
-                            <TextBlock Text="Thành tiền:" Grid.Row="2" Grid.Column="0" FontSize="18" FontWeight="Bold" Foreground="#4A2B0F" Margin="0,10,0,0"/>
-                            <TextBlock x:Name="FinalPriceTextBlock" Text="0 ₫" Grid.Row="2" Grid.Column="1" FontSize="18" FontWeight="Bold" Foreground="#8B4513" Margin="0,10,0,0"/>
+                            <TextBlock Text="Số tiền cần trả:" Grid.Row="4" Grid.Column="0" FontSize="18" FontWeight="Bold" Foreground="#4A2B0F" Margin="0,10,0,0"/>
+                            <TextBlock x:Name="FinalPriceTextBlock" Text="0 ₫" Grid.Row="4" Grid.Column="1" FontSize="18" FontWeight="Bold" Foreground="#8B4513" Margin="0,10,0,0"/>
                         </Grid>
                     </StackPanel>
                 </Border>
@@ -164,12 +163,27 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <AutoSuggestBox x:Name="GuestSearchBox" 
-                Style="{StaticResource CafeAutoSuggestBoxStyle}"
-                PlaceholderText="Tìm khách hàng (tên/SĐT)"
-                TextChanged="GuestSearchBox_TextChanged"
-                QuerySubmitted="GuestSearchBox_QuerySubmitted"
-                SuggestionChosen="GuestSearchBox_SuggestionChosen"/>
+                            <AutoSuggestBox x:Name="GuestSearchBox"
+                             PlaceholderText="Tìm khách hàng (tên/SĐT)"
+                             TextChanged="GuestSearchBox_TextChanged"
+                             QuerySubmitted="GuestSearchBox_QuerySubmitted"
+                             SuggestionChosen="GuestSearchBox_SuggestionChosen"
+                             Background="White"
+                             Foreground="Black"
+                             BorderBrush="#E8D0C0"
+                             BorderThickness="1"
+                             CornerRadius="6"
+                             Padding="8">
+                                <AutoSuggestBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Vertical">
+                                            <TextBlock Text="{Binding Name}" FontWeight="Bold" Foreground="Black"/>
+                                            <TextBlock Text="{Binding Phone}" FontSize="12" Foreground="Gray"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </AutoSuggestBox.ItemTemplate>
+                            </AutoSuggestBox>
+
                             <Button x:Name="ClearGuestButton" Grid.Column="1" Margin="8,0,0,0" Click="ClearGuestButton_Click" Background="#8B4513" Foreground="White" CornerRadius="6">
                                 <FontIcon Glyph="&#xE711;" FontSize="12"/>
                             </Button>
@@ -189,6 +203,10 @@
                                     <StackPanel Orientation="Horizontal" Spacing="5">
                                         <FontIcon Glyph="&#xE8CB;" FontSize="12" Foreground="#8B4513"/>
                                         <TextBlock x:Name="GuestPointsTextBlock" Text="Điểm: 0" Foreground="#555555" FontSize="13"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Spacing="5">
+                                        <FontIcon Glyph="&#xE8A7;" FontSize="12" Foreground="#8B4513"/>
+                                        <TextBlock x:Name="GuestAvailablePointsTextBlock" Text="Điểm khả dụng: 0" Foreground="#555555" FontSize="13"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal" Spacing="5">
                                         <FontIcon Glyph="&#xE734;" FontSize="12" Foreground="#8B4513"/>
@@ -213,6 +231,12 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
+            <Button x:Name="PrintButton" Grid.Column="0" Click="PrintButton_Click" Padding="20,10" Background="#8B4513" Foreground="White" BorderThickness="0" CornerRadius="6">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <FontIcon Glyph="&#xE749;" FontSize="12"/>
+                             <TextBlock Text="In hóa đơn"/>
+                </StackPanel>
+            </Button>
 
             <Button x:Name="CancelButton" Grid.Column="1" Margin="0,0,15,0" Click="CancelButton_Click" Padding="20,10" Background="#F5F5F5" Foreground="#555555" BorderBrush="#DDDDDD" CornerRadius="6">
                 <StackPanel Orientation="Horizontal" Spacing="8">

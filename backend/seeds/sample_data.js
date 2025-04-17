@@ -89,30 +89,34 @@ exports.seed = async function(knex) {
       name: 'Lê Thị Hương',
       phone: '0912345678',
       email: 'huong.le@example.com',
-      points: 150,
+      totalPoints: 150,
+      availablePoints: 150,
       memberSince: '2024-01-15',
-      membershipLevel: 'Silver',
+      membershipLevel: 'Bạc',
       notes: 'Khách hàng thường xuyên'
     },
     {
       name: 'Đỗ Văn Nam',
       phone: '0987654321',
       email: 'nam.do@example.com',
-      points: 320,
+      totalPoints: 320,
+      availablePoints: 320,
       memberSince: '2023-11-20',
-      membershipLevel: 'Gold',
+      membershipLevel: 'Vàng',
       notes: 'Thích đồ uống không đường'
     },
     {
       name: 'Trần Thanh Hà',
       phone: '0976543210',
       email: 'ha.tran@example.com',
-      points: 50,
+      totalPoints: 50,
+      availablePoints: 50,
       memberSince: '2024-03-05',
       membershipLevel: 'Regular',
       notes: ''
     }
   ]);
+  
 
   // Thêm dữ liệu cho bảng PaymentMethod
   await knex('PaymentMethod').insert([

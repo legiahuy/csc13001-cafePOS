@@ -65,7 +65,8 @@ exports.up = function(knex) {
       table.string('name', 100).notNullable();
       table.string('phone', 20);
       table.string('email', 100);
-      table.integer('points').notNullable().defaultTo(0);
+      table.integer('totalPoints').notNullable().defaultTo(0);
+      table.integer('availablePoints').notNullable().defaultTo(0);
       table.date('memberSince').notNullable().defaultTo(knex.fn.now());
       table.string('membershipLevel', 50).defaultTo('Regular');
       table.string('notes', 500);

@@ -267,7 +267,8 @@ type Guest implements Node {
   name: String!
   phone: String
   email: String
-  points: Int!
+  totalPoints: Int!
+  availablePoints: Int!
   memberSince: Date!
   membershipLevel: String
   notes: String
@@ -827,8 +828,10 @@ enum GuestsOrderBy {
   PHONE_DESC
   EMAIL_ASC
   EMAIL_DESC
-  POINTS_ASC
-  POINTS_DESC
+  TOTAL_POINTS_ASC
+  TOTAL_POINTS_DESC
+  AVAILABLE_POINTS_ASC
+  AVAILABLE_POINTS_DESC
   MEMBER_SINCE_ASC
   MEMBER_SINCE_DESC
   MEMBERSHIP_LEVEL_ASC
@@ -849,8 +852,10 @@ input GuestCondition {
   phone: String
   "Checks for equality with the object’s `email` field."
   email: String
-  "Checks for equality with the object’s `points` field."
-  points: Int
+  "Checks for equality with the object’s `totalPoints` field."
+  totalPoints: Int
+  "Checks for equality with the object’s `availablePoints` field."
+  availablePoints: Int
   "Checks for equality with the object’s `memberSince` field."
   memberSince: Date
   "Checks for equality with the object’s `membershipLevel` field."
@@ -1414,7 +1419,8 @@ input GuestInput {
   name: String!
   phone: String
   email: String
-  points: Int
+  totalPoints: Int
+  availablePoints: Int
   memberSince: Date
   membershipLevel: String
   notes: String
@@ -1914,7 +1920,8 @@ input GuestPatch {
   name: String
   phone: String
   email: String
-  points: Int
+  totalPoints: Int
+  availablePoints: Int
   memberSince: Date
   membershipLevel: String
   notes: String
