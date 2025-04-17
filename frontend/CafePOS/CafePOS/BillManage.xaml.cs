@@ -168,7 +168,7 @@ namespace CafePOS.Views
                     DateCheckOut = bill.DateCheckOut?.ToString("dd/MM/yyyy HH:mm"),
                     StatusText = bill.Status == 1 ? "Đã thanh toán" : "Chưa thanh toán",
                     TotalAmount = bill.TotalAmount.ToString("C0", CultureInfo.GetCultureInfo("vi-VN")),
-                    Discount = bill.Discount.ToString("P0"),
+                    Discount = $"{bill.Discount:0}%",
                     FinalAmount = bill.FinalAmount.ToString("C0", CultureInfo.GetCultureInfo("vi-VN")),
                     TableLabel = $"Bàn {bill.IdTable}",
                     bill.PaymentMethod

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using CafePOS.DTO;
+using System.Threading;
 
 namespace CafePOS.DAO
 {
@@ -50,13 +51,25 @@ namespace CafePOS.DAO
         }
 
 
-        public async Task<bool> CheckOutAsync(int id, float discount, float totalPrice)
+        public async Task<bool> CheckOutAsync(int id, float discount, float finalAmount)
         {
             try
             {
                 var client = DataProvider.Instance.Client;
                 string dateCheckout = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
-                var result = await client.UpdateBillStatus.ExecuteAsync(id, discount,dateCheckout ,totalPrice);
+                string paymentMethod = "Tiền mặt"; 
+                
+                // Calculate original total from final amount and discount
+                float originalTotal = finalAmount * 100 / (100 - discount);
+                
+                var result = await client.UpdateBillStatus.ExecuteAsync(
+                    id, 
+                    discount, 
+                    dateCheckout, 
+                    originalTotal,  // Total amount before discount
+                    finalAmount,    // Final amount after discount
+                    paymentMethod
+                );
                 var updatedBill = result.Data?.UpdateBillById?.Bill;
                 return updatedBill?.Status == 1;
             }
