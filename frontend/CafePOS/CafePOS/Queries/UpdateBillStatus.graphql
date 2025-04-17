@@ -1,11 +1,39 @@
-﻿mutation UpdateBillStatus($id: Int!, $discount: Float!, $paymentMethod: Int!, $idGuest: Int, $paymentNote: String, $dateCheckOut: Datetime) {
+﻿mutation UpdateBillStatus(
+  $id: Int!,
+  $discount: Float!,
+  $paymentMethod: Int!,
+  $guestId: Int,
+  $paymentNotes: String,
+  $dateCheckOut: Datetime,
+  $totalAmount: Float!,
+  $finalAmount: Float!,
+  $idStaff: Int!          
+) {
   updateBillById(
-    input: {id: $id, billPatch: {status: 1, discount: $discount, paymentMethod: $paymentMethod, idGuest: $idGuest, paymentNotes: $paymentNote, dateCheckOut: $dateCheckOut}}
+    input: {
+      id: $id,
+      billPatch: {
+        status: 1,
+        paymentMethod: $paymentMethod,
+        discount: $discount,
+        idGuest: $guestId,
+        paymentNotes: $paymentNotes,
+        dateCheckOut: $dateCheckOut,
+        totalAmount: $totalAmount,
+        finalAmount: $finalAmount,
+        idStaff: $idStaff    
+      }
+    }
   ) {
     bill {
       id
       status
+      totalAmount
+      finalAmount
+      paymentMethod
       discount
+      dateCheckOut
+      idStaff               
     }
   }
 }

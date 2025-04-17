@@ -2,27 +2,30 @@
   allGuests {
     edges {
       node {
-        email
         id
+        name
+        email
+        phone
+        totalPoints
+        availablePoints
         memberSince
         membershipLevel
-        name
         notes
-        phone
-        points
       }
     }
   }
 }
 
+
 mutation CreateGuest(
   $name: String!, 
-  $email: String!, 
   $phone: String!, 
-  $points: Int!, 
+  $email: String!, 
+  $totalPoints: Int!, 
+  $availablePoints: Int!,
   $notes: String, 
   $membershipLevel: String, 
-  $memberSince: Date, 
+  $memberSince: Date
 ) {
   createGuest(
     input: {
@@ -30,23 +33,61 @@ mutation CreateGuest(
         name: $name,
         email: $email,
         phone: $phone,
-        points: $points,
+        totalPoints: $totalPoints,
+        availablePoints: $availablePoints,
         notes: $notes,
         membershipLevel: $membershipLevel,
-        memberSince: $memberSince,
+        memberSince: $memberSince
       }
     }
   ) {
     guest {
       id
       name
-      email
-      phone
-      points
-      notes
-      membershipLevel
-      memberSince
+      totalPoints
+      availablePoints
     }
   }
 }
 
+
+mutation UpdateGuest(
+  $id: Int!,
+  $name: String!,
+  $phone: String!,
+  $email: String!,
+  $totalPoints: Int!,
+  $availablePoints: Int!,
+  $notes: String,
+  $membershipLevel: String,
+  $memberSince: Date!
+) {
+  updateGuestById(
+    input: {
+      id: $id,
+      guestPatch: {
+        name: $name,
+        phone: $phone,
+        email: $email,
+        totalPoints: $totalPoints,
+        availablePoints: $availablePoints,
+        notes: $notes,
+        membershipLevel: $membershipLevel,
+        memberSince: $memberSince
+      }
+    }
+  ) {
+    guest {
+      id
+      name
+    }
+  }
+}
+
+
+
+mutation DeleteGuest($id: Int!) {
+  deleteGuestById(input: { id: $id }) {
+    deletedGuestId
+  }
+}

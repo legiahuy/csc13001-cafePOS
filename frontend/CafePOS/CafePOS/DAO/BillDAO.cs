@@ -18,13 +18,6 @@ namespace CafePOS.DAO
 
         private BillDAO() { }
 
-        /// <summary>
-        /// Success: bill ID
-        /// Fail: -1
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="status"></param>
-        /// <returns></returns>
         public async Task<int> GetUncheckBillIDByTableID(int id, int status)
         {
             try
@@ -48,17 +41,26 @@ namespace CafePOS.DAO
             }
         }
 
-
-        public async Task<bool> CheckOutAsync(int id, float discount, int paymentMethod, int? guestId, string? note)
+        public async Task<bool> CheckOutAsync(int id, double totalAmount, double finalAmount, int paymentMethod, int? guestId, string? paymentNotes, int idStaff)
         {
             try
             {
-
                 var client = DataProvider.Instance.Client;
-
                 var dateCheckOut = DateTime.UtcNow.ToString("o");
 
-                var result = await client.UpdateBillStatus.ExecuteAsync(id, discount, paymentMethod, guestId, note, dateCheckOut);
+                var result = await client.UpdateBillStatus.ExecuteAsync(
+                    id,
+                    discount: 0,
+                    paymentMethod,
+                    guestId,
+                    paymentNotes,
+                    dateCheckOut,
+                    totalAmount,
+                    finalAmount,
+                    idStaff   
+                );
+
+
                 var updatedBill = result.Data?.UpdateBillById?.Bill;
                 return updatedBill?.Status == 1;
             }
@@ -85,7 +87,6 @@ namespace CafePOS.DAO
             }
         }
 
-
         public async Task<List<CafeTable>> GetAllCafeTablesAsync()
         {
             var client = DataProvider.Instance.Client;
@@ -98,6 +99,7 @@ namespace CafePOS.DAO
 
             return tableList;
         }
+
         public async Task<int> InsertBillAsync(int idTable, int idStaff)
         {
             var client = DataProvider.Instance.Client;
@@ -114,10 +116,10 @@ namespace CafePOS.DAO
             var result = await client.GetAllBills.ExecuteAsync();
 
             var maxId = result.Data?.AllBills?.Edges?
-                .Where(e => e.Node != null)  
-                .Select(e => e.Node.Id)     
-                .DefaultIfEmpty(1)          
-                .Max() ?? 1;                      
+                .Where(e => e.Node != null)
+                .Select(e => e.Node.Id)
+                .DefaultIfEmpty(1)
+                .Max() ?? 1;
 
             return maxId;
         }
@@ -136,8 +138,5 @@ namespace CafePOS.DAO
                 return false;
             }
         }
-
     }
 }
-
-

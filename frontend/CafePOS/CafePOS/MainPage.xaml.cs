@@ -92,7 +92,7 @@ namespace CafePOS
                 case "Customers":
                     PageTitleText.Text = "Quản lý khách hàng";
                     PageDescriptionText.Text = "Lưu trữ thông tin và theo dõi lịch sử mua hàng";
-                    // ContentFrame.Navigate(typeof(CustomersPage));
+                    ContentFrame.Navigate(typeof(CustomersPage));
                     break;
 
                 case "Payments":
