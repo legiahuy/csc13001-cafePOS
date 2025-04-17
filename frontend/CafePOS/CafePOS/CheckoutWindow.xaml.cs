@@ -198,6 +198,16 @@ namespace CafePOS
 
         private void UsePointsBox_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
         {
+            int pointsToUse = (int)sender.Value;
+
+            // Validate luôn khi thay đổi
+            if (pointsToUse > 0 && (pointsToUse < 50 || pointsToUse % 50 != 0))
+            {
+                _ = ShowDialog("Lưu ý", "Bạn cần nhập bội số của 50 điểm để đổi!");
+                sender.Value = 0;
+                return;
+            }
+
             UpdatePrices();
         }
         private async void UsePointsBox_KeyDown(object sender, KeyRoutedEventArgs e)
@@ -206,11 +216,8 @@ namespace CafePOS
             {
                 int pointsToUse = (int)UsePointsBox.Value;
 
-                if (pointsToUse < 50 || pointsToUse % 50 != 0)
-                {
-                    await ShowDialog("Lưu ý", "Bạn cần nhập bội số của 50 điểm để đổi!");
+                if (pointsToUse == 0)
                     return;
-                }
 
                 double discountFromPoints = (pointsToUse / 50) * 10000;
                 string formattedDiscount = discountFromPoints.ToString("C0", _culture);
@@ -233,21 +240,18 @@ namespace CafePOS
 
                 if (result == ContentDialogResult.Primary)
                 {
-                    // Người dùng đồng ý
                     DiscountFromPointsTextBlock.Text = $"Giảm từ đổi điểm: {formattedDiscount}";
                     DiscountFromPointsTextBlock.Visibility = Visibility.Visible;
                     UpdatePrices();
                 }
                 else
                 {
-                    // Người dùng huỷ
                     UsePointsBox.Value = 0;
                     DiscountFromPointsTextBlock.Visibility = Visibility.Collapsed;
                     UpdatePrices();
                 }
             }
         }
-
 
 
         private void GuestSearchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
@@ -276,36 +280,6 @@ namespace CafePOS
             if (args.ChosenSuggestion is Guest guest)
             {
                 SelectGuest(guest);
-            }
-            else if (!string.IsNullOrWhiteSpace(sender.Text))
-            {
-                // Auto-create guest if not found
-                string name = sender.Text.Trim();
-                Guest autoGuest = new Guest
-                {
-                    Name = name,
-                    Phone = null,
-                    Email = null,
-                    Notes = null,
-                    TotalPoints = 0,
-                    AvailablePoints = 0,
-                    MembershipLevel = "Regular",
-                    MemberSince = DateTime.Now
-                };
-
-                _ = DispatcherQueue.TryEnqueue(async () =>
-                {
-                    int guestId = await GuestDAO.Instance.AddGuestAsync(
-                        autoGuest.Name, "", "", null, 0,0, "Regular", DateOnly.FromDateTime(DateTime.Now));
-
-                    if (guestId > 0)
-                    {
-                        autoGuest.Id = guestId;
-                        _guestList.Add(autoGuest);
-                        SelectGuest(autoGuest);
-                        await ShowDialog("Khách hàng mới", $"Đã tạo khách hàng \"{autoGuest.Name}\".");
-                    }
-                });
             }
         }
 

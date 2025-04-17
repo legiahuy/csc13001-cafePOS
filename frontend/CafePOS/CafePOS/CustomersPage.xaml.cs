@@ -34,7 +34,7 @@ namespace CafePOS
             }
             catch (Exception ex)
             {
-                await ShowMessageAsync("Error loading guests: " + ex.Message);
+                await ShowMessageAsync("Lỗi tải khách hàng: " + ex.Message);
             }
         }
 
@@ -42,7 +42,7 @@ namespace CafePOS
         {
             selectedGuest = null;
             ClearForm();
-            GuestDialog.Title = "Add Customer";
+            GuestDialog.Title = "Thêm khách hàngs";
             _ = GuestDialog.ShowAsync();
         }
 
@@ -68,7 +68,7 @@ namespace CafePOS
                 }
 
                 NotesTextBox.Text = guest.Notes ?? "";
-                GuestDialog.Title = "Edit Customer";
+                GuestDialog.Title = "Chỉnh sửa thông tin khách hàng";
                 _ = GuestDialog.ShowAsync();
             }
         }
@@ -80,9 +80,9 @@ namespace CafePOS
                 var confirm = new ContentDialog
                 {
                     Title = "Confirm Deletion",
-                    Content = $"Are you sure you want to delete '{guest.Name}'?",
-                    PrimaryButtonText = "Delete",
-                    CloseButtonText = "Cancel",
+                    Content = $"Bạn có chắc chắn xóa '{guest.Name}'?",
+                    PrimaryButtonText = "Xóa",
+                    CloseButtonText = "Hủy",
                     XamlRoot = this.XamlRoot
                 };
 
@@ -91,7 +91,7 @@ namespace CafePOS
                 {
                     bool success = await GuestDAO.Instance.DeleteGuestAsync(guest.Id);
                     if (success) await LoadGuestsAsync();
-                    else await ShowMessageAsync("Failed to delete guest.");
+                    else await ShowMessageAsync("Xóa khách hàng thất bại.");
                 }
             }
         }
@@ -112,7 +112,7 @@ namespace CafePOS
             if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(phone))
             {
                 args.Cancel = true;
-                await ShowMessageAsync("Please enter name and phone.");
+                await ShowMessageAsync("Hãy nhập tên và số điện thoại.");
                 return;
             }
 
@@ -153,9 +153,9 @@ namespace CafePOS
         {
             ContentDialog dialog = new ContentDialog
             {
-                Title = "Notification",
+                Title = "Thông báo",
                 Content = message,
-                CloseButtonText = "Close",
+                CloseButtonText = "Đóng",
                 XamlRoot = this.XamlRoot
             };
 

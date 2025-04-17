@@ -20,63 +20,66 @@
             <Button Content="➕ Thêm khách hàng" Click="AddGuestButton_Click"/>
         </StackPanel>
 
-        <!-- Tiêu đề bảng -->
-        <Grid Grid.Row="1" Background="#EFEFEF" BorderBrush="#E0E0E0" BorderThickness="1" Margin="10,0,10,5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2.5*"/>
-                <ColumnDefinition Width="1.5*"/>
-                <ColumnDefinition Width="2.5*"/>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="1.5*"/>
-                <ColumnDefinition Width="1.5*"/>
-                <ColumnDefinition Width="2*"/>
-            </Grid.ColumnDefinitions>
+        <!-- Bảng khách hàng (giống staff) -->
+        <StackPanel Grid.Row="2">
+            <!-- Tiêu đề bảng -->
+            <Grid Background="#EFEFEF" BorderBrush="#E0E0E0" BorderThickness="1" Margin="10,0,10,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2.5*"/>
+                    <ColumnDefinition Width="1.5*"/>
+                    <ColumnDefinition Width="2.5*"/>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="1.5*"/>
+                    <ColumnDefinition Width="1.5*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
 
-            <TextBlock Text="Tên" Grid.Column="0" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5"/>
-            <TextBlock Text="SĐT" Grid.Column="1" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5"/>
-            <TextBlock Text="Email" Grid.Column="2" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5"/>
-            <TextBlock Text="Hạng thành viên" Grid.Column="3" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5"/>
-            <TextBlock Text="Điểm" Grid.Column="4" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5"/>
-            <TextBlock Text="Điểm khả dụng" Grid.Column="5" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5"/>
-            <TextBlock Text="Thao tác" Grid.Column="6" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5"/>
-        </Grid>
+                <TextBlock Text="Tên" Grid.Column="0" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5"/>
+                <TextBlock Text="SĐT" Grid.Column="1" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5"/>
+                <TextBlock Text="Email" Grid.Column="2" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5"/>
+                <TextBlock Text="Hạng thành viên" Grid.Column="3" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5"/>
+                <TextBlock Text="Điểm" Grid.Column="4" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5"/>
+                <TextBlock Text="Điểm khả dụng" Grid.Column="5" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5"/>
+                <TextBlock Text="Thao tác" Grid.Column="6" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5"/>
+            </Grid>
 
-        <!-- Danh sách khách hàng -->
-        <ListView x:Name="GuestListView"
-                  Grid.Row="2"
+            <!-- Danh sách khách hàng -->
+            <ListView x:Name="GuestListView"
                   Margin="10,0,10,10"
                   SelectionMode="None"
                   Background="#F9F9F9"
                   BorderThickness="1"
-                  BorderBrush="#E0E0E0">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Grid Padding="5" Background="White" Margin="0,0,0,5">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2.5*"/>
-                            <ColumnDefinition Width="1.5*"/>
-                            <ColumnDefinition Width="2.5*"/>
-                            <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="1.5*"/>
-                            <ColumnDefinition Width="1.5*"/>
-                            <ColumnDefinition Width="2*"/>
-                        </Grid.ColumnDefinitions>
+                  BorderBrush="#E0E0E0"
+                  ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="5" Background="White" Margin="0,0,0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2.5*"/>
+                                <ColumnDefinition Width="1.5*"/>
+                                <ColumnDefinition Width="2.5*"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="1.5*"/>
+                                <ColumnDefinition Width="1.5*"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="{Binding Name}" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding Phone}" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding Email}" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding MembershipLevel}" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding TotalPoints}" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding AvailablePoints}" Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Name}" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Phone}" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Email}" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding MembershipLevel}" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding TotalPoints}" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding AvailablePoints}" Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-                        <StackPanel Orientation="Horizontal" Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
-                            <Button Content="✏️" Click="EditGuest_Click" DataContext="{Binding}"/>
-                            <Button Content="🗑️" Click="DeleteGuest_Click" DataContext="{Binding}"/>
-                        </StackPanel>
-                    </Grid>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                            <StackPanel Orientation="Horizontal" Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
+                                <Button Content="✏️" Click="EditGuest_Click" DataContext="{Binding}"/>
+                                <Button Content="🗑️" Click="DeleteGuest_Click" DataContext="{Binding}"/>
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackPanel>
 
         <!-- ContentDialog nhập/sửa -->
         <ContentDialog
