@@ -124,8 +124,8 @@
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Spacing="12">
-                                        <Image Source="{Binding IconUrl}" Width="24" Height="24"/>
-                                        <TextBlock Text="{Binding Name}" Foreground="#333333"/>
+                                        <Image Source="{Binding IconUrl}" Width="50" Height="50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding Name}" Foreground="#333333" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>

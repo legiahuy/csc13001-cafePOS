@@ -98,7 +98,7 @@ namespace CafePOS
                 case "Payments":
                     PageTitleText.Text = "Phương thức thanh toán";
                     PageDescriptionText.Text = "Quản lý các phương thức thanh toán cho khách hàng";
-                    // ContentFrame.Navigate(typeof(PaymentsPage));
+                    ContentFrame.Navigate(typeof(PaymentMethodPage));
                     break;
 
                 case "Invoices":
