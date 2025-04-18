@@ -124,7 +124,7 @@ exports.seed = async function(knex) {
       name: 'Tiền mặt',
       description: 'Thanh toán bằng tiền mặt',
       isActive: true,
-      iconUrl: '/Assets/Payment/cash.png',
+      iconUrl: '/Assets/Payment/cash.jpg',
       processingFee: 0,
       requiresVerification: false
     },
@@ -139,7 +139,7 @@ exports.seed = async function(knex) {
     {
       name: 'Momo',
       description: 'Thanh toán qua ví điện tử Momo',
-      isActive: true,
+      isActive: false,
       iconUrl: '/Assets/Payment/momo.png',
       processingFee: 0.01, // 1% fee
       requiresVerification: false

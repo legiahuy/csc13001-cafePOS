@@ -13,3 +13,43 @@
     }
   }
 }
+
+mutation UpdatePaymentMethod($id: Int!, $name: String!, $description: String, $isActive: Boolean!, $iconUrl: String) {
+  updatePaymentMethodById(
+    input: {paymentMethodPatch: {description: $description, iconUrl: $iconUrl, isActive: $isActive, name: $name}, id: $id}
+  ) {
+    paymentMethod {
+      description
+      iconUrl
+      id
+      isActive
+      name
+      processingFee
+      requiresVerification
+    }
+  }
+}
+
+mutation DeletePaymentMethodById($id: Int!) {
+  deletePaymentMethodById(input: {id: $id}) {
+    deletedPaymentMethodId
+  }
+}
+
+mutation CreatePaymentMethod($name: String!, $description: String, $isActive: Boolean!, $iconUrl: String) {
+  createPaymentMethod(
+    input: {paymentMethod: {requiresVerification: false, processingFee: 1.5, name: $name, isActive: $isActive, iconUrl: $iconUrl, description: $description}}
+  ) {
+    paymentMethod {
+      description
+      id
+      isActive
+      name
+      requiresVerification
+      processingFee
+      iconUrl
+    }
+  }
+}
+
+

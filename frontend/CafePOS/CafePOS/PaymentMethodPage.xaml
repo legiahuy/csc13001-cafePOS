@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="CafePOS.PaymentMethodPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CafePOS"
+    xmlns:dto="using:CafePOS.DTO"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:converter="using:CafePOS.Converter"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Resources>
+        <converter:BooleanToTextColorConverter x:Key="BoolToStatusConverter"/>
+    </Page.Resources>
+
+    <Grid Padding="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- LEFT: Material List -->
+        <Border Grid.Column="0" 
+        Background="White" 
+        CornerRadius="8" 
+        Margin="0,0,10,0" 
+        BorderThickness="1" 
+        BorderBrush="#E0E0E0">
+
+            <ScrollViewer>
+                <StackPanel>
+                    <TextBlock Text="Phương thức thanh toán" 
+                           FontSize="22" 
+                           FontWeight="Bold" 
+                           Margin="10" 
+                           HorizontalAlignment="Center"/>
+
+                    <Grid Background="#EFEFEF" BorderBrush="#E0E0E0" BorderThickness="1" Margin="10,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Hình ảnh"
+                            FontWeight="Bold"
+                            HorizontalAlignment="Center"
+                            Padding="5"/>
+                        <TextBlock Text="Tên"
+                            FontWeight="Bold"
+                            HorizontalAlignment="Center"
+                            Grid.Column="1"
+                            Padding="5"/>
+                        <TextBlock Text="Mô tả"
+                            FontWeight="Bold"
+                            HorizontalAlignment="Center"
+                            Grid.Column="2"
+                            Padding="5"/>
+                        <TextBlock Text="Trạng thái hoạt động"
+                            FontWeight="Bold"
+                            HorizontalAlignment="Center"
+                            Grid.Column="3"
+                            Padding="5"/>
+                    </Grid>
+
+                    <!-- Data Rows -->
+                    <ListView 
+                     x:Name="PaymentListView" 
+                     Background="#F9F9F9" 
+                     SelectionChanged="PaymentListView_SelectionChanged"
+                     BorderThickness="1" 
+                     BorderBrush="#E0E0E0"
+                     Margin="10,5,10,10"
+                     SelectionMode="Single"
+                     VerticalAlignment="Stretch">
+
+                        <ListView.ItemContainerTransitions>
+                            <TransitionCollection />
+                        </ListView.ItemContainerTransitions>
+
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="dto:PaymentMethod">
+                                <Grid Padding="5" Background="{Binding IsActive, Converter={StaticResource BoolToStatusConverter}, ConverterParameter=Background}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Image Source="{x:Bind IconUrl}" 
+                                        Height="150" 
+                                        Width="150"
+                                        Stretch="UniformToFill"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"/>
+                                    <TextBlock Text="{x:Bind Name}" 
+                                        Grid.Column="1"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"/>
+                                    <TextBlock Text="{x:Bind Description}" 
+                                        Grid.Column="2"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding IsActive, Converter={StaticResource BoolToStatusConverter}, ConverterParameter=Text}"
+                                        Grid.Column="3"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <!-- RIGHT: Material Details and Actions -->
+        <Border Grid.Column="1" Background="White" CornerRadius="8" BorderThickness="1" BorderBrush="#E0E0E0" Padding="20">
+            <ScrollViewer>
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Chi tiết phương thức" FontSize="22" FontWeight="Bold" Foreground="#333333" HorizontalAlignment="Center"/>
+
+                    <!-- Material Image -->
+                    <Border Width="150" Height="150" CornerRadius="8" BorderThickness="1" BorderBrush="#E0E0E0" HorizontalAlignment="Center" Margin="0,10">
+                        <Image x:Name="PaymentImage" Stretch="UniformToFill"/>
+                    </Border>
+                    <Button x:Name="SelectImageButton" Content="Chọn ảnh" HorizontalAlignment="Center" Click="SelectImageButton_Click"/>
+
+                    <!-- Material Details -->
+                    <TextBox x:Name="PaymentIDBox" Header="ID" IsReadOnly="True"/>
+                    <TextBox x:Name="PaymentNameBox" Header="Tên phương thức"/>
+                    <TextBox x:Name="PaymentDescriptionBox" Header="Mô tả phương thức"/>
+                    <ComboBox x:Name="StatusComboBox" Header="Trạng thái hoạt động"/>
+
+                    <!-- Action Buttons -->
+                    <Grid Margin="0,15,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Button Content="Thêm mới" Background="#4CAF50" Foreground="White" 
+                            Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" 
+                            Margin="0,0,5,5" Click="btnAdd_Click"/>
+
+                        <Button Content="Cập nhật" Background="#FF9800" Foreground="White" 
+                            Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" 
+                            Margin="5,0,0,5" Click="btnEdit_Click"/>
+
+                        <Button Content="Xóa" Background="#F44336" Foreground="White" 
+                            Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" 
+                            Margin="0,5,5,0" Click="btnDelete_Click"/>
+
+                        <Button Content="Làm mới" Background="#2196F3" Foreground="White" 
+                            Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" 
+                            Margin="5,5,0,0" Click="btnClear_Click"/>
+                    </Grid>
+
+                    <!-- Refresh List Button -->
+                    <Button Content="Tải lại danh sách" HorizontalAlignment="Center" Click="btnView_Click" Margin="0,10,0,0"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</Page>
