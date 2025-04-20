@@ -31,48 +31,37 @@ namespace CafePOS.DAO
             return paymentMethods;
         }
 
-        //    public async Task<bool> CreateAccountAsync(string userName, string displayName, string password, int type)
-        //    {
-        //        var client = DataProvider.Instance.Client;
-        //        var result = await client.CreateAccount.ExecuteAsync(userName, displayName, password, type);
-        //        return result.Data?.CreateAccount?.Account?.UserName != null;
-        //    }
+        public async Task<List<PaymentMethod>> GetAllPaymentMethodAsync()
+        {
+            var client = DataProvider.Instance.Client;
+            var result = await client.GetAllPaymentMethod.ExecuteAsync();
+            var paymentMethods = result.Data?.AllPaymentMethods?.Edges?
+                .Where(e => e.Node != null)
+                .Select(e => new PaymentMethod(e.Node!))
+                .ToList() ?? new List<PaymentMethod>();
+            return paymentMethods;
+        }
 
-        //    public async Task<int> GetAccountTypeAsync(string userName)
-        //    {
-        //        var client = DataProvider.Instance.Client;
-        //        var result = await client.GetAccountByUserName.ExecuteAsync(userName);
-        //        return result.Data?.AccountByUserName?.Type ?? 0;
-        //    }
+        public async Task<bool> UpdatePaymentMethodAsync(int id, string name, string? description, bool isActive, string? iconUrl)
+        {
+            var client = DataProvider.Instance.Client;
+            var result = await client.UpdatePaymentMethod.ExecuteAsync(id, name, description, isActive, iconUrl);
+            return result.Data?.UpdatePaymentMethodById?.PaymentMethod?.Id == id;
+        }
 
-        //    public async Task<Account> GetAccountByUserNameAsync(string userName)
-        //    {
-        //        var client = DataProvider.Instance.Client;
-        //        var result = await client.GetAccountByUserName.ExecuteAsync(userName);
-        //        var acc = result.Data?.AccountByUserName;
+        public async Task<bool> DeletePaymentMethodAsync(int id)
+        {
+            var client = DataProvider.Instance.Client;
+            var result = await client.DeletePaymentMethodById.ExecuteAsync(id);
+            string deletedPaymentMethodId = result.Data?.DeletePaymentMethodById?.DeletedPaymentMethodId!;
+            return !string.IsNullOrEmpty(deletedPaymentMethodId);
+        }
 
-        //        return new Account
-        //        {
-        //            UserName = acc?.UserName ?? "",
-        //            DisplayName = acc?.DisplayName ?? "",
-        //            Type = acc?.Type ?? 0,
-        //            Password = acc?.Password ?? ""
-        //        };
-        //    }
-        //    public async Task<bool> UpdateDisplayNameAsync(string userName, string newDisplayName)
-        //    {
-        //        var client = DataProvider.Instance.Client;
-        //        var result = await client.UpdateAccountDisplayName.ExecuteAsync(userName, newDisplayName);
-        //        return result.Data?.UpdateAccountByUserName?.Account?.DisplayName == newDisplayName;
-        //    }
-
-        //    public async Task<bool> DeleteAccountByUserNameAsync(string userName)
-        //    {
-        //        var client = DataProvider.Instance.Client;
-        //        var result = await client.DeleteAccountByUserName.ExecuteAsync(userName);
-        //        return result.Data?.DeleteAccountByUserName?.Account?.UserName != null;
-        //    }
-
-        //}
+        public async Task<int> InsertPaymentMethodAsync(string name, string? description, bool isActive, string? iconUrl)
+        {
+            var client = DataProvider.Instance.Client;
+            var result = await client.CreatePaymentMethod.ExecuteAsync(name, description, isActive, iconUrl);
+            return result.Data?.CreatePaymentMethod?.PaymentMethod?.Id ?? -1;
+        }
     }
 }

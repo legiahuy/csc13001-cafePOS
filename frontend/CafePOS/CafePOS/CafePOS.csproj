@@ -48,6 +48,7 @@
     <None Remove="LoginPage.xaml" />
     <None Remove="MainPage.xaml" />
     <None Remove="MaterialPage.xaml" />
+    <None Remove="PaymentMethodPage.xaml" />
     <None Remove="PlaceholderPage.xaml" />
     <None Remove="StaffPage.xaml" />
     <None Remove="TableManagerPage.xaml" />
@@ -127,6 +128,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\Material\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="PaymentMethodPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="CustomersPage.xaml">
