@@ -1,15 +1,38 @@
-﻿query getAllBills {
+﻿query GetAllBills {
   allBills {
     edges {
       node {
         id
-        totalAmount
-        status
-        paymentMethod
-        idTable
-        discount
-        dateCheckOut
         dateCheckIn
+        dateCheckOut
+        idTable
+        idStaff
+        idGuest
+        paymentMethod
+        status
+        totalAmount
+        discount
+        finalAmount
+        paymentNotes
+        billInfosByIdBill {
+          nodes {
+            id
+            idProduct
+            count
+            idBill
+            unitPrice
+            totalPrice
+            productByIdProduct {
+              id
+              name
+              price
+              categoryByIdCategory {
+                id
+                name
+              }
+            }
+          }
+        }
       }
     }
   }

@@ -13,3 +13,12 @@
     }
   }
 }
+
+query GetPaymentMethods {
+  allPaymentMethods {
+    nodes {
+      id
+      name
+    }
+  }
+}

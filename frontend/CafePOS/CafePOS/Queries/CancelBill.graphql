@@ -1,0 +1,23 @@
+mutation CancelBill(
+  $id: Int!,
+  $dateCheckOut: Datetime!,
+  $idStaff: Int!          
+) {
+  updateBillById(
+    input: {
+      id: $id,
+      billPatch: {
+        status: 2,
+        dateCheckOut: $dateCheckOut,
+        idStaff: $idStaff    
+      }
+    }
+  ) {
+    bill {
+      id
+      status
+      dateCheckOut
+      idStaff               
+    }
+  }
+} 

@@ -1,0 +1,338 @@
+<Page
+    x:Class="CafePOS.StatisticPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CafePOS"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:chart="using:LiveChartsCore.SkiaSharpView.WinUI"
+    xmlns:sys="using:System"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Resources>
+        <local:AxisArrayToEnumerableConverter x:Key="AxisConverter"/>
+    </Page.Resources>
+
+    <Grid Padding="20">
+        <ScrollViewer>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Filter Section -->
+                <StackPanel Grid.Row="0" Spacing="10">
+                    <TextBlock Text="Bộ lọc" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                    
+                    <Grid RowSpacing="8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Top Row Controls -->
+                        <Grid Grid.Row="0" ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Time Range Filter -->
+                            <ComboBox x:Name="TimeRangeComboBox" 
+                                    Grid.Column="0"
+                                    Width="150"
+                                    SelectionChanged="TimeRangeComboBox_SelectionChanged">
+                                <ComboBoxItem Content="Theo ngày"/>
+                                <ComboBoxItem Content="Theo tuần"/>
+                                <ComboBoxItem Content="Theo tháng"/>
+                                <ComboBoxItem Content="Theo quý"/>
+                                <ComboBoxItem Content="Theo năm"/>
+                            </ComboBox>
+
+                            <!-- Date Range Picker -->
+                            <CalendarDatePicker x:Name="StartDatePicker" 
+                                              Grid.Column="1"
+                                              PlaceholderText="Từ ngày"
+                                              Width="200"
+                                              HorizontalAlignment="Left"/>
+
+                            <CalendarDatePicker x:Name="EndDatePicker" 
+                                              Grid.Column="2"
+                                              PlaceholderText="Đến ngày"
+                                              Width="200"
+                                              HorizontalAlignment="Left"/>
+
+                            <Button x:Name="SearchButton"
+                                    Grid.Column="3"
+                                    Content="Tìm kiếm"
+                                    Click="SearchButton_Click"
+                                    Margin="0,0,8,0"/>
+
+                            <Button x:Name="ExportButton"
+                                    Grid.Column="4"
+                                    Click="ExportButton_Click">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE724;"/>
+                                    <TextBlock Text="Xuất Excel"/>
+        </StackPanel>
+                            </Button>
+                        </Grid>
+
+                        <!-- Comparison Buttons -->
+                        <StackPanel Grid.Row="1" 
+                                  Orientation="Horizontal" 
+                                  HorizontalAlignment="Left" 
+                                  Spacing="8">
+                            <Button x:Name="CompareDayButton" 
+                                    Click="CompareDayButton_Click">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE823;"/>
+                                    <TextBlock Text="So sánh với hôm qua"/>
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="CompareWeekButton" 
+                                    Click="CompareWeekButton_Click">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE823;"/>
+                                    <TextBlock Text="So sánh với tuần trước"/>
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="CompareMonthButton" 
+                                    Click="CompareMonthButton_Click">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE823;"/>
+                                    <TextBlock Text="So sánh với tháng trước"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+
+                <!-- Summary Cards -->
+                <Grid Grid.Row="1" Margin="0,20,0,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Total Revenue Card -->
+                    <Border Grid.Column="0" 
+                            Background="White" 
+                            BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                            BorderThickness="1" 
+                            CornerRadius="8" 
+                            Margin="5">
+                        <StackPanel Padding="15">
+                            <TextBlock Text="Tổng doanh thu" 
+                                     Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                            <TextBlock x:Name="TotalRevenueText" 
+                                     Text="0đ" 
+                                     Style="{ThemeResource TitleTextBlockStyle}"
+                                     Foreground="{ThemeResource SystemAccentColor}"/>
+                            <StackPanel x:Name="RevenueTrendPanel" 
+                                        Orientation="Horizontal" 
+                                        Spacing="4"
+                                        Margin="0,4,0,0">
+                                <FontIcon x:Name="RevenueTrendIcon" 
+                                         FontFamily="Segoe MDL2 Assets" 
+                                         Glyph="&#xE74A;"
+                                         Foreground="Green"
+                                         Visibility="Collapsed"/>
+                                <TextBlock x:Name="RevenueTrendText"
+                                          Foreground="Green"
+                                          VerticalAlignment="Center"
+                                          Visibility="Collapsed"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Total Bills Card -->
+                    <Border Grid.Column="1" 
+                            Background="White" 
+                            BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                            BorderThickness="1" 
+                            CornerRadius="8" 
+                            Margin="5">
+                        <StackPanel Padding="15">
+                            <TextBlock Text="Số hóa đơn" 
+                                     Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                            <TextBlock x:Name="TotalBillsText" 
+                                     Text="0" 
+                                     Style="{ThemeResource TitleTextBlockStyle}"/>
+                            <StackPanel x:Name="BillsTrendPanel" 
+                                        Orientation="Horizontal" 
+                                        Spacing="4"
+                                        Margin="0,4,0,0">
+                                <FontIcon x:Name="BillsTrendIcon" 
+                                         FontFamily="Segoe MDL2 Assets" 
+                                         Glyph="&#xE74A;"
+                                         Foreground="Green"
+                                         Visibility="Collapsed"/>
+                                <TextBlock x:Name="BillsTrendText"
+                                          Foreground="Green"
+                                          VerticalAlignment="Center"
+                                          Visibility="Collapsed"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Average Bill Value Card -->
+                    <Border Grid.Column="2" 
+                            Background="White" 
+                            BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                            BorderThickness="1" 
+                            CornerRadius="8" 
+                            Margin="5">
+                        <StackPanel Padding="15">
+                            <TextBlock Text="Giá trị trung bình/hóa đơn" 
+                                     Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                            <TextBlock x:Name="AverageBillValueText" 
+                                     Text="0đ" 
+                                     Style="{ThemeResource TitleTextBlockStyle}"/>
+                            <StackPanel x:Name="AverageTrendPanel" 
+                                        Orientation="Horizontal" 
+                                        Spacing="4"
+                                        Margin="0,4,0,0">
+                                <FontIcon x:Name="AverageTrendIcon" 
+                                         FontFamily="Segoe MDL2 Assets" 
+                                         Glyph="&#xE74A;"
+                                         Foreground="Green"
+                                         Visibility="Collapsed"/>
+                                <TextBlock x:Name="AverageTrendText"
+                                          Foreground="Green"
+                                          VerticalAlignment="Center"
+                                          Visibility="Collapsed"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Best Selling Product Card -->
+                    <Border Grid.Column="3" 
+                            Background="White" 
+                            BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                            BorderThickness="1" 
+                            CornerRadius="8" 
+                            Margin="5">
+                        <StackPanel Padding="15">
+                            <TextBlock Text="Sản phẩm bán chạy nhất" 
+                                     Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                            <TextBlock x:Name="BestSellingProductText" 
+                                     Text="Chưa có dữ liệu" 
+                                     Style="{ThemeResource TitleTextBlockStyle}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Cancelled Bills Card -->
+                    <Border Grid.Column="4" 
+                            Background="White" 
+                            BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                            BorderThickness="1" 
+                            CornerRadius="8" 
+                            Margin="5">
+                        <StackPanel Padding="15">
+                            <TextBlock Text="Số hóa đơn đã hủy" 
+                                     Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                            <TextBlock x:Name="CancelledBillsText" 
+                                     Text="0" 
+                                     Style="{ThemeResource TitleTextBlockStyle}"/>
+                            <StackPanel x:Name="CancelledTrendPanel" 
+                                        Orientation="Horizontal" 
+                                        Spacing="4"
+                                        Margin="0,4,0,0">
+                                <FontIcon x:Name="CancelledTrendIcon" 
+                                         FontFamily="Segoe MDL2 Assets" 
+                                         Glyph="&#xE74A;"
+                                         Foreground="Green"
+                                         Visibility="Collapsed"/>
+                                <TextBlock x:Name="CancelledTrendText"
+                                          Foreground="Green"
+                                          VerticalAlignment="Center"
+                                          Visibility="Collapsed"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- Charts and Tables -->
+                <Grid Grid.Row="2" Margin="0,20,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Hourly Revenue Chart -->
+                    <Border Grid.Column="0" 
+                            Grid.Row="0"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            CornerRadius="8"
+                            Padding="15">
+                        <StackPanel>
+                            <TextBlock Text="Doanh thu theo giờ" 
+                                     Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                            <chart:CartesianChart x:Name="HourlyRevenueChart"
+                                                Height="300"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Payment Methods Chart -->
+                    <Border Grid.Column="1" 
+                            Grid.Row="0"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            CornerRadius="8"
+                            Padding="15">
+                        <StackPanel>
+                            <TextBlock Text="Phương thức thanh toán" 
+                                     Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                            <chart:PieChart x:Name="PaymentMethodsChart"
+                                          Height="300"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Revenue by Category Chart -->
+                    <Border Grid.Column="0" 
+                            Grid.Row="1"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            CornerRadius="8"
+                            Padding="15">
+                        <StackPanel>
+                            <TextBlock Text="Doanh thu theo loại thức uống" 
+                                     Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                            <chart:CartesianChart x:Name="CategoryRevenueChart"
+                                                Height="300"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Product Revenue Distribution -->
+                    <Border Grid.Column="1" 
+                            Grid.Row="1"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            CornerRadius="8"
+                            Padding="15">
+                        <StackPanel>
+                            <TextBlock Text="Tỷ lệ doanh thu theo sản phẩm" 
+                                     Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                            <chart:PieChart x:Name="ProductRevenueChart"
+                                          Height="300"/>
+    </StackPanel>
+                    </Border>
+                </Grid>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Page>

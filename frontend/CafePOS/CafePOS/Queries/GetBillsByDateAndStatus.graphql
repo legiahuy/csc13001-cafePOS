@@ -1,0 +1,16 @@
+﻿query GetBillsByDateAndStatus($endDate: Datetime!, $status: Int!) {
+  allBills(condition: {dateCheckOut: $endDate, status: $status}) {
+    edges {
+      node {
+        id
+        totalAmount
+        status
+        paymentMethod
+        idTable
+        discount
+        dateCheckOut
+        dateCheckIn
+      }
+    }
+  }
+}

@@ -92,7 +92,7 @@ exports.up = function(knex) {
       table.float('totalAmount').notNullable().defaultTo(0);
       table.float('discount').defaultTo(0);
       table.float('finalAmount').notNullable().defaultTo(0);
-      table.string('paymentNotes', 500); // For additional payment information
+      table.string('paymentNotes', 500);
     })
     .createTable('BillInfo', (table) => {
       table.increments('id').primary();

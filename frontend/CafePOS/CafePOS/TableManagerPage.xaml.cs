@@ -151,7 +151,8 @@ namespace CafePOS
         }
         private float GetUnitPrice(int foodID)
         {
-            return 10000f; 
+            var selectedDrink = FoodComboBox.SelectedItem as Drink;
+            return selectedDrink?.Price ?? 0f;
         }
         private void TableItemsControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -396,6 +397,35 @@ namespace CafePOS
             }
         }
 
+        private async void CancelBill(int billId)
+        {
+            try
+            {
+                var result = await BillDAO.Instance.CancelAsync(billId);
+                if (result)
+                {
+                    // Clear the current order view
+                    OrderListView.ItemsSource = null;
+                    OrderListView.Tag = null;
+                    TotalPriceTextBlock.Text = "0 ₫";
+                    DiscountBox.Value = 0;
+
+                    // Reload the table status
+                    await LoadTable();
+
+                    await ShowDialog("Thành công", "Đã hủy hóa đơn thành công.");
+                }
+                else
+                {
+                    await ShowDialog("Lỗi", "Không thể hủy hóa đơn. Vui lòng thử lại.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error in CancelBill: {ex.Message}");
+                await ShowDialog("Lỗi", "Đã xảy ra lỗi khi hủy hóa đơn. Vui lòng thử lại.");
+            }
+        }
 
     }
 }

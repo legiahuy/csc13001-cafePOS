@@ -48,9 +48,13 @@ namespace CafePOS.DAO
                 var client = DataProvider.Instance.Client;
                 var dateCheckOut = DateTime.UtcNow.ToString("o");
 
+                // The discount is already calculated in the CheckoutWindow as discountByPoints
+                // We just need to pass totalAmount - finalAmount as the discount amount
+                double discount = totalAmount - finalAmount;
+
                 var result = await client.UpdateBillStatus.ExecuteAsync(
                     id,
-                    discount: 0,
+                    discount,  // This is now the discountByPoints value
                     paymentMethod,
                     guestId,
                     paymentNotes,
@@ -59,7 +63,6 @@ namespace CafePOS.DAO
                     finalAmount,
                     idStaff   
                 );
-
 
                 var updatedBill = result.Data?.UpdateBillById?.Bill;
                 return updatedBill?.Status == 1;
@@ -76,13 +79,23 @@ namespace CafePOS.DAO
             try
             {
                 var client = DataProvider.Instance.Client;
-                var result = await client.DeleteBillById.ExecuteAsync(id);
-                var deletedBill = result.Data?.DeleteBillById?.DeletedBillId;
-                return !string.IsNullOrEmpty(deletedBill);
+                var currentStaffId = Account.CurrentUserStaffId;
+                Debug.WriteLine($"Cancelling bill {id} with staff ID {currentStaffId}");
+                
+                var result = await client.CancelBill.ExecuteAsync(
+                    id,
+                    DateTime.UtcNow.ToString("o"),  // dateCheckOut
+                    currentStaffId   // Use current staff's ID
+                );
+
+                var updatedBill = result.Data?.UpdateBillById?.Bill;
+                Debug.WriteLine($"Cancel result - Status: {updatedBill?.Status}");
+                return updatedBill?.Status == 2;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error in CancelAsync: {ex.Message}");
+                Debug.WriteLine($"Stack trace: {ex.StackTrace}");
                 return false;
             }
         }

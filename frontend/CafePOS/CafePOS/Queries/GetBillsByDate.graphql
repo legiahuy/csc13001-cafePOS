@@ -1,0 +1,16 @@
+﻿query GetBillsByDate($checkIn: Datetime!, $checkOut: Datetime!) {
+  allBills(condition: {dateCheckIn: $checkIn, dateCheckOut: $checkOut}) {
+    edges {
+      node {
+        id
+        totalAmount
+        status
+        paymentMethod
+        idTable
+        discount
+        dateCheckOut
+        dateCheckIn
+      }
+    }
+  }
+}

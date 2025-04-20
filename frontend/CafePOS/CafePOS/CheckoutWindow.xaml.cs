@@ -449,13 +449,14 @@ namespace CafePOS
             {
                 double finalAmount = _originalTotal;
                 int pointsUsed = 0;
+                double discountByPoints = 0;
 
                 if (_selectedGuest != null && UsePointsPanel.Visibility == Visibility.Visible)
                 {
                     int pointsToUse = (int)UsePointsBox.Value;
                     int redeemablePoints = Math.Min(pointsToUse, _selectedGuest.AvailablePoints);
                     int redeemableUnits = redeemablePoints / 50;
-                    double discountByPoints = redeemableUnits * 10000;
+                    discountByPoints = redeemableUnits * 10000;
 
                     if (discountByPoints > finalAmount)
                     {
@@ -476,8 +477,6 @@ namespace CafePOS
                      paymentNotes,
                      Account.CurrentUserStaffId    // 🆕 ID của Staff đang đăng nhập
                  );
-
-
 
                 if (success)
                 {

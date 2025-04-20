@@ -1,4 +1,4 @@
-﻿using System;
+﻿                                                                                                                                                        using System;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
 using Windows.UI.Xaml;
@@ -104,7 +104,7 @@ namespace CafePOS
                 case "Invoices":
                     PageTitleText.Text = "Quản lý hoá đơn";
                     PageDescriptionText.Text = "Tra cứu và quản lý hoá đơn trong hệ thống";
-                    // ContentFrame.Navigate(typeof(InvoicesPage));
+                    ContentFrame.Navigate(typeof(BillManage));
                     break;
 
                 case "Support":
@@ -116,7 +116,7 @@ namespace CafePOS
                 case "Reports":
                     PageTitleText.Text = "Báo cáo bán hàng";
                     PageDescriptionText.Text = "Xem thống kê và báo cáo doanh thu";
-                    // ContentFrame.Navigate(typeof(ReportsPage));
+                    ContentFrame.Navigate(typeof(StatisticPage));
                     break;
             }
 

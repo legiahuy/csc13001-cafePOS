@@ -6,6 +6,13 @@
         idProduct
         count
         idBill
+        unitPrice
+        totalPrice
+        productByIdProduct {
+          id
+          name
+          price
+        }
       }
     }
   }
