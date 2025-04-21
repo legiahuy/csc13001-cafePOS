@@ -332,10 +332,23 @@ namespace CafePOS
                     detailsContent.AppendLine($"Giảm giá: {bill.FormattedDiscount}");
                     detailsContent.AppendLine($"Thành tiền: {bill.FormattedFinalAmount}");
 
+                    var scrollViewer = new ScrollViewer
+                    {
+                        Content = new TextBlock
+                        {
+                            Text = detailsContent.ToString(),
+                            TextWrapping = TextWrapping.Wrap
+                        },
+                        MaxHeight = 400, // Set maximum height for the ScrollViewer
+                        VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                        HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                        Padding = new Thickness(16)
+                    };
+
                     var dialog = new ContentDialog
                     {
                         Title = "Chi tiết hóa đơn",
-                        Content = detailsContent.ToString(),
+                        Content = scrollViewer,
                         PrimaryButtonText = "Đóng",
                         XamlRoot = App.MainAppWindow.Content.XamlRoot
                     };
