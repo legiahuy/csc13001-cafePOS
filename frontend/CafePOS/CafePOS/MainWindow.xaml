@@ -7,7 +7,30 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Title="CafePOS">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
+        <!-- App Title Bar -->
+        <Grid x:Name="AppTitleBar" Height="32" Grid.Row="0" Background="#FF202020">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Image Source="Assets/Square44x44Logo.targetsize-16.png"
+                       Width="16" Height="16"
+                       Margin="12,0,0,0"
+                       HorizontalAlignment="Left"/>
+                <TextBlock x:Name="AppTitleTextBlock"
+                           Text="CafePOS"
+                           Style="{StaticResource CaptionTextBlockStyle}"
+                           VerticalAlignment="Center"
+                           Margin="12,0,0,0"/>
+            </StackPanel>
+        </Grid>
 
-    <Frame x:Name="MainFrame" />
+        <!-- Main Content -->
+        <Grid Grid.Row="1">
+            <Frame x:Name="MainFrame" />
+        </Grid>
+    </Grid>
 </Window>

@@ -15,13 +15,11 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace CafePOS
 {
-    
+
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
@@ -36,7 +34,6 @@ namespace CafePOS
         {
             this.InitializeComponent();
         }
-
         /// <summary>
         /// Invoked when the application is launched.
         /// </summary>
@@ -47,8 +44,6 @@ namespace CafePOS
             MainAppWindow = m_window;
             m_window.Activate();
         }
-
         private Window? m_window;
-
     }
 }

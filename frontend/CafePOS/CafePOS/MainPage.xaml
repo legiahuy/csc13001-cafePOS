@@ -21,10 +21,6 @@
         </Rectangle>
 
         <!-- Decorative elements -->
-        <Canvas>
-            <Ellipse Fill="#BCD0C7" Opacity="0.2" Width="300" Height="300" Canvas.Left="-150" Canvas.Top="-100" />
-            <Ellipse Fill="#D4A373" Opacity="0.2" Width="200" Height="200" Canvas.Left="550" Canvas.Top="450" />
-        </Canvas>
 
         <Grid>
             <Grid.ColumnDefinitions>
@@ -41,10 +37,13 @@
                 </Grid.RowDefinitions>
 
                 <!-- App Logo and Title -->
-                <StackPanel Grid.Row="0" Padding="20" Background="#0D6EFD">
+                <StackPanel Grid.Row="0" Padding="20" Background="#D4A373">
                     <Grid Height="40" Margin="0,0,0,15">
-                        <Ellipse Width="40" Height="40" Fill="White" Opacity="0.2" />
-                        <FontIcon Glyph="&#xE1E2;" FontSize="20" FontFamily="Segoe MDL2 Assets" Foreground="White" />
+                        <Ellipse Width="40" Height="40" Fill="White" Opacity="0" />
+                        <Image Source="Assets/StoreLogo.scale-400.png" 
+                           Width="40" Height="40" 
+                           HorizontalAlignment="Center" 
+                           VerticalAlignment="Center" />
                     </Grid>
                     <TextBlock Text="Café POS System" 
                                FontSize="20" 
@@ -72,21 +71,6 @@
                                 </Grid.ColumnDefinitions>
                                 <FontIcon Grid.Column="0" Glyph="&#xE80F;" FontFamily="Segoe MDL2 Assets" Margin="15,0,15,0" />
                                 <TextBlock Grid.Column="1" Text="Trang chủ" VerticalAlignment="Center" />
-                            </Grid>
-                        </Button>
-
-                        <!-- Order Management -->
-                        <Button x:Name="OrderButton" 
-                                Style="{StaticResource TextBlockButtonStyle}" 
-                                Click="NavigationButton_Click"
-                                Tag="Orders">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <FontIcon Grid.Column="0" Glyph="&#xE8A1;" FontFamily="Segoe MDL2 Assets" Margin="15,0,15,0" />
-                                <TextBlock Grid.Column="1" Text="Quản lý đơn hàng" VerticalAlignment="Center" />
                             </Grid>
                         </Button>
 

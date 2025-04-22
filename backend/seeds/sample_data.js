@@ -209,14 +209,14 @@ exports.seed = async function(knex) {
 
   // Thêm dữ liệu cho bảng Product
   await knex('Product').insert([
-    { name: 'Cà phê đen', idCategory: 1, price: 25000, description: 'Cà phê nguyên chất', isAvailable: true, imageUrl: '/Assets/Product/cafe-den.jpeg' },
+    { name: 'Cà phê đen', idCategory: 1, price: 25000, description: 'Cà phê nguyên chất', isAvailable: true, imageUrl: '/Assets/Product/cafe-den.jpg' },
     { name: 'Cà phê sữa', idCategory: 1, price: 30000, description: 'Cà phê pha sữa đặc', isAvailable: true, imageUrl: '/Assets/Product/cafe-sua.jpeg' },
     { name: 'Trà chanh', idCategory: 2, price: 25000, description: 'Trà xanh pha chanh', isAvailable: true, imageUrl: '/Assets/Product/tra-chanh.jpg' },
-    { name: 'Trà đào', idCategory: 2, price: 35000, description: 'Trà với đào tươi', isAvailable: true, imageUrl: '/Assets/Product/tra-dao.jpg' },
-    { name: 'Nước cam', idCategory: 3, price: 40000, description: 'Nước cam tươi vắt', isAvailable: true, imageUrl: '/Assets/Product/nuoc-cam.jpg' },
+    { name: 'Trà đào', idCategory: 2, price: 35000, description: 'Trà với đào tươi', isAvailable: true, imageUrl: '/Assets/Product/tra-dao.png' },
+    { name: 'Nước cam', idCategory: 3, price: 40000, description: 'Nước cam tươi vắt', isAvailable: true, imageUrl: '/Assets/Product/nuoc-cam.png' },
     { name: 'Bánh tiramisu', idCategory: 5, price: 45000, description: 'Bánh tiramisu Ý', isAvailable: true, imageUrl: '/Assets/Product/banh-tiramisu.jpg' },
     { name: 'Bánh croissant', idCategory: 5, price: 35000, description: 'Bánh sừng bò Pháp', isAvailable: true, imageUrl: '/Assets/Product/banh-croissant.jpg' },
-    { name: 'Sandwich', idCategory: 4, price: 30000, description: 'Bánh mì kẹp thịt và rau', isAvailable: true, imageUrl: '/Assets/Product/sandwich.jpg' }
+    { name: 'Sandwich', idCategory: 4, price: 30000, description: 'Bánh mì kẹp thịt và rau', isAvailable: true, imageUrl: '/Assets/Product/banh-sandwich.jpg' }
   ]);
 
   // Thêm dữ liệu cho bảng ProductMaterial

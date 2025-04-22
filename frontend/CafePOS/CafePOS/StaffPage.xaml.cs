@@ -14,7 +14,7 @@ namespace CafePOS
         public StaffPage()
         {
             this.InitializeComponent();
-            LoadStaffAsync();
+            _ = LoadStaffAsync();
         }
 
         private async Task LoadStaffAsync()

@@ -5,13 +5,13 @@
     xmlns:local="using:CafePOS"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:converters="using:CafePOS.Converters"
+    xmlns:converter="using:CafePOS.Converter"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
-        <converters:GreaterThanOneConverter x:Key="GreaterThanOneConverter"/>
-        <converters:LessThanTotalPagesConverter x:Key="LessThanTotalPagesConverter"/>
+        <converter:GreaterThanOneConverter x:Key="GreaterThanOneConverter"/>
+        <converter:LessThanTotalPagesConverter x:Key="LessThanTotalPagesConverter"/>
     </Page.Resources>
 
     <Grid>

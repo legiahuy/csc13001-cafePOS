@@ -279,7 +279,6 @@ namespace CafePOS
                     OrderListView.ItemsSource = null;
                     OrderListView.Tag = null;
                     TotalPriceTextBlock.Text = "0 ₫";
-                    DiscountBox.Value = 0;
 
                     // Cập nhật lại dữ liệu bàn
                     await LoadTable();
@@ -326,7 +325,6 @@ namespace CafePOS
                     OrderListView.ItemsSource = null;
                     OrderListView.Tag = null;
                     TotalPriceTextBlock.Text = "0 ₫";
-                    DiscountBox.Value = 0;
 
                     await LoadTable();
 
@@ -408,7 +406,6 @@ namespace CafePOS
                     OrderListView.ItemsSource = null;
                     OrderListView.Tag = null;
                     TotalPriceTextBlock.Text = "0 ₫";
-                    DiscountBox.Value = 0;
 
                     // Reload the table status
                     await LoadTable();

@@ -1,5 +1,0 @@
-﻿mutation DeleteBillById($id: Int!) {
-  deleteBillById(input: {id: $id}) {
-    deletedBillId
-  }
-}

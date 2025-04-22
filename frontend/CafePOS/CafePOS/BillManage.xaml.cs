@@ -593,7 +593,7 @@ namespace CafePOS
     {
         private bool _isSelected;
         private string _formattedPaymentMethod;
-        private static List<PaymentMethod> _cachedPaymentMethods;
+        private static List<PaymentMethod>? _cachedPaymentMethods;
         public event PropertyChangedEventHandler PropertyChanged;
 
         public bool IsSelected

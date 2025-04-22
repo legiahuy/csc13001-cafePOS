@@ -7,8 +7,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
+    xmlns:converter="using:CafePOS.Converter"
     Title="Thanh toán">
-
+    
     <Grid Background="#FFFFFF" Padding="25">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -58,6 +59,9 @@
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <Grid Margin="0,8">
+                                            <Grid.Resources>
+                                                <converter:PriceToCurrencyConverter x:Key="PriceConverter"/>
+                                            </Grid.Resources>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="3*"/>
                                                 <ColumnDefinition Width="*"/>
@@ -65,7 +69,7 @@
                                             </Grid.ColumnDefinitions>
                                             <TextBlock Text="{Binding ProductName}" Grid.Column="0" Foreground="#333333" FontSize="14"/>
                                             <TextBlock Text="{Binding Count}" Grid.Column="1" Margin="15,0" Foreground="#555555" FontSize="14"/>
-                                            <TextBlock Text="{Binding TotalPrice}" Grid.Column="2" Foreground="#333333" FontWeight="SemiBold" FontSize="14"/>
+                                            <TextBlock Text="{Binding TotalPrice, Converter={StaticResource PriceConverter}}" Grid.Column="2" Foreground="#333333" FontWeight="SemiBold" FontSize="14"/>
                                         </Grid>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>

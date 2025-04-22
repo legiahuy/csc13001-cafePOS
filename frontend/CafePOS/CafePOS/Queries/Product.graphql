@@ -1,0 +1,68 @@
+﻿mutation DeleteProductById($id: Int!) {
+  deleteProductById(input: {id: $id}) {
+    deletedProductId
+  }
+}
+
+query GetDrinksByCategory($idCategory: Int!) {
+  allProducts(condition: {idCategory: $idCategory}) {
+    edges {
+      node {
+        id
+        name
+        price
+        imageUrl
+      }
+    }
+  }
+}
+
+
+query GetListProducts {
+  allProducts {
+    edges {
+      node {
+        id
+        name
+        isAvailable
+        description
+        price
+        idCategory
+        imageUrl
+      }
+    }
+  }
+}
+
+mutation CreateProduct($name: String, $description: String, $categoryId: Int!, $price: Float, $isAvailable: Boolean, $imageUrl: String!) {
+  createProduct(
+    input: {product: {description: $description, idCategory: $categoryId, name: $name, isAvailable: $isAvailable, price: $price, imageUrl: $imageUrl}}
+  ) {
+    product {
+      id
+      name
+      description
+      idCategory
+      price
+      isAvailable
+      imageUrl
+    }
+  }
+}
+
+mutation UpdateProduct($id: Int!, $name: String, $description: String, $categoryId: Int!, $price: Float, $isAvailable: Boolean, $imageUrl: String!) {
+  updateProductById(
+    input: {productPatch: {name: $name, isAvailable: $isAvailable, idCategory: $categoryId, price: $price, description: $description, imageUrl: $imageUrl}, id: $id}
+  ) {
+    product {
+      id
+      name
+      description
+      idCategory
+      price
+      isAvailable
+      imageUrl
+    }
+  }
+}
+

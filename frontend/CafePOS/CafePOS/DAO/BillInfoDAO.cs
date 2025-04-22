@@ -28,7 +28,7 @@ namespace CafePOS.DAO
 
             var listBillInfo = result.Data?.AllBillInfos?.Edges?
                 .Where(e => e.Node != null)
-                .Select(e => new BillInfo(e.Node))
+                .Select(e => new BillInfo(e.Node!))
                 .ToList() ?? new List<BillInfo>();
 
             return listBillInfo;

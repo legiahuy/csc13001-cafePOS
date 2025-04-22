@@ -1,0 +1,42 @@
+﻿query GetBillInfoByBillId($billId: Int!) {
+  allBillInfos(condition: {idBill: $billId}) {
+    edges {
+      node {
+        id
+        idProduct
+        count
+        idBill
+        unitPrice
+        totalPrice
+        productByIdProduct {
+          id
+          name
+          price
+        }
+      }
+    }
+  }
+}
+
+mutation InsertBillInfo($idBill: Int!, $idProduct: Int!, $count: Int!, $unitPrice: Float!, $totalPrice: Float!) {
+  createBillInfo(
+    input: { 
+      billInfo: { 
+        idBill: $idBill, 
+        idProduct: $idProduct, 
+        count: $count,
+        unitPrice: $unitPrice,
+        totalPrice: $totalPrice
+      } 
+    }
+  ) {
+    billInfo {
+      id
+      idBill
+      idProduct
+      count
+      unitPrice
+      totalPrice
+    }
+  }
+}

@@ -1,9 +1,0 @@
-query GetMaxIDBill {
-  allBills(orderBy: ID_DESC, first: 1) {
-    edges {
-      node {
-        id
-      }
-    }
-  }
-}

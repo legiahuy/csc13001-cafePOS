@@ -1,6 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup />
+  <PropertyGroup>
+    <Source>C:\Users\Admin\Downloads\1114350.png</Source>
+    <SmallTileSource>C:\Users\Admin\Downloads\1114350.png</SmallTileSource>
+    <MediumTileSource>C:\Users\Admin\Downloads\1114350.png</MediumTileSource>
+    <WideTileSource>C:\Users\Admin\Downloads\1114350.png</WideTileSource>
+    <LargeTileSource>C:\Users\Admin\Downloads\1114350.png</LargeTileSource>
+    <AppIconSource>C:\Users\Admin\Downloads\1114350.png</AppIconSource>
+    <SplashScreenSource>C:\Users\Admin\Downloads\1114350.png</SplashScreenSource>
+    <PackageLogoSource>C:\Users\Admin\Downloads\1114350.png</PackageLogoSource>
+  </PropertyGroup>
   <ItemGroup>
     <None Update="App.xaml">
       <SubType>Designer</SubType>

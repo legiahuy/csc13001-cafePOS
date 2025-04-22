@@ -9,7 +9,7 @@ namespace CafePOS.DAO
 {
     internal class MaterialDAO
     {
-        private static MaterialDAO instance;
+        private static MaterialDAO? instance;
         public static MaterialDAO Instance
         {
             get { if (instance == null) instance = new MaterialDAO(); return MaterialDAO.instance; }
@@ -23,7 +23,7 @@ namespace CafePOS.DAO
 
             var materials = result.Data?.AllMaterials?.Edges?
                 .Where(e => e.Node != null)
-                .Select(e => new Material(e.Node))
+                .Select(e => new Material(e.Node!))
                 .ToList() ?? new List<Material>();
 
             return materials;

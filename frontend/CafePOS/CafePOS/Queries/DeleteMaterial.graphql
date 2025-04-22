@@ -1,5 +1,0 @@
-﻿mutation DeleteMaterialById($id: Int!) {
-  deleteMaterialById(input: {id: $id}) {
-    deletedMaterialId
-  }
-}
