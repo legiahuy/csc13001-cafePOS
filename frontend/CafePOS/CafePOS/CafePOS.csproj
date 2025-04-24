@@ -23,6 +23,7 @@
     <GraphQL Remove="Queries\BillInfo.graphql" />
     <GraphQL Remove="Queries\CafeTable.graphql" />
     <GraphQL Remove="queries\categories.graphql" />
+    <GraphQL Remove="Queries\CustomerFeedback.graphql" />
     <GraphQL Remove="Queries\Guest.graphql" />
     <GraphQL Remove="Queries\Material.graphql" />
     <GraphQL Remove="Queries\PaymentMethod.graphql" />
@@ -32,6 +33,7 @@
   <ItemGroup>
     <None Remove="CheckoutWindow.xaml" />
     <None Remove="CustomersPage.xaml" />
+    <None Remove="CustomerSupportPage.xaml" />
     <None Remove="LoginPage.xaml" />
     <None Remove="MainPage.xaml" />
     <None Remove="MaterialPage.xaml" />
@@ -115,6 +117,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\Material\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="CustomerSupportPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="PaymentMethodPage.xaml">

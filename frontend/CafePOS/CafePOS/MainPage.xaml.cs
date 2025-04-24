@@ -111,8 +111,8 @@ namespace CafePOS
 
                 case "Support":
                     PageTitleText.Text = "Hỗ trợ khách hàng";
-                    PageDescriptionText.Text = "Cung cấp dịch vụ chat và hỗ trợ trực tiếp";
-                    // ContentFrame.Navigate(typeof(SupportPage));
+                    PageDescriptionText.Text = "Giải đáp thắc mắc của khách hàng";
+                    ContentFrame.Navigate(typeof(CustomerSupportPage));
                     break;
 
                 case "Reports":

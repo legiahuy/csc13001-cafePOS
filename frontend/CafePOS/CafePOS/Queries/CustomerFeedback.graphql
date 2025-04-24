@@ -1,0 +1,87 @@
+﻿query GetAllFeedbacks($status: String) {
+  allCustomerFeedbacks(
+    condition: { status: $status }
+    orderBy: SUBMITTED_AT_DESC
+  ) {
+    nodes {
+      id
+      name
+      email
+      content
+      submittedAt
+      status
+      responseContent
+      respondedAt
+      staffId
+    }
+  }
+}
+
+query GetAllFeedbacksWithoutFilter {
+  allCustomerFeedbacks(orderBy: SUBMITTED_AT_DESC) {
+    nodes {
+      id
+      name
+      email
+      content
+      submittedAt
+      status
+      responseContent
+      respondedAt
+      staffId
+    }
+  }
+}
+
+
+query GetFeedbackById($id: Int!) {
+  customerFeedbackById(id: $id) {
+    id
+    name
+    email
+    content
+    submittedAt
+    status
+    responseContent
+    respondedAt
+    staffId
+  }
+}
+
+mutation UpdateFeedbackStatus($id: Int!, $status: String!) {
+  updateCustomerFeedbackById(
+    input: {
+      id: $id
+      customerFeedbackPatch: {
+        status: $status
+      }
+    }
+  ) {
+    customerFeedback {
+      id
+      status
+    }
+  }
+}
+
+mutation RespondToFeedback($id: Int!, $responseContent: String!, $staffId: Int!) {
+  updateCustomerFeedbackById(
+    input: {
+      id: $id
+      customerFeedbackPatch: {
+        responseContent: $responseContent
+        respondedAt: "now()"
+        staffId: $staffId
+        status: "completed"
+      }
+    }
+  ) {
+    customerFeedback {
+      id
+      responseContent
+      respondedAt
+      staffId
+      status
+    }
+  }
+}

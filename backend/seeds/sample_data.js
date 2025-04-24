@@ -13,9 +13,10 @@ exports.seed = async function(knex) {
   await knex('Product').del();
   await knex('Material').del();
   await knex('Category').del();
-  await knex('Staff').del();
   await knex('Account').del();
   await knex('CafeTable').del();
+  await knex('customer_feedback').del();
+  await knex('Staff').del();
 
   // Thêm dữ liệu cho bảng CafeTable
   const cafeTables = Array.from({ length: 20 }, (_, i) => ({
@@ -621,5 +622,108 @@ exports.seed = async function(knex) {
     { idMaterial: 4, type: 'Import', quantity: 8, unitPrice: 42000, note: 'Nhập hàng tháng 4'},
     { idMaterial: 2, type: 'Export', quantity: 5, unitPrice: 0, note: 'Xuất hàng hỏng'},
     { idMaterial: 5, type: 'Export', quantity: 2, unitPrice: 0, note: 'Xuất hàng hỏng'}
+  ]);
+
+  await knex('customer_feedback').insert([
+    {
+      name: 'Nguyễn Văn An',
+      email: 'nguyenvanan@gmail.com',
+      content: 'Tôi rất hài lòng với đồ uống và không gian quán. Thái độ phục vụ của nhân viên rất tốt. Tuy nhiên, wifi hơi chậm và thỉnh thoảng bị ngắt kết nối.',
+      submitted_at: knex.raw("NOW() - INTERVAL '2 days'"),
+      status: 'completed',
+      response_content: 'Kính gửi anh Nguyễn Văn An, Cảm ơn anh đã dành thời gian đánh giá về quán của chúng tôi. Chúng tôi rất vui khi anh hài lòng với đồ uống và không gian quán. Về vấn đề wifi, chúng tôi đã ghi nhận và sẽ nâng cấp hệ thống wifi trong thời gian sớm nhất. Mong được phục vụ anh trong những lần tiếp theo. Trân trọng!',
+      responded_at: knex.raw("NOW() - INTERVAL '1 day'"),
+      staff_id: 1
+    },
+    {
+      name: 'Trần Thị Bình',
+      email: 'tranthibinh@yahoo.com',
+      content: 'Cà phê rất ngon, nhưng giá hơi cao so với các quán xung quanh. Tôi đề xuất quán nên có chương trình khuyến mãi, tích điểm cho khách hàng thân thiết.',
+      submitted_at: knex.raw("NOW() - INTERVAL '3 days'"),
+      status: 'pending',
+      response_content: null,
+      responded_at: null,
+      staff_id: null
+    },
+    {
+      name: 'Lê Minh Cường',
+      email: 'leminhcuong@hotmail.com',
+      content: 'Tôi đã đặt một bánh sinh nhật tại quán nhưng khi nhận thì bánh không giống với hình ảnh được quảng cáo. Tôi muốn được hoàn tiền hoặc làm lại sản phẩm.',
+      submitted_at: knex.raw("NOW() - INTERVAL '12 hours'"),
+      status: 'in_progress',
+      response_content: null,
+      responded_at: null,
+      staff_id: 2
+    },
+    {
+      name: 'Phạm Thị Dung',
+      email: 'phamthidung@gmail.com',
+      content: 'Tôi thích không gian quán rất yên tĩnh, phù hợp để làm việc. Tuy nhiên, quán nên tăng cường ổ cắm điện để khách hàng có thể sạc laptop và điện thoại.',
+      submitted_at: knex.raw("NOW() - INTERVAL '5 days'"),
+      status: 'completed',
+      response_content: 'Chào chị Phạm Thị Dung, Cảm ơn chị đã góp ý cho quán. Chúng tôi rất vui khi không gian quán đáp ứng được nhu cầu làm việc của chị. Về việc bổ sung ổ cắm điện, chúng tôi sẽ lắp đặt thêm ổ cắm tại mỗi bàn trong tuần tới. Mong được đón tiếp chị lần sau. Trân trọng!',
+      responded_at: knex.raw("NOW() - INTERVAL '3 days'"),
+      staff_id: 3
+    },
+    {
+      name: 'Hoàng Văn Đức',
+      email: 'hoangvanduc@gmail.com',
+      content: 'Menu quán khá hạn chế, chủ yếu là cà phê. Tôi mong muốn quán có thêm các loại trà sữa và đồ ăn nhẹ.',
+      submitted_at: knex.raw("NOW() - INTERVAL '1 day'"),
+      status: 'pending',
+      response_content: null,
+      responded_at: null,
+      staff_id: null
+    },
+    {
+      name: 'Vũ Thanh Hà',
+      email: 'vuthanhha@outlook.com',
+      content: 'Tôi rất thích đồ uống tại quán, đặc biệt là cà phê sữa đá. Tuy nhiên, quán hơi nóng vào buổi trưa, cần bổ sung thêm quạt hoặc điều hòa.',
+      submitted_at: knex.raw("NOW() - INTERVAL '4 days'"),
+      status: 'completed',
+      response_content: 'Kính gửi anh Vũ Thanh Hà, Cảm ơn anh đã đánh giá tích cực về đồ uống của quán. Về vấn đề nhiệt độ quán vào buổi trưa, chúng tôi đã lắp đặt thêm 2 máy điều hòa và sẽ đưa vào sử dụng từ tuần sau. Hi vọng lần tới ghé quán, anh sẽ cảm thấy thoải mái hơn. Trân trọng!',
+      responded_at: knex.raw("NOW() - INTERVAL '2 days'"),
+      staff_id: 1
+    },
+    {
+      name: 'Ngô Thị Giang',
+      email: 'ngothigiang@gmail.com',
+      content: 'Nhạc quán quá to, gây khó chịu khi muốn nói chuyện hoặc làm việc. Mong quán điều chỉnh âm lượng phù hợp hơn.',
+      submitted_at: knex.raw("NOW()"),
+      status: 'pending',
+      response_content: null,
+      responded_at: null,
+      staff_id: null
+    },
+    {
+      name: 'Đỗ Văn Hiệp',
+      email: 'dovanhiep@yahoo.com',
+      content: 'Tôi là khách hàng thường xuyên của quán. Tôi muốn đề xuất quán mở cửa sớm hơn vào các ngày cuối tuần, khoảng 6h sáng thay vì 7h30.',
+      submitted_at: knex.raw("NOW() - INTERVAL '6 hours'"),
+      status: 'in_progress',
+      response_content: null,
+      responded_at: null,
+      staff_id: 2
+    },
+    {
+      name: 'Lý Thị Khánh',
+      email: 'lythikhanh@gmail.com',
+      content: 'Tôi thấy quán có dịch vụ giao hàng nhưng phí ship khá cao. Nếu có thể giảm phí giao hàng hoặc miễn phí cho đơn trên 100k thì tốt quá.',
+      submitted_at: knex.raw("NOW() - INTERVAL '2 days'"),
+      status: 'completed',
+      response_content: 'Chào chị Lý Thị Khánh, Cảm ơn chị đã đóng góp ý kiến về dịch vụ giao hàng của quán. Chúng tôi vừa điều chỉnh chính sách giao hàng: miễn phí giao hàng cho đơn từ 100k trong bán kính 3km và giảm 50% phí giao hàng cho đơn từ 150k trong bán kính 5km. Mong chị tiếp tục ủng hộ quán. Trân trọng!',
+      responded_at: knex.raw("NOW() - INTERVAL '1 day'"),
+      staff_id: 3
+    },
+    {
+      name: 'Trương Văn Minh',
+      email: 'truongvanminh@hotmail.com',
+      content: 'Tôi đã thử bánh chocolate của quán nhưng cảm thấy hơi ngọt. Nếu có thể điều chỉnh lượng đường trong các món bánh thì sẽ phù hợp với nhiều khách hàng hơn.',
+      submitted_at: knex.raw("NOW() - INTERVAL '8 hours'"),
+      status: 'pending',
+      response_content: null,
+      responded_at: null,
+      staff_id: null
+    }
   ]);
 };
