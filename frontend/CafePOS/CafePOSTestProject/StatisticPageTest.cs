@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 
-namespace CafePOSTestProject
+namespace CafePOS.Tests
 {
     [TestClass]
     public class StatisticPageTest
