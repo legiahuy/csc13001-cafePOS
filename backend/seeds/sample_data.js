@@ -204,30 +204,82 @@ exports.seed = async function(knex) {
       minStock: 1, 
       price: 120000,
       imageUrl: '/Assets/Material/dau-tay.jpg' 
-    }
+    },
+    { name: 'Bơ', 
+      unit: 'kg', 
+      currentStock: 6, 
+      minStock: 2, 
+      price: 90000, 
+      imageUrl: '/Assets/Material/bo.jpg' },
+    { name: 'Bột cacao', 
+      unit: 'g', 
+      currentStock: 1000, 
+      minStock: 200, 
+      price: 120000, 
+      imageUrl: '/Assets/Material/bot-cacao.jpg' },
+    { name: 'Trân châu đen',
+      unit: 'g', 
+      currentStock: 800, 
+      minStock: 150, 
+      price: 60000, 
+      imageUrl: '/Assets/Material/tran-chau.jpg' },
+    { name: 'Bột socola', 
+      unit: 'g', 
+      currentStock: 1200, 
+      minStock: 300, price: 140000, 
+      imageUrl: '/Assets/Material/bot-socola.jpg' }
   ]);
 
   // Thêm dữ liệu cho bảng Product
   await knex('Product').insert([
-    { name: 'Cà phê đen', idCategory: 1, price: 25000, description: 'Cà phê nguyên chất', isAvailable: true, imageUrl: '/Assets/Product/cafe-den.jpg' },
-    { name: 'Cà phê sữa', idCategory: 1, price: 30000, description: 'Cà phê pha sữa đặc', isAvailable: true, imageUrl: '/Assets/Product/cafe-sua.jpeg' },
-    { name: 'Trà chanh', idCategory: 2, price: 25000, description: 'Trà xanh pha chanh', isAvailable: true, imageUrl: '/Assets/Product/tra-chanh.jpg' },
-    { name: 'Trà đào', idCategory: 2, price: 35000, description: 'Trà với đào tươi', isAvailable: true, imageUrl: '/Assets/Product/tra-dao.png' },
-    { name: 'Nước cam', idCategory: 3, price: 40000, description: 'Nước cam tươi vắt', isAvailable: true, imageUrl: '/Assets/Product/nuoc-cam.png' },
-    { name: 'Bánh tiramisu', idCategory: 5, price: 45000, description: 'Bánh tiramisu Ý', isAvailable: true, imageUrl: '/Assets/Product/banh-tiramisu.jpg' },
-    { name: 'Bánh croissant', idCategory: 5, price: 35000, description: 'Bánh sừng bò Pháp', isAvailable: true, imageUrl: '/Assets/Product/banh-croissant.jpg' },
-    { name: 'Sandwich', idCategory: 4, price: 30000, description: 'Bánh mì kẹp thịt và rau', isAvailable: true, imageUrl: '/Assets/Product/banh-sandwich.jpg' }
+    { id: 1, name: 'Cà phê đen', idCategory: 1, price: 25000, description: 'Cà phê nguyên chất', isAvailable: true, imageUrl: '/Assets/Product/cafe-den.jpg' },
+    { id: 2, name: 'Cà phê sữa', idCategory: 1, price: 30000, description: 'Cà phê pha sữa đặc', isAvailable: true, imageUrl: '/Assets/Product/cafe-sua.jpeg' },
+    { id: 3, name: 'Trà chanh', idCategory: 2, price: 25000, description: 'Trà xanh pha chanh', isAvailable: true, imageUrl: '/Assets/Product/tra-chanh.jpg' },
+    { id: 4, name: 'Trà đào', idCategory: 2, price: 35000, description: 'Trà với đào tươi', isAvailable: true, imageUrl: '/Assets/Product/tra-dao.png' },
+    { id: 5, name: 'Nước cam', idCategory: 3, price: 40000, description: 'Nước cam tươi vắt', isAvailable: true, imageUrl: '/Assets/Product/nuoc-cam.png' },
+    { id: 6, name: 'Cà phê mocha', idCategory: 1, price: 35000, description: 'Cà phê vị socola', isAvailable: true, imageUrl: '/Assets/Product/cafe-mocha.jpg' },
+    { id: 7, name: 'Latte nóng', idCategory: 1, price: 40000, description: 'Latte nóng cho ngày lạnh', isAvailable: true, imageUrl: '/Assets/Product/latte-nong.jpg' },
+    { id: 8, name: 'Cacao đá', idCategory: 1, price: 35000, description: 'Ca cao đá mát lạnh', isAvailable: true, imageUrl: '/Assets/Product/cacao-da.jpg' },
+    { id: 9, name: 'Trà sữa trân châu', idCategory: 2, price: 40000, description: 'Trà sữa kèm trân châu đen', isAvailable: true, imageUrl: '/Assets/Product/tra-sua.jpg' },
+    { id: 10, name: 'Trà gừng nóng', idCategory: 2, price: 30000, description: 'Trà gừng cho ngày lạnh', isAvailable: true, imageUrl: '/Assets/Product/tra-gung.jpg' },
+    { id: 11, name: 'Nước ép ổi', idCategory: 3, price: 35000, description: 'Nước ép ổi tươi', isAvailable: true, imageUrl: '/Assets/Product/nuoc-ep-oi.jpg' },
+    { id: 12, name: 'Sinh tố bơ', idCategory: 3, price: 45000, description: 'Sinh tố bơ mịn', isAvailable: true, imageUrl: '/Assets/Product/sinh-to-bo.jpg' },
+    { id: 13, name: 'Cacao nóng', idCategory: 1, price: 35000, description: 'Ca cao đá mát lạnh', isAvailable: true, imageUrl: '/Assets/Product/cacao-da.jpg' }
+
   ]);
+  
 
   // Thêm dữ liệu cho bảng ProductMaterial
   await knex('ProductMaterial').insert([
     { idProduct: 1, idMaterial: 1, quantity: 0.03 }, // 30g cà phê hạt cho 1 ly cà phê đen
     { idProduct: 2, idMaterial: 1, quantity: 0.05 }, // 50g cà phê hạt cho 1 ly cà phê sữa
-    { idProduct: 2, idMaterial: 3, quantity: 0.1 }, // 100ml sữa tươi cho 1 ly cà phê sữa
-    { idProduct: 3, idMaterial: 2, quantity: 1 }, // 1 gói trà xanh cho 1 ly trà chanh
-    { idProduct: 4, idMaterial: 2, quantity: 1 }, // 1 gói trà xanh cho 1 ly trà đào
-    { idProduct: 5, idMaterial: 4, quantity: 0.5 }, // 500g cam cho 1 ly nước cam
+    { idProduct: 2, idMaterial: 3, quantity: 0.1 },  // 100ml sữa tươi cho 1 ly cà phê sữa
+    { idProduct: 3, idMaterial: 2, quantity: 1 },    // 1 gói trà xanh cho 1 ly trà chanh
+    { idProduct: 4, idMaterial: 2, quantity: 1 },    // 1 gói trà xanh cho 1 ly trà đào
+    { idProduct: 5, idMaterial: 4, quantity: 0.5 },  // 500g cam cho 1 ly nước cam
+  
+    { idProduct: 6, idMaterial: 1, quantity: 0.05 }, // 50g cà phê hạt cho 1 ly mocha
+    { idProduct: 6, idMaterial: 3, quantity: 0.1 },  // 100ml sữa tươi cho 1 ly mocha
+    { idProduct: 6, idMaterial: 9, quantity: 0.05 },// 50g bột socola cho 1 ly mocha
+  
+    { idProduct: 7, idMaterial: 1, quantity: 0.04 }, // 40g cà phê hạt cho 1 ly latte nóng
+    { idProduct: 7, idMaterial: 3, quantity: 0.15 }, // 150ml sữa tươi cho 1 ly latte nóng
+  
+    { idProduct: 8, idMaterial: 3, quantity: 0.1 },  // 100ml sữa tươi cho 1 ly cacao đá
+    { idProduct: 8, idMaterial: 7, quantity: 0.05 }, // 50g bột cacao cho 1 ly cacao đá
+  
+    { idProduct: 9, idMaterial: 2, quantity: 1 },    // 1 gói trà xanh cho 1 ly trà sữa
+    { idProduct: 9, idMaterial: 3, quantity: 0.1 },  // 100ml sữa tươi cho 1 ly trà sữa
+    { idProduct: 9, idMaterial: 8, quantity: 0.05 }, // 50g trân châu đen cho 1 ly trà sữa
+  
+    { idProduct: 10, idMaterial: 2, quantity: 1 },   // 1 gói trà xanh cho 1 ly trà gừng
+  
+    { idProduct: 11, idMaterial: 4, quantity: 0.5 }, // 500g ổi cho 1 ly nước ép ổi
+  
+    { idProduct: 12, idMaterial: 6, quantity: 0.2 }, // 200g bơ cho 1 ly sinh tố bơ
+    { idProduct: 12, idMaterial: 3, quantity: 0.1 }  // 100ml sữa tươi cho 1 ly sinh tố bơ
   ]);
+  
 
   // Thêm dữ liệu cho bảng Bill với nhiều ngày khác nhau
   const billData = [

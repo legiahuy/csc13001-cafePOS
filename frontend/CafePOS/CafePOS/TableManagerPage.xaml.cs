@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-
+using CafePOS.Helpers;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -35,6 +35,7 @@ namespace CafePOS
             this.InitializeComponent();
             _ = LoadTable(); // Gọi không chờ
             LoadCategory();
+            _ = LoadWeatherRecommendations();
         }
 
 
@@ -423,6 +424,43 @@ namespace CafePOS
                 await ShowDialog("Lỗi", "Đã xảy ra lỗi khi hủy hóa đơn. Vui lòng thử lại.");
             }
         }
+        private async Task LoadWeatherRecommendations()
+        {
+            try
+            {
+                var weather = await WeatherDAO.Instance.GetCurrentWeatherAsync();
+                if (weather == null) return;
+
+                string type = WeatherClassifier.ClassifyWeather(weather.Main, weather.TemperatureCelsius);
+
+                var allDrinks = await DrinkDAO.Instance.GetListDrinkAsync();
+                var allCategories = await CategoryDAO.Instance.GetListCategoryAsync();
+
+                // Tạo Dictionary để lấy tên category theo ID
+                var categoryMap = allCategories.ToDictionary(c => c.ID, c => c.Name);
+
+                // Lọc đồ uống phù hợp với thời tiết dựa trên tên + category
+                var recommendedDrinks = allDrinks
+                    .Where(d =>
+                    {
+                        string categoryName = categoryMap.ContainsKey(d.CategoryId) ? categoryMap[d.CategoryId] : "";
+                        string predictedType = WeatherDrinkClassifier.ClassifyDrinkByNameAndCategory(d.Name, categoryName);
+                        return predictedType == type;
+                    })
+                    .ToList();
+
+                WeatherDrinkComboBox.ItemsSource = recommendedDrinks;
+                WeatherSummaryTextBlock.Text = $"Hôm nay thời tiết {WeatherClassifier.ToVietnamese(type)}, nhiệt độ {weather.TemperatureCelsius:0.#}°C. Gợi ý những món như sau:";
+            }
+            catch (Exception ex)
+            {
+                WeatherSummaryTextBlock.Text = "Không thể lấy thông tin thời tiết.";
+            }
+        }
+
+
+
+
 
     }
 }

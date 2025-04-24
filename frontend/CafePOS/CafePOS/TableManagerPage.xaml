@@ -117,6 +117,19 @@
                 FontWeight="Bold" 
                 Foreground="#333333" 
                 HorizontalAlignment="Center"/>
+                    <!-- Weather Recommendation Section -->
+                    <StackPanel Spacing="5" Margin="0,10">
+                        <TextBlock x:Name="WeatherSummaryTextBlock"
+               Text="Đang tải thông tin thời tiết..."
+               FontSize="14"
+               Foreground="Gray"
+               TextWrapping="WrapWholeWords"/>
+
+                        <ComboBox x:Name="WeatherDrinkComboBox"
+              PlaceholderText="Đồ uống theo thời tiết"
+              Style="{StaticResource ComboBoxStyle}"
+              DisplayMemberPath="Name"/>
+                    </StackPanel>
 
                     <Grid>
                         <Grid.ColumnDefinitions>
