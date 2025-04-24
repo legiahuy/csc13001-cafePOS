@@ -8,7 +8,7 @@ using Microsoft.UI.Xaml.Media;
 
 namespace CafePOS.Converter
 {
-    public class BooleanToTextColorConverter : IValueConverter
+    public partial class BooleanToTextColorConverter : IValueConverter
     {
         public object? Convert(object value, Type targetType, object parameter, string language)
         {

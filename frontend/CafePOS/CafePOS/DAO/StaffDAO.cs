@@ -39,6 +39,16 @@ namespace CafePOS.DAO
             return staffId;
         }
 
+        public async Task<String> GetStaffNameById(int id)
+        {
+            var client = DataProvider.Instance.Client;
+            var result = await client.GetStaffNameById.ExecuteAsync(id);
+
+            var staffName = result.Data?.AllStaff?.Edges?.FirstOrDefault()?.Node?.Name ?? "Unknown";
+
+            return staffName;
+        }
+
         public async Task<bool> AddStaffAsync(string name, string dob, string gender, string phone, string email, string position, float salary, string userName)
         {
             var client = DataProvider.Instance.Client;

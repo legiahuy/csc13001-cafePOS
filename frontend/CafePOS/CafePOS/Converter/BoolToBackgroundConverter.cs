@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Media;
 namespace CafePOS.Converter
 {
     // Create a new converter
-    public class BoolToBackgroundConverter : IValueConverter
+    public partial class BoolToBackgroundConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {

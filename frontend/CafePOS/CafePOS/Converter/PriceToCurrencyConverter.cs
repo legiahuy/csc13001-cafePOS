@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Data;
 
 namespace CafePOS.Converter  
 {
-    public class PriceToCurrencyConverter : IValueConverter
+    public partial class PriceToCurrencyConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {

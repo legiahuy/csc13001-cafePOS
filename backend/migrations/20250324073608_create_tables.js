@@ -110,6 +110,19 @@ exports.up = function(knex) {
       table.float('unitPrice').notNullable();
       table.datetime('date').notNullable().defaultTo(knex.fn.now());
       table.string('note', 500);
+    })
+    .createTable('customer_feedback', function(table) {
+      table.increments('id').primary();
+      table.string('name', 100).notNullable();
+      table.string('email', 100).notNullable();
+      table.text('content').notNullable();
+      table.timestamp('submitted_at').defaultTo(knex.fn.now());
+      table.enum('status', ['pending', 'in_progress', 'completed']).defaultTo('pending');
+      table.text('response_content').nullable();
+      table.timestamp('responded_at').nullable();
+      table.integer('staff_id').nullable().references('id').inTable('Staff');
+      table.timestamp('created_at').defaultTo(knex.fn.now());
+      table.timestamp('updated_at').defaultTo(knex.fn.now());
     });
 };
 
@@ -128,7 +141,8 @@ exports.down = function(knex) {
     .dropTableIfExists('Product')
     .dropTableIfExists('Material')
     .dropTableIfExists('Category')
+    .dropTableIfExists('CafeTable')
+    .dropTable('customer_feedback')
     .dropTableIfExists('Staff')
-    .dropTableIfExists('Account')
-    .dropTableIfExists('CafeTable');
+    .dropTableIfExists('Account');
 };

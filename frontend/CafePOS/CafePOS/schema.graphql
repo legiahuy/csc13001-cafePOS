@@ -35,6 +35,8 @@ type Query implements Node {
   allProductMaterials("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `ProductMaterial`." orderBy: [ProductMaterialsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: ProductMaterialCondition): ProductMaterialsConnection
   "Reads and enables pagination through a set of `Staff`."
   allStaff("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `Staff`." orderBy: [StaffOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: StaffCondition): StaffConnection
+  "Reads and enables pagination through a set of `CustomerFeedback`."
+  allCustomerFeedbacks("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `CustomerFeedback`." orderBy: [CustomerFeedbacksOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: CustomerFeedbackCondition): CustomerFeedbacksConnection
   "Reads and enables pagination through a set of `KnexMigration`."
   allKnexMigrations("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `KnexMigration`." orderBy: [KnexMigrationsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: KnexMigrationCondition): KnexMigrationsConnection
   "Reads and enables pagination through a set of `KnexMigrationsLock`."
@@ -51,6 +53,7 @@ type Query implements Node {
   productById(id: Int!): Product
   productMaterialById(id: Int!): ProductMaterial
   staffById(id: Int!): Staff
+  customerFeedbackById(id: Int!): CustomerFeedback
   knexMigrationById(id: Int!): KnexMigration
   knexMigrationsLockByIndex(index: Int!): KnexMigrationsLock
   "Reads a single `Account` using its globally unique `ID`."
@@ -77,6 +80,8 @@ type Query implements Node {
   productMaterial("The globally unique `ID` to be used in selecting a single `ProductMaterial`." nodeId: ID!): ProductMaterial
   "Reads a single `Staff` using its globally unique `ID`."
   staff("The globally unique `ID` to be used in selecting a single `Staff`." nodeId: ID!): Staff
+  "Reads a single `CustomerFeedback` using its globally unique `ID`."
+  customerFeedback("The globally unique `ID` to be used in selecting a single `CustomerFeedback`." nodeId: ID!): CustomerFeedback
   "Reads a single `KnexMigration` using its globally unique `ID`."
   knexMigration("The globally unique `ID` to be used in selecting a single `KnexMigration`." nodeId: ID!): KnexMigration
   "Reads a single `KnexMigrationsLock` using its globally unique `ID`."
@@ -140,6 +145,8 @@ type Staff implements Node {
   accountByUserName: Account
   "Reads and enables pagination through a set of `Bill`."
   billsByIdStaff("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `Bill`." orderBy: [BillsOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: BillCondition): BillsConnection!
+  "Reads and enables pagination through a set of `CustomerFeedback`."
+  customerFeedbacksByStaffId("Only read the first `n` values of the set." first: Int "Only read the last `n` values of the set." last: Int "Skip the first `n` values from our `after` cursor, an alternative to cursor\nbased pagination. May not be used with `last`." offset: Int "Read all values in the set before (above) this cursor." before: Cursor "Read all values in the set after (below) this cursor." after: Cursor "The method to use when ordering `CustomerFeedback`." orderBy: [CustomerFeedbacksOrderBy!] = [ PRIMARY_KEY_ASC ] "A condition to be used in determining which values should be returned by the collection." condition: CustomerFeedbackCondition): CustomerFeedbacksConnection!
 }
 
 "The day, does not include a time."
@@ -615,6 +622,99 @@ type BillsEdge {
   cursor: Cursor
   "The `Bill` at the end of the edge."
   node: Bill
+}
+
+"A connection to a list of `CustomerFeedback` values."
+type CustomerFeedbacksConnection {
+  "A list of `CustomerFeedback` objects."
+  nodes: [CustomerFeedback]!
+  "A list of edges which contains the `CustomerFeedback` and cursor to aid in pagination."
+  edges: [CustomerFeedbacksEdge!]!
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "The count of *all* `CustomerFeedback` you could get from the connection."
+  totalCount: Int!
+}
+
+type CustomerFeedback implements Node {
+  "A globally unique identifier. Can be used in various places throughout the system to identify this single value."
+  nodeId: ID!
+  id: Int!
+  name: String!
+  email: String!
+  content: String!
+  submittedAt: Datetime
+  status: String
+  responseContent: String
+  respondedAt: Datetime
+  staffId: Int
+  createdAt: Datetime
+  updatedAt: Datetime
+  "Reads a single `Staff` that is related to this `CustomerFeedback`."
+  staffByStaffId: Staff
+}
+
+"A `CustomerFeedback` edge in the connection."
+type CustomerFeedbacksEdge {
+  "A cursor for use in pagination."
+  cursor: Cursor
+  "The `CustomerFeedback` at the end of the edge."
+  node: CustomerFeedback
+}
+
+"Methods to use when ordering `CustomerFeedback`."
+enum CustomerFeedbacksOrderBy {
+  NATURAL
+  ID_ASC
+  ID_DESC
+  NAME_ASC
+  NAME_DESC
+  EMAIL_ASC
+  EMAIL_DESC
+  CONTENT_ASC
+  CONTENT_DESC
+  SUBMITTED_AT_ASC
+  SUBMITTED_AT_DESC
+  STATUS_ASC
+  STATUS_DESC
+  RESPONSE_CONTENT_ASC
+  RESPONSE_CONTENT_DESC
+  RESPONDED_AT_ASC
+  RESPONDED_AT_DESC
+  STAFF_ID_ASC
+  STAFF_ID_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+  UPDATED_AT_ASC
+  UPDATED_AT_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"A condition to be used against `CustomerFeedback` object types. All fields are\ntested for equality and combined with a logical ‘and.’"
+input CustomerFeedbackCondition {
+  "Checks for equality with the object’s `id` field."
+  id: Int
+  "Checks for equality with the object’s `name` field."
+  name: String
+  "Checks for equality with the object’s `email` field."
+  email: String
+  "Checks for equality with the object’s `content` field."
+  content: String
+  "Checks for equality with the object’s `submittedAt` field."
+  submittedAt: Datetime
+  "Checks for equality with the object’s `status` field."
+  status: String
+  "Checks for equality with the object’s `responseContent` field."
+  responseContent: String
+  "Checks for equality with the object’s `respondedAt` field."
+  respondedAt: Datetime
+  "Checks for equality with the object’s `staffId` field."
+  staffId: Int
+  "Checks for equality with the object’s `createdAt` field."
+  createdAt: Datetime
+  "Checks for equality with the object’s `updatedAt` field."
+  updatedAt: Datetime
 }
 
 "A `Staff` edge in the connection."
@@ -1114,6 +1214,8 @@ type Mutation {
   createProductMaterial("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: CreateProductMaterialInput!): CreateProductMaterialPayload
   "Creates a single `Staff`."
   createStaff("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: CreateStaffInput!): CreateStaffPayload
+  "Creates a single `CustomerFeedback`."
+  createCustomerFeedback("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: CreateCustomerFeedbackInput!): CreateCustomerFeedbackPayload
   "Creates a single `KnexMigration`."
   createKnexMigration("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: CreateKnexMigrationInput!): CreateKnexMigrationPayload
   "Creates a single `KnexMigrationsLock`."
@@ -1166,6 +1268,10 @@ type Mutation {
   updateStaff("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateStaffInput!): UpdateStaffPayload
   "Updates a single `Staff` using a unique key and a patch."
   updateStaffById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateStaffByIdInput!): UpdateStaffPayload
+  "Updates a single `CustomerFeedback` using its globally unique id and a patch."
+  updateCustomerFeedback("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateCustomerFeedbackInput!): UpdateCustomerFeedbackPayload
+  "Updates a single `CustomerFeedback` using a unique key and a patch."
+  updateCustomerFeedbackById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateCustomerFeedbackByIdInput!): UpdateCustomerFeedbackPayload
   "Updates a single `KnexMigration` using its globally unique id and a patch."
   updateKnexMigration("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: UpdateKnexMigrationInput!): UpdateKnexMigrationPayload
   "Updates a single `KnexMigration` using a unique key and a patch."
@@ -1222,6 +1328,10 @@ type Mutation {
   deleteStaff("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteStaffInput!): DeleteStaffPayload
   "Deletes a single `Staff` using a unique key."
   deleteStaffById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteStaffByIdInput!): DeleteStaffPayload
+  "Deletes a single `CustomerFeedback` using its globally unique id."
+  deleteCustomerFeedback("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteCustomerFeedbackInput!): DeleteCustomerFeedbackPayload
+  "Deletes a single `CustomerFeedback` using a unique key."
+  deleteCustomerFeedbackById("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteCustomerFeedbackByIdInput!): DeleteCustomerFeedbackPayload
   "Deletes a single `KnexMigration` using its globally unique id."
   deleteKnexMigration("The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields." input: DeleteKnexMigrationInput!): DeleteKnexMigrationPayload
   "Deletes a single `KnexMigration` using a unique key."
@@ -1620,6 +1730,43 @@ input StaffInput {
   position: String
   userName: String
   salary: Float
+}
+
+"The output of our create `CustomerFeedback` mutation."
+type CreateCustomerFeedbackPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `CustomerFeedback` that was created by this mutation."
+  customerFeedback: CustomerFeedback
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "Reads a single `Staff` that is related to this `CustomerFeedback`."
+  staffByStaffId: Staff
+  "An edge for our `CustomerFeedback`. May be used by Relay 1."
+  customerFeedbackEdge("The method to use when ordering `CustomerFeedback`." orderBy: [CustomerFeedbacksOrderBy!] = [ PRIMARY_KEY_ASC ]): CustomerFeedbacksEdge
+}
+
+"All input for the create `CustomerFeedback` mutation."
+input CreateCustomerFeedbackInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The `CustomerFeedback` to be created by this mutation."
+  customerFeedback: CustomerFeedbackInput!
+}
+
+"An input for mutations affecting `CustomerFeedback`"
+input CustomerFeedbackInput {
+  id: Int
+  name: String!
+  email: String!
+  content: String!
+  submittedAt: Datetime
+  status: String
+  responseContent: String
+  respondedAt: Datetime
+  staffId: Int
+  createdAt: Datetime
+  updatedAt: Datetime
 }
 
 "The output of our create `KnexMigration` mutation."
@@ -2198,6 +2345,54 @@ input UpdateStaffByIdInput {
   id: Int!
 }
 
+"The output of our update `CustomerFeedback` mutation."
+type UpdateCustomerFeedbackPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `CustomerFeedback` that was updated by this mutation."
+  customerFeedback: CustomerFeedback
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "Reads a single `Staff` that is related to this `CustomerFeedback`."
+  staffByStaffId: Staff
+  "An edge for our `CustomerFeedback`. May be used by Relay 1."
+  customerFeedbackEdge("The method to use when ordering `CustomerFeedback`." orderBy: [CustomerFeedbacksOrderBy!] = [ PRIMARY_KEY_ASC ]): CustomerFeedbacksEdge
+}
+
+"All input for the `updateCustomerFeedback` mutation."
+input UpdateCustomerFeedbackInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `CustomerFeedback` to be updated."
+  nodeId: ID!
+  "An object where the defined keys will be set on the `CustomerFeedback` being updated."
+  customerFeedbackPatch: CustomerFeedbackPatch!
+}
+
+"Represents an update to a `CustomerFeedback`. Fields that are set will be updated."
+input CustomerFeedbackPatch {
+  id: Int
+  name: String
+  email: String
+  content: String
+  submittedAt: Datetime
+  status: String
+  responseContent: String
+  respondedAt: Datetime
+  staffId: Int
+  createdAt: Datetime
+  updatedAt: Datetime
+}
+
+"All input for the `updateCustomerFeedbackById` mutation."
+input UpdateCustomerFeedbackByIdInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "An object where the defined keys will be set on the `CustomerFeedback` being updated."
+  customerFeedbackPatch: CustomerFeedbackPatch!
+  id: Int!
+}
+
 "The output of our update `KnexMigration` mutation."
 type UpdateKnexMigrationPayload {
   "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
@@ -2627,6 +2822,36 @@ input DeleteStaffInput {
 
 "All input for the `deleteStaffById` mutation."
 input DeleteStaffByIdInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  id: Int!
+}
+
+"The output of our delete `CustomerFeedback` mutation."
+type DeleteCustomerFeedbackPayload {
+  "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations."
+  clientMutationId: String
+  "The `CustomerFeedback` that was deleted by this mutation."
+  customerFeedback: CustomerFeedback
+  deletedCustomerFeedbackId: ID
+  "Our root query field type. Allows us to run any query from our mutation payload."
+  query: Query
+  "Reads a single `Staff` that is related to this `CustomerFeedback`."
+  staffByStaffId: Staff
+  "An edge for our `CustomerFeedback`. May be used by Relay 1."
+  customerFeedbackEdge("The method to use when ordering `CustomerFeedback`." orderBy: [CustomerFeedbacksOrderBy!] = [ PRIMARY_KEY_ASC ]): CustomerFeedbacksEdge
+}
+
+"All input for the `deleteCustomerFeedback` mutation."
+input DeleteCustomerFeedbackInput {
+  "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
+  clientMutationId: String
+  "The globally unique `ID` which will identify a single `CustomerFeedback` to be deleted."
+  nodeId: ID!
+}
+
+"All input for the `deleteCustomerFeedbackById` mutation."
+input DeleteCustomerFeedbackByIdInput {
   "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client."
   clientMutationId: String
   id: Int!

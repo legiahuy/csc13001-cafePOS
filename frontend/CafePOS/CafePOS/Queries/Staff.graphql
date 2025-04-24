@@ -98,5 +98,22 @@ query GetStaffIdByUserName($userName: String!) {
   }
 }
 
+query GetStaffNameById($id: Int!) {
+  allStaff(condition: {id: $id}) {
+    edges {
+      node {
+        userName
+        salary
+        position
+        phone
+        name
+        id
+        gender
+        email
+      }
+    }
+  }
+}
+
 
 

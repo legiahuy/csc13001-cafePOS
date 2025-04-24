@@ -3,7 +3,7 @@ using System;
 
 namespace CafePOS.Converter
 {
-    public class GreaterThanOneConverter : IValueConverter
+    public partial class GreaterThanOneConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
@@ -20,7 +20,7 @@ namespace CafePOS.Converter
         }
     }
 
-    public class LessThanTotalPagesConverter : IValueConverter
+    public partial class LessThanTotalPagesConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
