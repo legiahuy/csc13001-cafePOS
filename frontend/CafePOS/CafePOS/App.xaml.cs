@@ -1,20 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Shapes;
-using Windows.ApplicationModel;
-using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using CafePOS.Services;
+using CafePOS.GraphQL;
+using CafePOS.DAO;
+using Windows.Storage;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 namespace CafePOS
@@ -25,15 +17,42 @@ namespace CafePOS
     /// </summary>
     public partial class App : Application
     {
-        public static Window MainAppWindow { get; private set; }
+        private static IServiceProvider _serviceProvider;
+        private static IConfiguration _configuration;
+        private Window m_window;
+
+        public static Window MainAppWindow { get; set; }
+
+        public IServiceProvider ServiceProvider => _serviceProvider;
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
         public App()
         {
-            this.InitializeComponent();
+            InitializeComponent();
+            _serviceProvider = ConfigureServices();
         }
+
+        private static IServiceProvider ConfigureServices()
+        {
+            var services = new ServiceCollection();
+
+            // Register services
+            services.AddSingleton<IWeatherService, WeatherService>();
+            services.AddSingleton<IFoodRecommendationService, FoodRecommendationService>();
+            services.AddSingleton<IGeminiService>(_ => new GeminiService("AIzaSyCnAQZDxfKWruStV1i0MGOH6fHVuQKMNiM"));  // Replace with your Gemini API key
+            services.AddCafePOSClient().ConfigureHttpClient(client => client.BaseAddress = new Uri("http://localhost:5001/graphql"));
+
+            return services.BuildServiceProvider();
+        }
+
+        public static T GetService<T>() where T : class
+        {
+            return _serviceProvider.GetService<T>();
+        }
+
         /// <summary>
         /// Invoked when the application is launched.
         /// </summary>
@@ -44,6 +63,5 @@ namespace CafePOS
             MainAppWindow = m_window;
             m_window.Activate();
         }
-        private Window? m_window;
     }
 }
