@@ -224,7 +224,7 @@ exports.seed = async function(knex) {
       price: 30000,
       description: 'Cà phê sữa đậm đà',
       isAvailable: true,
-      imageUrl: '/Assets/Product/ca-phe-sua.jpg'
+      imageUrl: '/Assets/Product/ca-phe-sua.jpeg'
     },
     {
       name: 'Trà chanh',
@@ -240,7 +240,7 @@ exports.seed = async function(knex) {
       price: 35000,
       description: 'Trà đào thơm ngon',
       isAvailable: true,
-      imageUrl: '/Assets/Product/tra-dao.jpg'
+      imageUrl: '/Assets/Product/tra-dao.png'
     },
     {
       name: 'Nước cam',
@@ -248,7 +248,7 @@ exports.seed = async function(knex) {
       price: 35000,
       description: 'Nước cam tươi',
       isAvailable: true,
-      imageUrl: '/Assets/Product/nuoc-cam.jpg'
+      imageUrl: '/Assets/Product/nuoc-cam.png'
     },
     {
       name: 'Bánh tiramisu',
@@ -264,7 +264,7 @@ exports.seed = async function(knex) {
       price: 35000,
       description: 'Bánh croissant Pháp',
       isAvailable: true,
-      imageUrl: '/Assets/Product/croissant.jpg'
+      imageUrl: '/Assets/Product/croissant.jpeg'
     },
     {
       name: 'Sandwich',

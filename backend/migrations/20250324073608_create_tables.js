@@ -132,7 +132,6 @@ exports.up = function(knex) {
 */
 exports.down = function(knex) {
   return knex.schema
-    .dropTable('customer_feedback')
     .dropTableIfExists('MaterialItem')
     .dropTableIfExists('BillInfo')
     .dropTableIfExists('Bill')
@@ -142,7 +141,8 @@ exports.down = function(knex) {
     .dropTableIfExists('Product')
     .dropTableIfExists('Material')
     .dropTableIfExists('Category')
-    .dropTableIfExists('Staff')
     .dropTableIfExists('CafeTable')
+    .dropTableIfExists('customer_feedback')
+    .dropTableIfExists('Staff')
     .dropTableIfExists('Account');
 };
