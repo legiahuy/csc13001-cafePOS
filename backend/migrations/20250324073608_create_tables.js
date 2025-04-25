@@ -142,7 +142,7 @@ exports.down = function(knex) {
     .dropTableIfExists('Material')
     .dropTableIfExists('Category')
     .dropTableIfExists('CafeTable')
-    .dropTable('customer_feedback')
+    .dropTableIfExists('customer_feedback')
     .dropTableIfExists('Staff')
     .dropTableIfExists('Account');
 };

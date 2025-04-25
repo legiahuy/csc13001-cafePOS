@@ -37,50 +37,40 @@
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- LEFT: Table Grid with Improved Styling -->
+        <!-- LEFT: Table Grid -->
         <Border Grid.Column="0" 
-        Background="White" 
-        CornerRadius="8" 
-        Margin="0,0,10,0" 
-        BorderThickness="1" 
-        BorderBrush="#E0E0E0">
-            <ScrollViewer>
+                Background="White" 
+                CornerRadius="8" 
+                Margin="0,0,10,0" 
+                BorderThickness="1" 
+                BorderBrush="#E0E0E0">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <ListView x:Name="TableItemsControl" 
-                  SelectionChanged="TableItemsControl_SelectionChanged"
-                  SelectionMode="Single"
-                  BorderThickness="0"
-                  Background="Transparent">
-
+                         SelectionChanged="TableItemsControl_SelectionChanged"
+                         SelectionMode="Single"
+                         BorderThickness="0"
+                         Background="Transparent">
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <ItemsWrapGrid Orientation="Horizontal" MaximumRowsOrColumns="100" Margin="15"/>
+                            <ItemsWrapGrid Orientation="Horizontal" 
+                                         MaximumRowsOrColumns="4" 
+                                         HorizontalAlignment="Center"/>
                         </ItemsPanelTemplate>
                     </ListView.ItemsPanel>
-
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="dto:CafeTable">
                             <Button Click="TableButton_Click" Background="Transparent" BorderThickness="0">
-                                <Border 
-                                    Width="120" 
-                                    Height="120" 
-                                    Background="{x:Bind BackgroundColor}"
-                                    CornerRadius="8" 
-                                    Margin="5" 
-                                    BorderThickness="2" 
-                                    BorderBrush="#3A7BD5">
+                                <Border Width="120" Height="120" 
+                                        Background="{x:Bind BackgroundColor}"
+                                        CornerRadius="8" Margin="5" 
+                                        BorderThickness="2" BorderBrush="#3A7BD5">
                                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                        <TextBlock 
-                                            Text="{x:Bind Name}" 
-                                            FontSize="24" 
-                                            FontWeight="Bold" 
-                                            Foreground="Black" 
-                                            HorizontalAlignment="Center"/>
-                                        <TextBlock 
-                                            Text="{x:Bind Status}" 
-                                            FontSize="14" 
-                                            Foreground="Black" 
-                                            Opacity="0.7" 
-                                            HorizontalAlignment="Center"/>
+                                        <TextBlock Text="{x:Bind Name}" 
+                                                 FontSize="24" FontWeight="Bold" 
+                                                 Foreground="Black" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="{x:Bind Status}" 
+                                                 FontSize="14" Foreground="Black" 
+                                                 Opacity="0.7" HorizontalAlignment="Center"/>
                                     </StackPanel>
                                 </Border>
                             </Button>
@@ -90,217 +80,226 @@
             </ScrollViewer>
         </Border>
 
-        <!-- RIGHT: Menu & Actions with Enhanced Design -->
-        <Border 
-    Grid.Column="1" 
-    Background="White" 
-    CornerRadius="8" 
-    BorderThickness="1" 
-    BorderBrush="#E0E0E0" 
-    Padding="20">
+        <!-- RIGHT: Menu & Actions -->
+        <Border Grid.Column="1" 
+                Background="White" 
+                CornerRadius="8" 
+                BorderThickness="1" 
+                BorderBrush="#E0E0E0" 
+                Padding="20">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <Grid RowSpacing="15">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-            <Grid RowSpacing="15">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*" />
                     <!-- Add Food Section -->
-                    <RowDefinition Height="2*" />
-                    <!-- Order List -->
-                    <RowDefinition Height="1*" />
-                    <!-- Bottom Actions -->
-                </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Spacing="10">
+                        <TextBlock Text="Thực đơn" 
+                                 FontSize="22" FontWeight="Bold" 
+                                 Foreground="#333333" HorizontalAlignment="Center"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
 
-                <!-- Add Food Section -->
-                <StackPanel Grid.Row="0" Spacing="10">
-                    <TextBlock 
-                Text="Thực đơn" 
-                FontSize="22" 
-                FontWeight="Bold" 
-                Foreground="#333333" 
-                HorizontalAlignment="Center"/>
+                            <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                <ComboBox x:Name="CategoryComboBox" 
+                                        PlaceholderText="Loại món" 
+                                        Style="{StaticResource ComboBoxStyle}"
+                                        SelectionChanged="CategoryComboBox_SelectionChanged"
+                                        Margin="0,0,0,5"/>
+                                <ComboBox x:Name="FoodComboBox" 
+                                        PlaceholderText="Chọn món" 
+                                        Style="{StaticResource ComboBoxStyle}"/>
+                            </StackPanel>
 
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*" />
-                            <ColumnDefinition Width="1*" />
-                            <ColumnDefinition Width="1*" />
-                        </Grid.ColumnDefinitions>
+                            <Button x:Name="btnAddFood" Grid.Column="1"
+                                    Content="Thêm món" 
+                                    Background="#4CAF50" Foreground="White" 
+                                    Style="{StaticResource ButtonStyle}"
+                                    Click="btnAddFood_Click"/>
 
-                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
-                            <ComboBox 
-                                x:Name="CategoryComboBox" 
-                                PlaceholderText="Loại món" 
-                                Style="{StaticResource ComboBoxStyle}"
-                                SelectionChanged="CategoryComboBox_SelectionChanged"
-                                Margin="0,0,0,5"
-                            />
-                            <ComboBox 
-                                x:Name="FoodComboBox" 
-                                PlaceholderText="Chọn món" 
-                                Style="{StaticResource ComboBoxStyle}"
-                            />
-                        </StackPanel>
-
-                        <Button 
-                    x:Name="btnAddFood"        
-                    Grid.Column="1"
-                    VerticalAlignment="Stretch"
-                    Content="Thêm món" 
-                    Background="#4CAF50" 
-                    Foreground="White" 
-                    Style="{StaticResource ButtonStyle}"
-                    Click="btnAddFood_Click"        
-                    />
-
-                        <NumberBox 
-                    Grid.Column="2"
-                    x:Name="QuantityBox"
-                    Value="1"
-                    Minimum="1"
-                    Margin="10,0,0,0"
-                    VerticalAlignment="Center"
-                    SpinButtonPlacementMode="Compact" 
-                    SmallChange="1"/>
-                    </Grid>
-                </StackPanel>
-
-                <StackPanel Grid.Row="1" Margin="0,10">
-                    <TextBlock 
-                    Text="Danh sách món" 
-                    FontSize="18" 
-                    FontWeight="SemiBold" 
-                    Foreground="#333333"
-                    HorizontalAlignment="Center"
-                    Margin="0,10"/>
-
-                    <!-- Column Headers -->
-                    <Grid Background="#EFEFEF" BorderBrush="#E0E0E0" BorderThickness="1" Margin="10,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Tên món"
-                           FontWeight="Bold"
-                           HorizontalAlignment="Center"
-                           Padding="5"/>
-                        <TextBlock Text="Số lượng"
-                           FontWeight="Bold"
-                           HorizontalAlignment="Center"
-                           Grid.Column="1"
-                           Padding="5"/>
-                        <TextBlock Text="Đơn giá"
-                           FontWeight="Bold"
-                           HorizontalAlignment="Center"
-                           Grid.Column="2"
-                           Padding="5"/>
-                        <TextBlock Text="Thành tiền"
-                           FontWeight="Bold"
-                           HorizontalAlignment="Center"
-                           Grid.Column="3"
-                           Padding="5"/>
-                    </Grid>
-
-                    <!-- Data Rows -->
-                    <ListView 
-                    x:Name="OrderListView" 
-                    Background="#F9F9F9" 
-                    BorderThickness="1" 
-                    BorderBrush="#E0E0E0"
-                    Margin="10,5,10,10"
-                    SelectionMode="None"
-                    Height="200">
-
-                        <ListView.ItemContainerTransitions>
-                            <TransitionCollection />
-                        </ListView.ItemContainerTransitions>
-
-                        <ListView.ItemTemplate>
-                            <DataTemplate x:DataType="dto:Menu">
-                                <Grid Padding="5">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-
-                                    <TextBlock Text="{x:Bind ProductName}" 
-                                        HorizontalAlignment="Center"/>
-                                    <TextBlock Text="{x:Bind Count}" 
-                                        Grid.Column="1"
-                                        HorizontalAlignment="Center"/>
-                                    <TextBlock Text="{x:Bind Price, Converter={StaticResource PriceConverter}}" 
-                                        Grid.Column="2"
-                                        HorizontalAlignment="Center"/>
-                                    <TextBlock Text="{x:Bind TotalPrice, Converter={StaticResource PriceConverter}}" 
-                                        Grid.Column="3"
-                                        HorizontalAlignment="Center"/>
-                                </Grid>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </StackPanel>
-
-                <!-- Bottom Section -->
-                <Grid Grid.Row="2" ColumnSpacing="10">
-
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*" />
-                        <ColumnDefinition Width="1*" />
-                    </Grid.ColumnDefinitions>
-
-                    <!-- Left: Table & Discount -->
-                    <StackPanel Grid.Column="0" Spacing="10">
-
-                        <ComboBox 
-                        x:Name="MoveTableComboBox" 
-                        PlaceholderText="Chuyển bàn" 
-                        Style="{StaticResource ComboBoxStyle}"/>
-
-                        <Button 
-                        Content="Chuyển bàn" 
-                        Background="#FF9800" 
-                        Foreground="White" 
-                        Style="{StaticResource ButtonStyle}" 
-                        Click="btnChangeTable_Click"/>
-
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,20,0,0">
-                            <TextBlock 
-                                Text="Tổng tiền:" 
-                                FontSize="16" 
-                                FontWeight="Bold" 
-                                Foreground="#333333"
-                                VerticalAlignment="Center"/>
-                            <TextBlock 
-                                x:Name="TotalPriceTextBlock" 
-                                Text="0 ₫"
-                                FontSize="16" 
-                                FontWeight="Bold" 
-                                Foreground="#FF5722"
-                                VerticalAlignment="Center"/>
-                        </StackPanel>
+                            <NumberBox Grid.Column="2"
+                                     x:Name="QuantityBox"
+                                     Value="1" Minimum="1"
+                                     Margin="10,0,0,0"
+                                     VerticalAlignment="Center"
+                                     SpinButtonPlacementMode="Compact" 
+                                     SmallChange="1"/>
+                        </Grid>
                     </StackPanel>
 
-                    <!-- Right: Buttons Vertical -->
-                    <StackPanel Grid.Column="1" Spacing="10">
-                        <Button 
-                            Content="Thanh toán" 
-                            Background="#2196F3" 
-                            Foreground="White" 
-                            Style="{StaticResource ButtonStyle}"
-                            Click="btnCheckOut_Click"
-                        />
-                        <Button 
-                            Content="Hủy" 
-                            Background="#F44336" 
-                            Foreground="White" 
-                            Style="{StaticResource ButtonStyle}"
-                            Click="btnCancel_Click"
-                        />
+                    <!-- Recommendations Section -->
+                    <StackPanel Grid.Row="1" Margin="0,10">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock Text="Gợi ý món theo thời tiết" 
+                                     FontSize="18" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding CurrentTemperature}" 
+                                     FontSize="18" FontWeight="SemiBold"
+                                     Margin="10,0,0,0"
+                                     Foreground="#FF5722"/>
+                        </StackPanel>
+                        
+                        <!-- AI Recommendation -->
+                        <TextBlock Text="{Binding AiRecommendation}"
+                                 TextWrapping="Wrap"
+                                 Margin="0,0,0,10"
+                                 FontSize="14"
+                                 Foreground="#666666"/>
+                        
+                        <ListView x:Name="RecommendationsListView"
+                                ItemsSource="{Binding Recommendations}"
+                                MaxHeight="200" 
+                                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                BorderThickness="1"
+                                BorderBrush="#E0E0E0"
+                                Margin="0,0,0,0"
+                                SelectionMode="None">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="dto:ProductDTO">
+                                    <Grid Margin="5" VerticalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="50"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Product Image -->
+                                        <Image Source="{x:Bind ImageUrl}" Width="40" Height="40" VerticalAlignment="Center"/>
+
+                                        <!-- Product Name & Price -->
+                                        <StackPanel Grid.Column="1" Margin="10,0" VerticalAlignment="Center">
+                                            <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold"/>
+                                            <TextBlock Text="{x:Bind FormattedPrice}" Foreground="Gray"/>
+                                        </StackPanel>
+
+                                        <!-- Quantity Input -->
+                                        <NumberBox x:Name="RecommendedQuantityBox"
+                                                 Grid.Column="2"
+                                                 Value="1" Minimum="1"
+                                                 Width="100" Margin="5,0"
+                                                 VerticalAlignment="Center"
+                                                 SpinButtonPlacementMode="Compact"
+                                                 SmallChange="1"/>
+
+                                        <!-- Add Button -->
+                                        <Button x:Name="AddRecommendedButton" 
+                                                Grid.Column="3"
+                                                Content="Thêm"
+                                                Click="AddRecommendedItem_Click"
+                                                Tag="{x:Bind}"
+                                                Background="#4CAF50"
+                                                Foreground="White"
+                                                VerticalAlignment="Center"
+                                                Padding="8,4"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
                     </StackPanel>
+
+                    <!-- Order List Section -->
+                    <StackPanel Grid.Row="2" Margin="0,10">
+                        <TextBlock Text="Danh sách món" 
+                                 FontSize="18" FontWeight="SemiBold" 
+                                 Foreground="#333333"
+                                 HorizontalAlignment="Center"
+                                 Margin="0,10"/>
+
+                        <!-- Column Headers -->
+                        <Grid Background="#EFEFEF" BorderBrush="#E0E0E0" BorderThickness="1" Margin="10,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Tên món" FontWeight="Bold" HorizontalAlignment="Center" Padding="5"/>
+                            <TextBlock Text="Số lượng" Grid.Column="1" FontWeight="Bold" HorizontalAlignment="Center" Padding="5"/>
+                            <TextBlock Text="Đơn giá" Grid.Column="2" FontWeight="Bold" HorizontalAlignment="Center" Padding="5"/>
+                            <TextBlock Text="Thành tiền" Grid.Column="3" FontWeight="Bold" HorizontalAlignment="Center" Padding="5"/>
+                        </Grid>
+
+                        <ListView x:Name="OrderListView" 
+                                Background="#F9F9F9" 
+                                BorderThickness="1" 
+                                BorderBrush="#E0E0E0"
+                                Margin="10,5,10,10"
+                                SelectionMode="None"
+                                Height="200">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="dto:Menu">
+                                    <Grid Padding="5">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{x:Bind ProductName}" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="{x:Bind Count}" Grid.Column="1" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="{x:Bind Price, Converter={StaticResource PriceConverter}}" 
+                                                 Grid.Column="2" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="{x:Bind TotalPrice, Converter={StaticResource PriceConverter}}" 
+                                                 Grid.Column="3" HorizontalAlignment="Center"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </StackPanel>
+
+                    <!-- Bottom Actions Section -->
+                    <Grid Grid.Row="3" ColumnSpacing="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Left: Table & Total -->
+                        <StackPanel Grid.Column="0" Spacing="10">
+                            <ComboBox x:Name="MoveTableComboBox" 
+                                    PlaceholderText="Chuyển bàn" 
+                                    Style="{StaticResource ComboBoxStyle}"/>
+                            <Button Content="Chuyển bàn" 
+                                    Background="#FF9800" Foreground="White" 
+                                    Style="{StaticResource ButtonStyle}"
+                                    Click="btnChangeTable_Click"/>
+                            <StackPanel Orientation="Horizontal" 
+                                      HorizontalAlignment="Right" 
+                                      Spacing="10" Margin="0,20,0,0">
+                                <TextBlock Text="Tổng tiền:" 
+                                         FontSize="16" FontWeight="Bold" 
+                                         Foreground="#333333"
+                                         VerticalAlignment="Center"/>
+                                <TextBlock x:Name="TotalPriceTextBlock" 
+                                         Text="0 ₫"
+                                         FontSize="16" FontWeight="Bold" 
+                                         Foreground="#FF5722"
+                                         VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Right: Action Buttons -->
+                        <StackPanel Grid.Column="1" Spacing="10">
+                            <Button Content="Thanh toán" 
+                                    Background="#2196F3" Foreground="White" 
+                                    Style="{StaticResource ButtonStyle}"
+                                    Click="btnCheckOut_Click"/>
+                            <Button Content="Hủy" 
+                                    Background="#F44336" Foreground="White" 
+                                    Style="{StaticResource ButtonStyle}"
+                                    Click="btnCancel_Click"/>
+                        </StackPanel>
+                    </Grid>
                 </Grid>
-            </Grid>
+            </ScrollViewer>
         </Border>
     </Grid>
 </Page>

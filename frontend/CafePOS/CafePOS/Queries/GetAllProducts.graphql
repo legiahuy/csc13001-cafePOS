@@ -1,0 +1,42 @@
+query GetAllProducts {
+  allProducts {
+    edges {
+      node {
+        id
+        name
+        description
+        price
+        idCategory
+        isAvailable
+        imageUrl
+      }
+    }
+  }
+}
+
+query GetProductsBasicInfo {
+  allProducts {
+    edges {
+      node {
+        id
+        name
+        price
+      }
+    }
+  }
+}
+
+query GetProductsByCategory($categoryId: Int!) {
+  allProducts(condition: { idCategory: $categoryId }) {
+    edges {
+      node {
+        id
+        name
+        price
+        description
+        imageUrl
+        isAvailable
+      }
+    }
+  }
+} 

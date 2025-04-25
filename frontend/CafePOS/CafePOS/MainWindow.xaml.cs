@@ -13,6 +13,8 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Microsoft.Extensions.DependencyInjection;
+using CafePOS.Services;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -24,25 +26,26 @@ namespace CafePOS
     /// </summary>
     public sealed partial class MainWindow : Window
     {
+        private readonly IWeatherService _weatherService;
+        private readonly IFoodRecommendationService _foodRecommendationService;
+        private Frame mainFrame;
+
         public MainWindow()
         {
             this.InitializeComponent();
-            var windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(this);
-            var windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(windowHandle);
-            var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
 
-            ExtendsContentIntoTitleBar = true;
-            SetTitleBar(AppTitleBar);
+            // Initialize the Frame
+            mainFrame = new Frame();
+            this.Content = mainFrame;
 
-            var displayArea = Microsoft.UI.Windowing.DisplayArea.GetFromWindowId(windowId, Microsoft.UI.Windowing.DisplayAreaFallback.Nearest);
-            if (displayArea != null)
-            {
-                var width = displayArea.WorkArea.Width;
-                var height = displayArea.WorkArea.Height;
-                appWindow.MoveAndResize(new Windows.Graphics.RectInt32(0, 0, width, height));
-            }
+            // Get services from the App's service provider
+            var app = Application.Current as App;
+            _weatherService = app.ServiceProvider.GetRequiredService<IWeatherService>();
+            _foodRecommendationService = app.ServiceProvider.GetRequiredService<IFoodRecommendationService>();
 
-            MainFrame.Navigate(typeof(LoginPage));
+            App.MainAppWindow = this;
+            this.Title = "CafePOS";
+            mainFrame.Navigate(typeof(LoginPage));
         }
     }
 }
