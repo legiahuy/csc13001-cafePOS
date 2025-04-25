@@ -135,9 +135,7 @@ namespace CafePOS
 
             if (string.IsNullOrWhiteSpace(name) ||
                 DobDatePicker.Date == null ||
-                GenderComboBox.SelectedItem == null ||
                 string.IsNullOrWhiteSpace(phone) ||
-                string.IsNullOrWhiteSpace(email) ||
                 string.IsNullOrWhiteSpace(position) ||
                 string.IsNullOrWhiteSpace(salaryText) ||
                 (isCreateMode && (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))))

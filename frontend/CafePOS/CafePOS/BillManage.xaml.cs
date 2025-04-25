@@ -370,6 +370,19 @@ namespace CafePOS
 
         private async void Delete_Click(object sender, RoutedEventArgs e)
         {
+            if (Account.CurrentUserType != 1)
+            {
+                var dialog = new ContentDialog
+                {
+                    Title = "Không có quyền",
+                    Content = "Bạn không có quyền xóa hóa đơn.",
+                    CloseButtonText = "Đóng",
+                    XamlRoot = this.XamlRoot
+                };
+                await dialog.ShowAsync();
+                return;
+            }
+
             if (sender is Button button && button.DataContext is BillViewModel bill)
             {
                 var dialog = new ContentDialog

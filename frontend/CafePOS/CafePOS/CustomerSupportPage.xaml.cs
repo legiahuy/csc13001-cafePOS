@@ -178,6 +178,18 @@ namespace CafePOS
                     });
 
                 }
+                else if (feedbackDetail.StaffId == null)
+                {
+                    panel.Children.Add(new TextBlock
+                    {
+                        Text = $"Phản hồi bởi quản trị viên",
+                        TextWrapping = TextWrapping.Wrap,
+                        FontSize = 12,
+                        Opacity = 0.7,
+                        Margin = new Thickness(0, 5, 0, 0)
+                    });
+                }
+
             }
 
             detailDialog.Content = panel;
@@ -232,8 +244,9 @@ namespace CafePOS
                 bool success = await CustomerFeedbackDAO.Instance.RespondToFeedbackAsync(
                     feedback.Id,
                     responseTextBox.Text,
-                    currentStaffId
+                    currentStaffId > 0 ? currentStaffId : null
                 );
+
 
                 if (success)
                 {

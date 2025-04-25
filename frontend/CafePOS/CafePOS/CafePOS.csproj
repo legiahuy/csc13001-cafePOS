@@ -12,9 +12,7 @@
     <PublishProfile>win-$(Platform).pubxml</PublishProfile>
     <UseWinUI>true</UseWinUI>
     <EnableMsixTooling>true</EnableMsixTooling>
-    <Nullable>enable</Nullable
-	  
->	
+    <Nullable>enable</Nullable>	
 	  
   </PropertyGroup>
   <ItemGroup>
@@ -34,6 +32,7 @@
     <None Remove="CheckoutWindow.xaml" />
     <None Remove="CustomersPage.xaml" />
     <None Remove="CustomerSupportPage.xaml" />
+    <None Remove="DashboardPage.xaml" />
     <None Remove="LoginPage.xaml" />
     <None Remove="MainPage.xaml" />
     <None Remove="MaterialPage.xaml" />
@@ -117,6 +116,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\Material\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="DashboardPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="CustomerSupportPage.xaml">

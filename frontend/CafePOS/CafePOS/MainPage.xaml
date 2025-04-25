@@ -69,8 +69,8 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <FontIcon Grid.Column="0" Glyph="&#xE80F;" FontFamily="Segoe MDL2 Assets" Margin="15,0,15,0" />
-                                <TextBlock Grid.Column="1" Text="Trang chủ" VerticalAlignment="Center" />
+                                <FontIcon Grid.Column="0" Glyph="&#xE80F;" FontFamily="Segoe MDL2 Assets" Margin="15,0,15,0"   Foreground="Black"/>
+                                <TextBlock Grid.Column="1" Text="Trang chủ" VerticalAlignment="Center"  Foreground="Black" />
                             </Grid>
                         </Button>
 
@@ -84,8 +84,8 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <FontIcon Grid.Column="0" Glyph="&#xE8A1;" FontFamily="Segoe MDL2 Assets" Margin="15,0,15,0" />
-                                <TextBlock Grid.Column="1" Text="Phòng/Bàn" VerticalAlignment="Center" />
+                                <FontIcon Grid.Column="0" Glyph="&#xE8A1;" FontFamily="Segoe MDL2 Assets" Margin="15,0,15,0" Foreground="Black" />
+                                <TextBlock Grid.Column="1" Text="Phòng/Bàn" VerticalAlignment="Center" Foreground="Black"/>
                             </Grid>
                         </Button>
 
@@ -99,8 +99,8 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <FontIcon Grid.Column="0" Glyph="&#xE719;" FontFamily="Segoe MDL2 Assets" Margin="15,0,15,0" />
-                                <TextBlock Grid.Column="1" Text="Quản lý sản phẩm" VerticalAlignment="Center" />
+                                <FontIcon Grid.Column="0" Glyph="&#xE719;" FontFamily="Segoe MDL2 Assets" Margin="15,0,15,0" Foreground="Black"/>
+                                <TextBlock Grid.Column="1" Text="Quản lý sản phẩm" VerticalAlignment="Center" Foreground="Black"/>
                             </Grid>
                         </Button>
 
@@ -114,8 +114,8 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <FontIcon Grid.Column="0" Glyph="&#xE7B8;" FontFamily="Segoe MDL2 Assets" Margin="15,0,15,0" />
-                                <TextBlock Grid.Column="1" Text="Quản lý kho" VerticalAlignment="Center" />
+                                <FontIcon Grid.Column="0" Glyph="&#xE7B8;" FontFamily="Segoe MDL2 Assets" Margin="15,0,15,0" Foreground="Black"/>
+                                <TextBlock Grid.Column="1" Text="Quản lý kho" VerticalAlignment="Center" Foreground="Black"/>
                             </Grid>
                         </Button>
 
@@ -129,8 +129,8 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <FontIcon Grid.Column="0" Glyph="&#xE77B;" FontFamily="Segoe MDL2 Assets" Margin="15,0,15,0" />
-                                <TextBlock Grid.Column="1" Text="Quản lý nhân viên" VerticalAlignment="Center" />
+                                <FontIcon Grid.Column="0" Glyph="&#xE77B;" FontFamily="Segoe MDL2 Assets" Margin="15,0,15,0" Foreground="Black"/>
+                                <TextBlock Grid.Column="1" Text="Quản lý nhân viên" VerticalAlignment="Center" Foreground="Black"/>
                             </Grid>
                         </Button>
 
@@ -144,8 +144,8 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <FontIcon Grid.Column="0" Glyph="&#xE716;" FontFamily="Segoe MDL2 Assets" Margin="15,0,15,0" />
-                                <TextBlock Grid.Column="1" Text="Quản lý khách hàng" VerticalAlignment="Center" />
+                                <FontIcon Grid.Column="0" Glyph="&#xE716;" FontFamily="Segoe MDL2 Assets" Margin="15,0,15,0" Foreground="Black"/>
+                                <TextBlock Grid.Column="1" Text="Quản lý khách hàng" VerticalAlignment="Center" Foreground="Black" />
                             </Grid>
                         </Button>
 
@@ -159,8 +159,8 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <FontIcon Grid.Column="0" Glyph="&#xE8C7;" FontFamily="Segoe MDL2 Assets" Margin="15,0,15,0" />
-                                <TextBlock Grid.Column="1" Text="Phương thức thanh toán" VerticalAlignment="Center" />
+                                <FontIcon Grid.Column="0" Glyph="&#xE8C7;" FontFamily="Segoe MDL2 Assets" Margin="15,0,15,0" Foreground="Black"/>
+                                <TextBlock Grid.Column="1" Text="Phương thức thanh toán" VerticalAlignment="Center" Foreground="Black"/>
                             </Grid>
                         </Button>
 
@@ -174,8 +174,8 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <FontIcon Grid.Column="0" Glyph="&#xE71D;" FontFamily="Segoe MDL2 Assets" Margin="15,0,15,0" />
-                                <TextBlock Grid.Column="1" Text="Quản lý hoá đơn" VerticalAlignment="Center" />
+                                <FontIcon Grid.Column="0" Glyph="&#xE71D;" FontFamily="Segoe MDL2 Assets" Margin="15,0,15,0" Foreground="Black"/>
+                                <TextBlock Grid.Column="1" Text="Quản lý hoá đơn" VerticalAlignment="Center" Foreground="Black"/>
                             </Grid>
                         </Button>
 
@@ -189,8 +189,8 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <FontIcon Grid.Column="0" Glyph="&#xE789;" FontFamily="Segoe MDL2 Assets" Margin="15,0,15,0" />
-                                <TextBlock Grid.Column="1" Text="Hỗ trợ khách hàng" VerticalAlignment="Center" />
+                                <FontIcon Grid.Column="0" Glyph="&#xE789;" FontFamily="Segoe MDL2 Assets" Margin="15,0,15,0" Foreground="Black"/>
+                                <TextBlock Grid.Column="1" Text="Hỗ trợ khách hàng" VerticalAlignment="Center" Foreground="Black"/>
                             </Grid>
                         </Button>
 
@@ -204,8 +204,8 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <FontIcon Grid.Column="0" Glyph="&#xE9D9;" FontFamily="Segoe MDL2 Assets" Margin="15,0,15,0" />
-                                <TextBlock Grid.Column="1" Text="Báo cáo bán hàng" VerticalAlignment="Center" />
+                                <FontIcon Grid.Column="0" Glyph="&#xE9D9;" FontFamily="Segoe MDL2 Assets" Margin="15,0,15,0" Foreground="Black"/>
+                                <TextBlock Grid.Column="1" Text="Báo cáo bán hàng" VerticalAlignment="Center" Foreground="Black"/>
                             </Grid>
                         </Button>
                     </StackPanel>

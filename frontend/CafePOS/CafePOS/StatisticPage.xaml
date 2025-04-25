@@ -138,9 +138,10 @@
                             <TextBlock Text="Tổng doanh thu" 
                                      Style="{ThemeResource SubtitleTextBlockStyle}"/>
                             <TextBlock x:Name="TotalRevenueText" 
-                                     Text="0đ" 
+                                     Text="0đ"
                                      Style="{ThemeResource TitleTextBlockStyle}"
-                                     Foreground="{ThemeResource SystemAccentColor}"/>
+                                     Foreground="Red"
+                                     FontWeight="Bold"/>
                             <StackPanel x:Name="RevenueTrendPanel" 
                                         Orientation="Horizontal" 
                                         Spacing="4"
@@ -273,6 +274,7 @@
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
@@ -304,9 +306,25 @@
                         </StackPanel>
                     </Border>
 
-                    <!-- Revenue by Category Chart -->
+                    <!-- Daily Revenue Chart -->
                     <Border Grid.Column="0" 
                             Grid.Row="1"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            CornerRadius="8" Padding="15" Margin="0,10,0,0">
+                        <StackPanel>
+                            <TextBlock Text="Doanh thu theo ngày" 
+                               Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                            <chart:CartesianChart x:Name="DailyRevenueChart"
+                               Height="300"/>
+                        </StackPanel>
+                    </Border>
+
+
+
+
+                    <!-- Revenue by Category Chart -->
+                    <Border Grid.Column="0" 
+                            Grid.Row="2"
                             Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                             CornerRadius="8"
                             Padding="15">
@@ -320,7 +338,7 @@
 
                     <!-- Product Revenue Distribution -->
                     <Border Grid.Column="1" 
-                            Grid.Row="1"
+                            Grid.Row="2"
                             Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                             CornerRadius="8"
                             Padding="15">
@@ -329,8 +347,9 @@
                                      Style="{ThemeResource SubtitleTextBlockStyle}"/>
                             <chart:PieChart x:Name="ProductRevenueChart"
                                           Height="300"/>
-    </StackPanel>
+                         </StackPanel>
                     </Border>
+                    
                 </Grid>
             </Grid>
         </ScrollViewer>

@@ -45,7 +45,7 @@ namespace CafePOS
                     PageTitleText.Text = "Trang chủ";
                     PageDescriptionText.Text = "Tổng quan hệ thống quản lý";
                     // Navigate to dashboard page
-                    // ContentFrame.Navigate(typeof(DashboardPage));
+                    ContentFrame.Navigate(typeof(DashboardPage));
                     break;
 
                 case "Orders":
@@ -92,6 +92,19 @@ namespace CafePOS
                     break;
 
                 case "Customers":
+                    if (Account.CurrentUserType != 1)
+                    {
+                        ContentDialog dialog = new ContentDialog
+                        {
+                            Title = "Không có quyền",
+                            Content = "Bạn không có quyền truy cập trang quản lý nhân viên.",
+                            CloseButtonText = "Đóng",
+                            XamlRoot = this.XamlRoot
+                        };
+                        _ = dialog.ShowAsync();
+                        return;
+                    }
+
                     PageTitleText.Text = "Quản lý khách hàng";
                     PageDescriptionText.Text = "Lưu trữ thông tin khách hàng";
                     ContentFrame.Navigate(typeof(CustomersPage));

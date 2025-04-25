@@ -115,12 +115,13 @@ namespace CafePOS.DAO
         }
 
         // Gửi phản hồi cho khách hàng
-        public async Task<bool> RespondToFeedbackAsync(int id, string responseContent, int staffId)
+        public async Task<bool> RespondToFeedbackAsync(int id, string responseContent, int? staffId)
         {
             var client = DataProvider.Instance.Client;
             var result = await client.RespondToFeedback.ExecuteAsync(id, responseContent, staffId);
 
             return result.Data?.UpdateCustomerFeedbackById?.CustomerFeedback != null;
         }
+
     }
 }

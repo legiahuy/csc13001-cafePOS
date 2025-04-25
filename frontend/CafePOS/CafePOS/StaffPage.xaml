@@ -97,10 +97,10 @@
                     <TextBlock><Run Text="Họ tên"/><Run Text=" (*)" Foreground="Red"/></TextBlock>
                     <TextBox x:Name="NameTextBox"/>
 
-                    <TextBlock><Run Text="Ngày sinh"/><Run Text=" (*)" Foreground="Red"/></TextBlock>
+                    <TextBlock><Run Text="Ngày sinh"/><Run /></TextBlock>
                     <DatePicker x:Name="DobDatePicker"/>
 
-                    <TextBlock><Run Text="Giới tính"/><Run Text=" (*)" Foreground="Red"/></TextBlock>
+                    <TextBlock><Run Text="Giới tính"/><Run /></TextBlock>
                     <ComboBox x:Name="GenderComboBox">
                         <ComboBoxItem Content="Nam"/>
                         <ComboBoxItem Content="Nữ"/>
@@ -110,7 +110,7 @@
                     <TextBlock><Run Text="Số điện thoại"/><Run Text=" (*)" Foreground="Red"/></TextBlock>
                     <TextBox x:Name="PhoneTextBox"/>
 
-                    <TextBlock><Run Text="Email"/><Run Text=" (*)" Foreground="Red"/></TextBlock>
+                    <TextBlock><Run Text="Email"/><Run /></TextBlock>
                     <TextBox x:Name="EmailTextBox"/>
 
                     <TextBlock><Run Text="Chức vụ"/><Run Text=" (*)" Foreground="Red"/></TextBlock>

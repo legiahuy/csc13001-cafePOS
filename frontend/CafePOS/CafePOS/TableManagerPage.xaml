@@ -119,7 +119,9 @@
                                         Style="{StaticResource ComboBoxStyle}"/>
                             </StackPanel>
 
-                            <Button x:Name="btnAddFood" Grid.Column="1"
+                            <Button x:Name="btnAddFood" 
+                                    Grid.Column="1"
+                                    VerticalAlignment="Stretch"
                                     Content="Thêm món" 
                                     Background="#4CAF50" Foreground="White" 
                                     Style="{StaticResource ButtonStyle}"

@@ -353,7 +353,7 @@ namespace CafePOS
                         hourlyRevenue[i] = new ObservableValue(0);
                     }
 
-            foreach (var bill in paidBills)
+                    foreach (var bill in paidBills)
                     {
                         if (!string.IsNullOrEmpty(bill.DateCheckOut))
                         {
@@ -389,6 +389,46 @@ namespace CafePOS
                         {
                             Name = "Doanh thu (VND)",
                             Labeler = (value) => value.ToString("N0", new CultureInfo("vi-VN")) + " đ"
+                        }
+                    };
+
+                    // Tính doanh thu theo ngày
+                    var groupedByDay = paidBills
+                        .Where(b => !string.IsNullOrEmpty(b.DateCheckOut))
+                        .GroupBy(b => DateTime.Parse(b.DateCheckOut).Date)
+                        .OrderBy(g => g.Key)
+                        .ToList();
+
+                    // Tạo nhãn trục X và dữ liệu trục Y
+                    var dailyLabels = groupedByDay.Select(g => g.Key.ToString("dd/MM")).ToArray();
+                    var dailyValues = groupedByDay.Select(g => g.Sum(b => b.TotalAmount)).ToArray();
+
+                    // Hiển thị biểu đồ
+                    DailyRevenueChart.Series = new ISeries[]
+                    {
+                        new ColumnSeries<double>
+                        {
+                            Values = dailyValues,
+                            Name = "Doanh thu"
+                        }
+                    };
+
+                    DailyRevenueChart.XAxes = new Axis[]
+                    {
+                        new Axis
+                        {
+                            Name = "Ngày",
+                            Labels = dailyLabels,
+                            LabelsRotation = 15
+                        }
+                    };
+
+                    DailyRevenueChart.YAxes = new Axis[]
+                    {
+                        new Axis
+                        {
+                            Name = "Doanh thu (VND)",
+                            Labeler = value => value.ToString("N0", new CultureInfo("vi-VN")) + " đ"
                         }
                     };
 

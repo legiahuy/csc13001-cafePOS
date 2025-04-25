@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using CafePOS.DTO;
+using Windows.Media.Protection.PlayReady;
 
 namespace CafePOS.DAO
 {
@@ -136,7 +137,31 @@ namespace CafePOS.DAO
 
             return maxId;
         }
+        public async Task<List<BillViewModel>> GetAllBillsAsync()
+        {
+            var bills = new List<BillViewModel>();
 
+            try
+            {
+                var result = await DataProvider.Instance.Client.GetAllBills.ExecuteAsync();
+
+                if (result.Data?.AllBills?.Edges != null)
+                {
+                    foreach (var edge in result.Data.AllBills.Edges)
+                    {
+                        var billVM = new BillViewModel(edge.Node);
+                        await billVM.InitializePaymentMethodTextAsync();
+                        bills.Add(billVM);
+                    }
+                }
+            }
+            catch
+            {
+                // Nếu lỗi thì trả về danh sách rỗng
+            }
+
+            return bills;
+        }
         public async Task<bool> ChangeTableAsync(int billId, int newTableId)
         {
             try
