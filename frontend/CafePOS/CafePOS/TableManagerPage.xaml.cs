@@ -766,7 +766,6 @@ namespace CafePOS
 
             return null; // Not found anywhere in this parent's subtree
         }
-        // +++ End Visual Tree Helpers +++
 
     }
 }
