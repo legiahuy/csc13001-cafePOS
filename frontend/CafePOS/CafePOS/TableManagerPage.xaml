@@ -216,26 +216,30 @@
                                  Margin="0,10"/>
 
                         <!-- Column Headers -->
-                        <Grid Background="#EFEFEF" BorderBrush="#E0E0E0" BorderThickness="1" Margin="10,0">
+                        <Grid Background="#EFEFEF" BorderBrush="#E0E0E0" BorderThickness="1" Margin="10,0" Padding="5,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Tên món" FontWeight="Bold" HorizontalAlignment="Center" Padding="5"/>
-                            <TextBlock Text="Số lượng" Grid.Column="1" FontWeight="Bold" HorizontalAlignment="Center" Padding="5"/>
-                            <TextBlock Text="Đơn giá" Grid.Column="2" FontWeight="Bold" HorizontalAlignment="Center" Padding="5"/>
-                            <TextBlock Text="Thành tiền" Grid.Column="3" FontWeight="Bold" HorizontalAlignment="Center" Padding="5"/>
+
+                            <TextBlock Text="Tên món" FontWeight="Bold" HorizontalAlignment="Center" TextAlignment="Center" VerticalAlignment="Center" Padding="5"/>
+                            <TextBlock Text="Số lượng" Grid.Column="1" FontWeight="Bold" HorizontalAlignment="Center" TextAlignment="Center" VerticalAlignment="Center" Padding="5"/>
+                            <TextBlock Text="Đơn giá" Grid.Column="2" FontWeight="Bold" HorizontalAlignment="Center" TextAlignment="Center" VerticalAlignment="Center" Padding="5"/>
+                            <TextBlock Text="Thành tiền" Grid.Column="3" FontWeight="Bold" HorizontalAlignment="Center" TextAlignment="Center" VerticalAlignment="Center" Padding="5"/>
+                            <TextBlock Text="Xóa" FontWeight="Bold" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5"/>
                         </Grid>
 
+
                         <ListView x:Name="OrderListView" 
-                                Background="#F9F9F9" 
-                                BorderThickness="1" 
-                                BorderBrush="#E0E0E0"
-                                Margin="10,5,10,10"
-                                SelectionMode="None"
-                                Height="200">
+                            Background="#F9F9F9" 
+                            BorderThickness="1" 
+                            BorderBrush="#E0E0E0"
+                            Margin="10,5,10,10"
+                            SelectionMode="None"
+                            Height="200">
                             <ListView.ItemTemplate>
                                 <DataTemplate x:DataType="dto:Menu">
                                     <Grid Padding="5">
@@ -244,6 +248,7 @@
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="{x:Bind ProductName}" HorizontalAlignment="Center"/>
                                         <TextBlock Text="{x:Bind Count}" Grid.Column="1" HorizontalAlignment="Center"/>
@@ -251,6 +256,17 @@
                                                  Grid.Column="2" HorizontalAlignment="Center"/>
                                         <TextBlock Text="{x:Bind TotalPrice, Converter={StaticResource PriceConverter}}" 
                                                  Grid.Column="3" HorizontalAlignment="Center"/>
+                                        <Button Grid.Column="4" 
+                                            Content="✕" 
+                                            FontSize="12"
+                                            Padding="8,2"
+                                            Margin="0,0,-5,0"
+                                            HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"
+                                            Background="#F44336"
+                                            Foreground="White"
+                                            Tag="{x:Bind}"
+                                            Click="RemoveOrderItem_Click"/>
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>

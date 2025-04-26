@@ -274,6 +274,72 @@ namespace CafePOS
             // Hiển thị cửa sổ thanh toán
             checkoutWindow.Activate();
         }
+
+        private async void RemoveOrderItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (OrderListView.Tag is not CafeTable table)
+            {
+                await DialogHelper.ShowErrorDialog("Lỗi", "Không tìm thấy thông tin bàn.", this.XamlRoot);
+                return;
+            }
+
+            if (sender is Button button && button.Tag is Menu menuItem)
+            {
+                int tableId = table.Id;
+                int billId = await BillDAO.Instance.GetUncheckBillIDByTableID(tableId, 0);
+
+                if (billId == -1)
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Không tìm thấy hóa đơn cho bàn này.", this.XamlRoot);
+                    return;
+                }
+
+                // Hiển thị hộp thoại xác nhận
+                ContentDialogResult result = await DialogHelper.ShowConfirmDialog(
+                    "Xác nhận xóa món",
+                    $"Bạn có chắc chắn muốn xóa món {menuItem.ProductName} khỏi hóa đơn?",
+                    "Xóa",
+                    "Hủy",
+                    this.XamlRoot);
+
+                if (result == ContentDialogResult.Primary)
+                {
+                    try
+                    {
+                        // Gọi DAO để xóa BillInfo
+                        bool success = await BillInfoDAO.Instance.DeleteBillInfoAsync(billId, menuItem.ProductId);
+
+                        if (success)
+                        {
+                            // Cập nhật lại danh sách
+                            ShowBill(tableId);
+                            await LoadTable();
+
+                            // Kiểm tra xem bill còn món nào không
+                            List<Menu> remainingItems = await MenuDAO.Instance.GetListMenuByTableAsync(tableId);
+                            if (remainingItems == null || !remainingItems.Any())
+                            {
+                                // Nếu không còn món nào, xóa luôn Bill
+                                await BillDAO.Instance.CancelAsync(billId);
+                                OrderListView.ItemsSource = null;
+                                OrderListView.Tag = null;
+                                TotalPriceTextBlock.Text = "0 ₫";
+                                await LoadTable();
+                            }
+                        }
+                        else
+                        {
+                            await DialogHelper.ShowErrorDialog("Lỗi", "Không thể xóa món khỏi hóa đơn.", this.XamlRoot);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Error removing order item: {ex.Message}");
+                        await DialogHelper.ShowErrorDialog("Lỗi", "Đã xảy ra lỗi khi xóa món.", this.XamlRoot);
+                    }
+                }
+            }
+        }
         private async void btnCancel_Click(object sender, RoutedEventArgs e)
         {
             if (OrderListView.Tag is not CafeTable table)

@@ -69,6 +69,7 @@ query GetListMenuByTable($idTable: Int!) {
           productByIdProduct {
             name
             price
+            id
           }
           count
         }

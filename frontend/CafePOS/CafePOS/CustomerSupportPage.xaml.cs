@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using CafePOS.DAO;
 using CafePOS.DTO;
+using CafePOS.Utilities;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Linq;
@@ -58,7 +59,7 @@ namespace CafePOS
             }
             catch (Exception ex)
             {
-                await ShowErrorDialog("Lỗi", $"Không thể tải dữ liệu: {ex.Message}");
+                await DialogHelper.ShowErrorDialog("Lỗi", $"Không thể tải dữ liệu: {ex.Message}", this.XamlRoot);
             }
         }
 
@@ -71,7 +72,7 @@ namespace CafePOS
         {
             if (e.ClickedItem is not CustomerFeedback selectedFeedback)
             {
-                await ShowErrorDialog("Lỗi", "Không thể tải thông tin phản hồi");
+                await DialogHelper.ShowErrorDialog("Lỗi", "Không thể tải thông tin phản hồi", this.XamlRoot);
                 return;
             }
 
@@ -79,7 +80,7 @@ namespace CafePOS
 
             if (feedbackDetail == null)
             {
-                await ShowErrorDialog("Lỗi", "Không thể tải thông tin chi tiết phản hồi");
+                await DialogHelper.ShowErrorDialog("Lỗi", "Không thể tải thông tin chi tiết phản hồi", this.XamlRoot);
                 return;
             }
 
@@ -96,7 +97,7 @@ namespace CafePOS
             StackPanel panel = new StackPanel { Spacing = 10 };
 
             // Validate and add email
-            if (!string.IsNullOrWhiteSpace(feedbackDetail.Email) && IsValidEmail(feedbackDetail.Email))
+            if (!string.IsNullOrWhiteSpace(feedbackDetail.Email) && ValidationHelper.IsValidEmail(feedbackDetail.Email))
             {
                 panel.Children.Add(new TextBlock
                 {
@@ -204,7 +205,7 @@ namespace CafePOS
             // Validate feedback status
             if (feedback.Status == "completed")
             {
-                await ShowErrorDialog("Lỗi", "Phản hồi này đã được xử lý xong!");
+                await DialogHelper.ShowErrorDialog("Lỗi", "Phản hồi này đã được xử lý xong!", this.XamlRoot);
                 return;
             }
 
@@ -244,14 +245,14 @@ namespace CafePOS
                 // Validate empty response
                 if (string.IsNullOrWhiteSpace(responseText))
                 {
-                    await ShowErrorDialog("Lỗi", "Vui lòng nhập nội dung phản hồi!");
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Vui lòng nhập nội dung phản hồi!", this.XamlRoot);
                     return;
                 }
 
                 // Validate response length
                 if (responseText.Length > 1000)
                 {
-                    await ShowErrorDialog("Lỗi", "Nội dung phản hồi không được vượt quá 1000 ký tự!");
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Nội dung phản hồi không được vượt quá 1000 ký tự!", this.XamlRoot);
                     return;
                 }
 
@@ -264,12 +265,12 @@ namespace CafePOS
 
                 if (success)
                 {
-                    await ShowSuccessDialog("Thành công", "Đã gửi phản hồi thành công!");
+                    await DialogHelper.ShowSuccessDialog("Thành công", "Đã gửi phản hồi thành công!", this.XamlRoot);
                     await LoadFeedback();
                 }
                 else
                 {
-                    await ShowErrorDialog("Lỗi", "Không thể gửi phản hồi. Vui lòng thử lại!");
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Không thể gửi phản hồi. Vui lòng thử lại!", this.XamlRoot);
                 }
             }
             else if (result == ContentDialogResult.Secondary)
@@ -282,51 +283,14 @@ namespace CafePOS
 
                 if (success)
                 {
-                    await ShowSuccessDialog("Thành công", "Đã đánh dấu phản hồi đang xử lý!");
+                    await DialogHelper.ShowSuccessDialog("Thành công", "Đã đánh dấu phản hồi đang xử lý!", this.XamlRoot);
                     await LoadFeedback();
                 }
                 else
                 {
-                    await ShowErrorDialog("Lỗi", "Không thể cập nhật trạng thái. Vui lòng thử lại!");
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Không thể cập nhật trạng thái. Vui lòng thử lại!", this.XamlRoot);
                 }
             }
-        }
-
-        private bool IsValidEmail(string email)
-        {
-            try
-            {
-                var addr = new System.Net.Mail.MailAddress(email);
-                return addr.Address == email;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private async Task ShowErrorDialog(string title, string content)
-        {
-            var dialog = new ContentDialog
-            {
-                Title = title,
-                Content = content,
-                CloseButtonText = "OK",
-                XamlRoot = this.XamlRoot
-            };
-            await dialog.ShowAsync();
-        }
-
-        private async Task ShowSuccessDialog(string title, string content)
-        {
-            var dialog = new ContentDialog
-            {
-                Title = title,
-                Content = content,
-                CloseButtonText = "OK",
-                XamlRoot = this.XamlRoot
-            };
-            await dialog.ShowAsync();
         }
 
         private void ApplyFilters()
