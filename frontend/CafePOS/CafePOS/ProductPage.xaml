@@ -173,18 +173,34 @@
                 <ComboBox x:Name="CategoryComboBox" Header="Danh mục"/>
                 <NumberBox x:Name="PriceBox" Header="Giá" Minimum="0"/>
 
-                <StackPanel Orientation="Horizontal" Spacing="10">
-                    <Button Content="Thêm" Background="#4CAF50" Foreground="White" Click="btnAdd_Click"/>
-                    <Button Content="Xóa" Background="#F44336" Foreground="White" Click="btnDelete_Click"/>
-                    <Button Content="Sửa" Background="#FF9800" Foreground="White" Click="btnEdit_Click"/>
-                    <Button Content="Xem" Background="#2196F3" Foreground="White" Click="btnView_Click"/>
-                    <Button Content="Xuất danh sách" 
-                        Background="#000000" 
-                        Foreground="White" 
-                        Click="btnExportExcel_Click"
-                        Margin="0,0,0,0"/>
+                    <Grid Margin="0,15,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Button Content="Thêm mới" Background="#4CAF50" Foreground="White" 
+                            Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" 
+                            Margin="0,0,5,5" Click="btnAdd_Click"/>
+
+                        <Button Content="Cập nhật" Background="#FF9800" Foreground="White" 
+                            Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" 
+                            Margin="5,0,0,5" Click="btnEdit_Click"/>
+
+                        <Button Content="Xóa" Background="#F44336" Foreground="White" 
+                            Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" 
+                            Margin="0,5,5,0" Click="btnDelete_Click"/>
+
+                        <Button Content="Làm mới" Background="#2196F3" Foreground="White" 
+                            Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" 
+                            Margin="5,5,0,0" Click="btnView_Click"/>
+                    </Grid>
+                    <Button Content="Xuất danh sách" HorizontalAlignment="Center" Click="btnExportExcel_Click" Margin="0,10,0,0" Background="Black" Foreground="White"/>
                 </StackPanel>
-            </StackPanel>
             </ScrollViewer>
         </Border>
     </Grid>

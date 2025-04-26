@@ -226,7 +226,7 @@ namespace CafePOS
         {
             if (string.IsNullOrWhiteSpace(billId))
                 return false;
-            
+
             // Allow simple numeric ID search
             return int.TryParse(billId, out _);
         }
@@ -621,11 +621,11 @@ namespace CafePOS
                     return;
                 }
 
-                if (!await ValidatePaymentMethod(bill.PaymentMethod))
-                {
-                    await DialogHelper.ShowErrorDialog("Lỗi", $"Phương thức thanh toán không hợp lệ: {bill.Id}", this.XamlRoot);
-                    return;
-                }
+                //if (!await ValidatePaymentMethod(bill.PaymentMethod))
+                //{
+                //    await DialogHelper.ShowErrorDialog("Lỗi", $"Phương thức thanh toán không hợp lệ: {bill.Id}", this.XamlRoot);
+                //    return;
+                //}
             }
 
             try

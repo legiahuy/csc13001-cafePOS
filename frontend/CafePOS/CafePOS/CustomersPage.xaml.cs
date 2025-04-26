@@ -80,10 +80,10 @@ namespace CafePOS
             if ((sender as Button)?.DataContext is Guest guest)
             {
                 var result = await DialogHelper.ShowConfirmDialog(
-                    "Confirm Deletion", 
-                    $"Bạn có chắc chắn xóa '{guest.Name}'?", 
-                    "Xóa", 
-                    "Hủy", 
+                    "Confirm Deletion",
+                    $"Bạn có chắc chắn xóa '{guest.Name}'?",
+                    "Xóa",
+                    "Hủy",
                     this.XamlRoot
                 );
 
@@ -106,7 +106,7 @@ namespace CafePOS
         {
             if (string.IsNullOrWhiteSpace(email))
                 return false;
-                
+
             var guests = await GuestDAO.Instance.GetAllGuestsAsync();
             return guests.Any(g => g.Email == email && g.Id != excludeId);
         }
@@ -130,14 +130,14 @@ namespace CafePOS
             if (string.IsNullOrWhiteSpace(name))
             {
                 args.Cancel = true;
-                await DialogHelper.ShowErrorDialog("Lỗi", "Vui lòng nhập tên khách hàng", this.XamlRoot);
+                ShowValidationError("Vui lòng nhập tên khách hàng");
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(phone))
             {
                 args.Cancel = true;
-                await DialogHelper.ShowErrorDialog("Lỗi", "Vui lòng nhập số điện thoại", this.XamlRoot);
+                ShowValidationError("Vui lòng nhập số điện thoại");
                 return;
             }
 
@@ -145,28 +145,28 @@ namespace CafePOS
             if (!ValidationHelper.IsValidPhoneNumber(phone))
             {
                 args.Cancel = true;
-                await DialogHelper.ShowErrorDialog("Lỗi", "Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại 10-11 chữ số, bắt đầu bằng số 0", this.XamlRoot);
+                ShowValidationError("Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại 10-11 chữ số, bắt đầu bằng số 0");
                 return;
             }
 
             if (!ValidationHelper.IsValidEmail(email))
             {
                 args.Cancel = true;
-                await DialogHelper.ShowErrorDialog("Lỗi", "Email không hợp lệ", this.XamlRoot);
+                ShowValidationError("Email không hợp lệ");
                 return;
             }
 
             if (!ValidationHelper.IsValidPositiveNumber(PointsTextBox.Text))
             {
                 args.Cancel = true;
-                await DialogHelper.ShowErrorDialog("Lỗi", "Điểm tích lũy phải là số nguyên không âm", this.XamlRoot);
+                ShowValidationError("Điểm tích lũy phải là số nguyên không âm");
                 return;
             }
 
             if (!ValidationHelper.IsValidPastDate(memberSince))
             {
                 args.Cancel = true;
-                await DialogHelper.ShowErrorDialog("Lỗi", "Ngày tham gia không được trong tương lai", this.XamlRoot);
+                ShowValidationError("Ngày tham gia không được trong tương lai");
                 return;
             }
 
@@ -176,14 +176,14 @@ namespace CafePOS
                 if (await ValidatePhoneNumberExists(phone))
                 {
                     args.Cancel = true;
-                    await DialogHelper.ShowErrorDialog("Lỗi", "Số điện thoại đã tồn tại", this.XamlRoot);
+                    ShowValidationError("Số điện thoại đã tồn tại");
                     return;
                 }
 
                 if (!string.IsNullOrWhiteSpace(email) && await ValidateEmailExists(email))
                 {
                     args.Cancel = true;
-                    await DialogHelper.ShowErrorDialog("Lỗi", "Email đã tồn tại", this.XamlRoot);
+                    ShowValidationError("Email đã tồn tại");
                     return;
                 }
             }
@@ -192,21 +192,21 @@ namespace CafePOS
                 if (!await ValidateGuestExists(selectedGuest.Id))
                 {
                     args.Cancel = true;
-                    await DialogHelper.ShowErrorDialog("Lỗi", "Không tìm thấy thông tin khách hàng", this.XamlRoot);
+                    ShowValidationError("Không tìm thấy thông tin khách hàng");
                     return;
                 }
 
                 if (await ValidatePhoneNumberExists(phone, selectedGuest.Id))
                 {
                     args.Cancel = true;
-                    await DialogHelper.ShowErrorDialog("Lỗi", "Số điện thoại đã tồn tại", this.XamlRoot);
+                    ShowValidationError("Số điện thoại đã tồn tại");
                     return;
                 }
 
                 if (!string.IsNullOrWhiteSpace(email) && await ValidateEmailExists(email, selectedGuest.Id))
                 {
                     args.Cancel = true;
-                    await DialogHelper.ShowErrorDialog("Lỗi", "Email đã tồn tại", this.XamlRoot);
+                    ShowValidationError("Email đã tồn tại");
                     return;
                 }
             }
@@ -254,6 +254,14 @@ namespace CafePOS
             NotesTextBox.Text = "";
             MemberSinceDatePicker.Date = new DateTimeOffset(DateTime.Today);
             MembershipComboBox.SelectedIndex = 0;
+        }
+
+        private void ShowValidationError(string errorMessage)
+        {
+            ValidationInfoBar.Title = "Lỗi xác thực";
+            ValidationInfoBar.Message = errorMessage;
+            ValidationInfoBar.Severity = InfoBarSeverity.Error;
+            ValidationInfoBar.IsOpen = true;
         }
     }
 }

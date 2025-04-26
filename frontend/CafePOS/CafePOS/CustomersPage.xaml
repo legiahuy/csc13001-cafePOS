@@ -90,8 +90,15 @@
             PrimaryButtonClick="SaveGuestDialog_Click"
             SecondaryButtonClick="CancelGuestDialog_Click">
 
+       
+
             <ScrollViewer MaxHeight="500" VerticalScrollBarVisibility="Auto">
                 <StackPanel Spacing="10" Width="300">
+                    <InfoBar x:Name="ValidationInfoBar" 
+                         IsOpen="False"
+                         Severity="Error" 
+                         IsClosable="True"
+                         Margin="0,0,0,12"/>
                     <TextBlock><Run Text="Họ tên"/><Run Text=" (*)" Foreground="Red"/></TextBlock>
                     <TextBox x:Name="NameTextBox"/>
 
