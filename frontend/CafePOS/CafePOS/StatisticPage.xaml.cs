@@ -16,7 +16,6 @@ using System.IO;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using CafePOS.DAO;
-using CafePOS.DTO;
 using CafePOS.GraphQL;
 using System.Globalization;
 using System.ComponentModel;
@@ -27,6 +26,7 @@ using System.Diagnostics;
 using Microsoft.UI;
 using Microsoft.UI.Xaml.Media;
 using CafePOS.Utilities;
+using CafePOS.DTO;
 
 namespace CafePOS
 {
@@ -162,7 +162,7 @@ namespace CafePOS
             var now = DateTime.Now;
             var selectedItem = (ComboBoxItem)TimeRangeComboBox.SelectedItem;
             bool isDailyView = selectedItem.Content.ToString() == "Theo ngày";
-            
+
             // Enable/disable comparison buttons based on filter
             CompareDayButton.IsEnabled = isDailyView;
             CompareWeekButton.IsEnabled = isDailyView;
@@ -294,8 +294,8 @@ namespace CafePOS
                     .Select(edge => edge.Node)
                     .Where(b => {
                         var checkInDate = DateTime.Parse(b.DateCheckIn);
-                        return checkInDate >= compareStartDate && 
-                               checkInDate <= compareEndDate && 
+                        return checkInDate >= compareStartDate &&
+                               checkInDate <= compareEndDate &&
                                b.Status == 1;
                     })
                 .ToList();
@@ -308,10 +308,10 @@ namespace CafePOS
             try
             {
                 System.Diagnostics.Debug.WriteLine($"Loading data for date range: {_startDate:yyyy-MM-dd HH:mm:ss} to {_endDate:yyyy-MM-dd HH:mm:ss}");
-                
+
                 // Get all bills
                 var result = await _client.GetAllBills.ExecuteAsync();
-                
+
                 if (result.Data?.AllBills?.Edges != null)
                 {
                     _bills = result.Data.AllBills.Edges
@@ -325,7 +325,7 @@ namespace CafePOS
                             return isInRange && (b.Status == 1 || b.Status == 2); // Include both paid and cancelled bills
                         })
                 .ToList();
-                    
+
                     System.Diagnostics.Debug.WriteLine($"Found {_bills.Count} bills for date range");
 
                     var paidBills = _bills.Where(b => b.Status == 1).ToList();
@@ -420,7 +420,6 @@ namespace CafePOS
                         {
                             Name = "Ngày",
                             Labels = dailyLabels,
-                            LabelsRotation = 15
                         }
                     };
 
@@ -652,11 +651,11 @@ namespace CafePOS
             try
             {
                 var filePicker = new FileSavePicker();
-                
+
                 // Initialize the FileSavePicker with the window handle
                 var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainAppWindow);
                 WinRT.Interop.InitializeWithWindow.Initialize(filePicker, hwnd);
-                
+
                 filePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
                 filePicker.FileTypeChoices.Add("Excel Files", new List<string> { ".xlsx" });
                 filePicker.SuggestedFileName = $"BaoCaoDoanhThu_{_startDate:yyyyMMdd}_{_endDate:yyyyMMdd}";
@@ -739,18 +738,18 @@ namespace CafePOS
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            
+
             // Set default dates
             var today = DateTime.Now;
             _startDate = today.Date;
             _endDate = today.Date.AddDays(1).AddSeconds(-1);
-            
+
             StartDatePicker.Date = _startDate;
             EndDatePicker.Date = _endDate;
-            
+
             // Set default filter
             TimeRangeComboBox.SelectedIndex = 0; // "Theo ngày"
-            
+
             _ = LoadDataAsync();
         }
 
@@ -761,7 +760,7 @@ namespace CafePOS
 
             // Format the difference as percentage
             var percentChange = Math.Abs(difference) * 100;
-            
+
             if (difference > 0)
             {
                 trendIcon.Glyph = "\uE74A"; // Up arrow
@@ -894,9 +893,9 @@ namespace CafePOS
                     TotalBills = bills.Count(b => b.Status == 1), // Completed bills
                     CancelledBills = bills.Count(b => b.Status == 2), // Cancelled bills
                 };
-                
+
                 stats.AverageBillValue = stats.TotalBills > 0 ? stats.TotalRevenue / stats.TotalBills : 0;
-                
+
                 return stats;
             }
             catch (Exception ex)
@@ -942,9 +941,9 @@ namespace CafePOS
 
         private decimal CalculateAverageBillValue(DateTime start, DateTime end)
         {
-            var bills = _bills?.Where(b => 
-                b.DateCheckIn != null && 
-                DateTime.Parse(b.DateCheckIn).Date >= start.Date && 
+            var bills = _bills?.Where(b =>
+                b.DateCheckIn != null &&
+                DateTime.Parse(b.DateCheckIn).Date >= start.Date &&
                 DateTime.Parse(b.DateCheckIn).Date <= end.Date &&
                 b.Status == 1) // Changed from "Paid" to 1 for paid status
                 .ToList();
@@ -955,4 +954,4 @@ namespace CafePOS
             return (decimal)(totalAmount / bills.Count);
         }
     }
-} 
+}

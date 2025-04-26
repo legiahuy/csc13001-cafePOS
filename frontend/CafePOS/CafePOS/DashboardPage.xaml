@@ -67,7 +67,7 @@
                 </Border>
             </Grid>
 
-            <!-- Thống kê doanh thu tổng hợp -->
+            <!-- Thống kê doanh thu  -->
             <ItemsControl Margin="0,30,0,0">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -83,14 +83,14 @@
 
                 <Border Background="White" CornerRadius="8" Padding="12">
                     <StackPanel>
-                        <TextBlock Text="Tổng doanh thu" FontSize="16" FontWeight="SemiBold"/>
+                        <TextBlock Text="Doanh thu hôm nay" FontSize="16" FontWeight="SemiBold"/>
                         <TextBlock x:Name="TotalRevenueText" Text="0 đ" FontSize="24" Foreground="Red" FontWeight="Bold"/>
                     </StackPanel>
                 </Border>
 
                 <Border Background="White" CornerRadius="8" Padding="12">
                     <StackPanel>
-                        <TextBlock Text="Số hóa đơn đã thanh toán" FontSize="16" FontWeight="SemiBold"/>
+                        <TextBlock Text="Hóa đơn hôm nay" FontSize="16" FontWeight="SemiBold"/>
                         <TextBlock x:Name="TotalBillsText" Text="0" FontSize="24" FontWeight="Bold"/>
                     </StackPanel>
                 </Border>
@@ -104,7 +104,7 @@
 
                 <Border Background="White" CornerRadius="8" Padding="12">
                     <StackPanel>
-                        <TextBlock Text="Sản phẩm bán chạy nhất" FontSize="16" FontWeight="SemiBold"/>
+                        <TextBlock Text="Sản phẩm bán chạy nhất hôm nay" FontSize="16" FontWeight="SemiBold"/>
                         <TextBlock x:Name="BestSellingProductText" Text="-" FontSize="24" FontWeight="Bold"/>
                     </StackPanel>
                 </Border>

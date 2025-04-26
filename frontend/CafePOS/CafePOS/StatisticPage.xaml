@@ -26,7 +26,7 @@
                 <!-- Filter Section -->
                 <StackPanel Grid.Row="0" Spacing="10">
                     <TextBlock Text="Bộ lọc" Style="{ThemeResource SubtitleTextBlockStyle}"/>
-                    
+
                     <Grid RowSpacing="8">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -83,7 +83,7 @@
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE724;"/>
                                     <TextBlock Text="Xuất Excel"/>
-        </StackPanel>
+                                </StackPanel>
                             </Button>
                         </Grid>
 
@@ -295,6 +295,7 @@
                     <!-- Payment Methods Chart -->
                     <Border Grid.Column="1" 
                             Grid.Row="0"
+                             Margin="10,0,10,0"
                             Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                             CornerRadius="8"
                             Padding="15">
@@ -309,8 +310,10 @@
                     <!-- Daily Revenue Chart -->
                     <Border Grid.Column="0" 
                             Grid.Row="1"
+                            Grid.ColumnSpan="2"
                             Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                             CornerRadius="8" Padding="15" Margin="0,10,0,0">
+
                         <StackPanel>
                             <TextBlock Text="Doanh thu theo ngày" 
                                Style="{ThemeResource SubtitleTextBlockStyle}"/>
@@ -320,13 +323,12 @@
                     </Border>
 
 
-
-
                     <!-- Revenue by Category Chart -->
                     <Border Grid.Column="0" 
                             Grid.Row="2"
                             Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                             CornerRadius="8"
+                            Margin="0,10,10,0"
                             Padding="15">
                         <StackPanel>
                             <TextBlock Text="Doanh thu theo loại thức uống" 
@@ -341,17 +343,19 @@
                             Grid.Row="2"
                             Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                             CornerRadius="8"
+                            Margin="0,10,0,0"
                             Padding="15">
                         <StackPanel>
                             <TextBlock Text="Tỷ lệ doanh thu theo sản phẩm" 
                                      Style="{ThemeResource SubtitleTextBlockStyle}"/>
                             <chart:PieChart x:Name="ProductRevenueChart"
                                           Height="300"/>
-                         </StackPanel>
+                        </StackPanel>
                     </Border>
-                    
+
                 </Grid>
             </Grid>
         </ScrollViewer>
     </Grid>
 </Page>
+

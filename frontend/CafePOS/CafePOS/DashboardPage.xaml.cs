@@ -33,22 +33,29 @@ namespace CafePOS
             PaymentCountText.Text = payments.Count.ToString();
             BillCountText.Text = bills.Count.ToString();
 
-            // Thong ke hoa don
-            var paidBills = bills.Where(b => b.Status == 1).ToList();
-            var cancelledBills = bills.Where(b => b.Status == 2).ToList();
+            var paidBills = bills.Where(b => b.Status == 1 && !string.IsNullOrEmpty(b.DateCheckOut)).ToList();
+            var today = DateTime.Today;
 
-            double totalRevenue = paidBills.Sum(b => b.TotalAmount);
-            int totalBills = paidBills.Count;
-            double avgValue = totalBills > 0 ? totalRevenue / totalBills : 0;
+            // Lọc hóa đơn checkout trong ngày hôm nay
+            var todayBills = paidBills
+                .Where(b =>
+                {
+                    var checkoutDate = DateTime.Parse(b.DateCheckOut);
+                    return checkoutDate.Date == today;
+                })
+                .ToList();
 
-            TotalRevenueText.Text = totalRevenue.ToString("C0", new CultureInfo("vi-VN"));
-            TotalBillsText.Text = totalBills.ToString();
-            AverageBillValueText.Text = avgValue.ToString("C0", new CultureInfo("vi-VN"));
-           // CancelledBillsText.Text = cancelledBills.Count.ToString();
+            double todayRevenue = todayBills.Sum(b => b.TotalAmount);
+            int todayTotalBills = todayBills.Count;
+            double todayAvgValue = todayTotalBills > 0 ? todayRevenue / todayTotalBills : 0;
 
-            // San pham ban chay
+            TotalRevenueText.Text = todayRevenue.ToString("C0", new CultureInfo("vi-VN"));
+            TotalBillsText.Text = todayTotalBills.ToString();
+            AverageBillValueText.Text = todayAvgValue.ToString("C0", new CultureInfo("vi-VN"));
+
+            // Best selling product trong hôm nay
             var productSales = new Dictionary<string, int>();
-            foreach (var bill in paidBills)
+            foreach (var bill in todayBills)
             {
                 if (bill.BillInfosByIdBill?.Nodes != null)
                 {
@@ -63,6 +70,7 @@ namespace CafePOS
             var best = productSales.OrderByDescending(p => p.Value).FirstOrDefault().Key ?? "-";
             BestSellingProductText.Text = best;
         }
+
 
         private void ViewProducts_Click(object sender, RoutedEventArgs e)
         {
