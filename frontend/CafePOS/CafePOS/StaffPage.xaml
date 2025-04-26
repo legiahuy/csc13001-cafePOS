@@ -5,6 +5,8 @@
     xmlns:local="using:CafePOS"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+
     mc:Ignorable="d"
     Background="#F5F5F5">
 
@@ -76,6 +78,7 @@
             </ListView>
         </StackPanel>
 
+
         <ContentDialog
             x:Name="StaffDialog"
             Title="Thông tin nhân viên"
@@ -88,11 +91,11 @@
                 <StackPanel Spacing="10" Width="300">
 
                     <!-- InfoBar cảnh báo -->
-                    <InfoBar x:Name="ValidationInfoBar"
-                     IsOpen="False"
-                     Severity="Warning"
-                     Message=""
-                     Margin="0,0,0,10" />
+                    <InfoBar x:Name="ValidationInfoBar" 
+                         IsOpen="False"
+                         Severity="Error" 
+                         IsClosable="True"
+                         Margin="0,0,0,12"/>
 
                     <TextBlock><Run Text="Họ tên"/><Run Text=" (*)" Foreground="Red"/></TextBlock>
                     <TextBox x:Name="NameTextBox"/>

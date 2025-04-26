@@ -4,29 +4,39 @@ using System;
 using System.Threading.Tasks;
 using CafePOS.DAO;
 using CafePOS.DTO;
+using System.Collections.Generic;
+using System.Linq;
+using CafePOS.Utilities;
+using System.Text.RegularExpressions;
 
 namespace CafePOS
 {
     public sealed partial class StaffPage : Page
     {
-        private Staff? selectedStaff; 
+        private Staff? selectedStaff;
+        private List<Staff> allStaff = new List<Staff>();
 
         public StaffPage()
         {
             this.InitializeComponent();
-            _ = LoadStaffAsync();
+            _ = InitializePageAsync();
+        }
+
+        private async Task InitializePageAsync()
+        {
+            await LoadStaffAsync();
         }
 
         private async Task LoadStaffAsync()
         {
             try
             {
-                var staffList = await StaffDAO.Instance.GetAllStaffAsync();
-                StaffListView.ItemsSource = staffList;
+                allStaff = await StaffDAO.Instance.GetAllStaffAsync();
+                StaffListView.ItemsSource = allStaff;
             }
             catch (Exception ex)
             {
-                await ShowMessageAsync("Lỗi tải dữ liệu: " + ex.Message);
+                await DialogHelper.ShowErrorDialog("Lỗi", "Lỗi tải dữ liệu: " + ex.Message, this.XamlRoot);
             }
         }
 
@@ -89,16 +99,13 @@ namespace CafePOS
         {
             if ((sender as Button)?.DataContext is Staff staff)
             {
-                var confirm = new ContentDialog
-                {
-                    Title = "Xác nhận xoá",
-                    Content = $"Bạn có chắc muốn xoá nhân viên '{staff.Name}' không?",
-                    PrimaryButtonText = "Xoá",
-                    CloseButtonText = "Huỷ",
-                    XamlRoot = this.XamlRoot
-                };
+                var result = await DialogHelper.ShowConfirmDialog(
+                    "Xác nhận xoá", 
+                    $"Bạn có chắc muốn xoá nhân viên '{staff.Name}' không?", 
+                    "Xoá", 
+                    "Huỷ", 
+                    this.XamlRoot);
 
-                var result = await confirm.ShowAsync();
                 if (result == ContentDialogResult.Primary)
                 {
                     bool success = await StaffDAO.Instance.DeleteStaffAsync(staff.Id);
@@ -111,10 +118,9 @@ namespace CafePOS
 
                         await LoadStaffAsync();
                     }
-
                     else
                     {
-                        await ShowMessageAsync("Không thể xoá nhân viên.");
+                        await DialogHelper.ShowMessageAsync("Không thể xoá nhân viên.", this.XamlRoot);
                     }
                 }
             }
@@ -123,36 +129,158 @@ namespace CafePOS
 
         private async Task<bool> ValidateInputs(ContentDialogButtonClickEventArgs args)
         {
-            string name = NameTextBox.Text.Trim();
-            string phone = PhoneTextBox.Text.Trim();
-            string email = EmailTextBox.Text.Trim();
-            string position = PositionTextBox.Text.Trim();
-            string salaryText = SalaryTextBox.Text.Trim();
-            string username = UsernameTextBox.Text.Trim();
-            string password = PasswordBox.Password.Trim();
+            // Clear any previous validation messages
+            ValidationInfoBar.IsOpen = false;
+
+            string name = NameTextBox.Text?.Trim() ?? "";
+            string phone = PhoneTextBox.Text?.Trim() ?? "";
+            string email = EmailTextBox.Text?.Trim() ?? "";
+            string position = PositionTextBox.Text?.Trim() ?? "";
+            string salaryText = SalaryTextBox.Text?.Trim() ?? "";
+            string username = UsernameTextBox.Text?.Trim() ?? "";
+            string password = PasswordBox.Password?.Trim() ?? "";
+            DateTimeOffset? dob = DobDatePicker.Date;
 
             bool isCreateMode = selectedStaff == null;
 
-            if (string.IsNullOrWhiteSpace(name) ||
-                DobDatePicker.Date == null ||
-                string.IsNullOrWhiteSpace(phone) ||
-                string.IsNullOrWhiteSpace(position) ||
-                string.IsNullOrWhiteSpace(salaryText) ||
-                (isCreateMode && (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))))
+            // Validate empty data
+            if (string.IsNullOrWhiteSpace(name))
             {
+                ShowValidationError("Tên nhân viên không được để trống!");
                 args.Cancel = true;
-
-                ValidationInfoBar.Message = "Vui lòng nhập đầy đủ tất cả các thông tin.";
-                ValidationInfoBar.IsOpen = true;
-
                 return false;
             }
 
-            ValidationInfoBar.IsOpen = false;
+            if (dob == null)
+            {
+                ShowValidationError("Vui lòng chọn ngày sinh!");
+                args.Cancel = true;
+                return false;
+            }
+            else
+            {
+                if (dob.Value > DateTime.Today)
+                {
+                    ShowValidationError("Ngày sinh không được lớn hơn ngày hiện tại!");
+                    args.Cancel = true;
+                    return false;
+                }
+
+                DateTime sixteenYearsAgo = DateTime.Today.AddYears(-16);
+                if (dob.Value > sixteenYearsAgo)
+                {
+                    ShowValidationError("Nhân viên phải từ 16 tuổi trở lên!");
+                    args.Cancel = true;
+                    return false;
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(phone))
+            {
+                ShowValidationError("Số điện thoại không được để trống!");
+                args.Cancel = true;
+                return false;
+            }
+            else
+            {
+                if (!Regex.IsMatch(phone, @"^0\d{9,10}$"))
+                {
+                    ShowValidationError("Số điện thoại không đúng định dạng Việt Nam (bắt đầu bằng số 0 và có 10 hoặc 11 số)!");
+                    args.Cancel = true;
+                    return false;
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(email) && !Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            {
+                ShowValidationError("Email không đúng định dạng!");
+                args.Cancel = true;
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(position))
+            {
+                ShowValidationError("Chức vụ không được để trống!");
+                args.Cancel = true;
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(salaryText))
+            {
+                ShowValidationError("Lương không được để trống!");
+                args.Cancel = true;
+                return false;
+            }
+
+            if (isCreateMode)
+            {
+                if (string.IsNullOrWhiteSpace(username))
+                {
+                    ShowValidationError("Tên đăng nhập không được để trống!");
+                    args.Cancel = true;
+                    return false;
+                }
+
+                if (string.IsNullOrWhiteSpace(password))
+                {
+                    ShowValidationError("Mật khẩu không được để trống!");
+                    args.Cancel = true;
+                    return false;
+                }
+            }
+
+            // Validate data type and format
+            if (!float.TryParse(salaryText, out float salary) || salary <= 0)
+            {
+                ShowValidationError("Lương phải là số dương!");
+                args.Cancel = true;
+                return false;
+            }
+
+            if (!string.IsNullOrWhiteSpace(email) && !ValidationHelper.IsValidEmail(email))
+            {
+                ShowValidationError("Email không đúng định dạng!");
+                args.Cancel = true;
+                return false;
+            }
+
+            if (!ValidationHelper.IsValidPhoneNumber(phone))
+            {
+                ShowValidationError("Số điện thoại không đúng định dạng!");
+                args.Cancel = true;
+                return false;
+            }
+
+            // Validate value range
+            if (dob.Value > DateTime.Today)
+            {
+                ShowValidationError("Ngày sinh không được lớn hơn ngày hiện tại!");
+                args.Cancel = true;
+                return false;
+            }
+
+            // Validate data consistency
+            if (isCreateMode)
+            {
+                if (allStaff.Any(s => s.UserName?.Equals(username, StringComparison.OrdinalIgnoreCase) == true))
+                {
+                    ShowValidationError("Tên đăng nhập đã tồn tại!");
+                    args.Cancel = true;
+                    return false;
+                }
+            }
+
             return true;
         }
 
-
+        // Helper method to show validation errors in the InfoBar
+        private void ShowValidationError(string errorMessage)
+        {
+            ValidationInfoBar.Title = "Lỗi xác thực";
+            ValidationInfoBar.Message = errorMessage;
+            ValidationInfoBar.Severity = InfoBarSeverity.Error;
+            ValidationInfoBar.IsOpen = true;
+        }
 
         private async void SaveStaffDialog_Click(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
@@ -177,7 +305,7 @@ namespace CafePOS
                 if (!accountCreated)
                 {
                     args.Cancel = true;
-                    await ShowMessageAsync("Tạo tài khoản đăng nhập thất bại.");
+                    await DialogHelper.ShowMessageAsync("Tạo tài khoản đăng nhập thất bại.", this.XamlRoot);
                     return;
                 }
 
@@ -191,7 +319,7 @@ namespace CafePOS
                 {
                     args.Cancel = true;
                     await AccountDAO.Instance.DeleteAccountByUserNameAsync(username);
-                    await ShowMessageAsync("Lưu thông tin thất bại. Tài khoản đã được rollback.");
+                    await DialogHelper.ShowMessageAsync("Lưu thông tin thất bại. Tài khoản đã được rollback.", this.XamlRoot);
                 }
             }
             else
@@ -204,12 +332,10 @@ namespace CafePOS
                 else
                 {
                     args.Cancel = true;
-                    await ShowMessageAsync("Cập nhật thông tin thất bại.");
+                    await DialogHelper.ShowMessageAsync("Cập nhật thông tin thất bại.", this.XamlRoot);
                 }
             }
         }
-
-
 
         private void CancelStaffDialog_Click(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
@@ -230,28 +356,6 @@ namespace CafePOS
             PasswordTextReadonlyBox.Text = "";
             UsernameTextReadonlyBox.Visibility = Visibility.Collapsed;
             PasswordTextReadonlyBox.Visibility = Visibility.Collapsed;
-
         }
-
-
-        private async Task ShowMessageAsync(string message)
-        {
-            if (this.XamlRoot == null)
-            {
-                System.Diagnostics.Debug.WriteLine("❌ XamlRoot is null. Cannot show dialog.");
-                return;
-            }
-
-            ContentDialog dialog = new ContentDialog
-            {
-                Title = "Thông báo",
-                Content = message,
-                CloseButtonText = "Đóng",
-                XamlRoot = this.XamlRoot
-            };
-
-            await dialog.ShowAsync();
-        }
-
     }
 }

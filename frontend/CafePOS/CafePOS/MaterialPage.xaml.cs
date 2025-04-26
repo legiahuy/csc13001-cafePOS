@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using CafePOS.DAO;
 using CafePOS.DTO;
+using CafePOS.Utilities;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -26,13 +27,19 @@ namespace CafePOS
     public sealed partial class MaterialPage : Page
     {
         private string selectedImagePath = string.Empty;
+        private List<Material> allMaterials = new List<Material>();
 
         public MaterialPage()
         {
             this.InitializeComponent();
-            _ = LoadMaterial();
+            _ = InitializePageAsync();
             AddMaterialBinding();
             ClearFormFields();
+        }
+
+        private async Task InitializePageAsync()
+        {
+            await LoadMaterial();
         }
 
         private async void btnView_Click(object sender, RoutedEventArgs e)
@@ -44,13 +51,58 @@ namespace CafePOS
         {
             if (ProductListView.SelectedItem is Material selectedMaterial)
             {
-                string name = ProductNameBox.Text;
+                string name = ProductNameBox.Text?.Trim();
                 int currentStock = (int)CurrentStockBox.Value;
                 int minStock = (int)MinStockBox.Value;
-                string unit = UnitBox.Text;
+                string unit = UnitBox.Text?.Trim();
                 double price = (double)PriceBox.Value;
                 string imagePath = string.IsNullOrEmpty(selectedImagePath) ? selectedMaterial.ImageUrl : selectedImagePath;
 
+                // Validate empty data
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Tên nguyên liệu không được để trống!", this.XamlRoot);
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(unit))
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Đơn vị tính không được để trống!", this.XamlRoot);
+                    return;
+                }
+
+                // Validate value range
+                if (currentStock < 0)
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Số lượng tồn kho không được âm!", this.XamlRoot);
+                    return;
+                }
+
+                if (minStock < 0)
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Số lượng tồn kho tối thiểu không được âm!", this.XamlRoot);
+                    return;
+                }
+
+                if (price <= 0)
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Giá nguyên liệu phải lớn hơn 0!", this.XamlRoot);
+                    return;
+                }
+
+                // Validate data consistency
+                if (minStock > currentStock)
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Số lượng tồn kho tối thiểu không được lớn hơn số lượng hiện tại!", this.XamlRoot);
+                    return;
+                }
+
+                // Check for duplicate name (excluding current material)
+                if (allMaterials.Any(m => m.Id != selectedMaterial.Id && m.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Tên nguyên liệu đã tồn tại trong hệ thống!", this.XamlRoot);
+                    return;
+                }
 
                 bool success = await MaterialDAO.Instance.UpdateMaterialAsync(
                     selectedMaterial.Id,
@@ -64,37 +116,16 @@ namespace CafePOS
                 if (success)
                 {
                     await LoadMaterial();
-                    var successDialog = new ContentDialog
-                    {
-                        Title = "Thành công",
-                        Content = "Cập nhật nguyên liệu thành công!",
-                        CloseButtonText = "OK",
-                        XamlRoot = this.XamlRoot
-                    };
-                    await successDialog.ShowAsync();
+                    await DialogHelper.ShowSuccessDialog("Thành công", "Cập nhật nguyên liệu thành công!", this.XamlRoot);
                 }
                 else
                 {
-                    var errorDialog = new ContentDialog
-                    {
-                        Title = "Lỗi",
-                        Content = "Có lỗi khi cập nhật nguyên liệu. Vui lòng thử lại.",
-                        CloseButtonText = "OK",
-                        XamlRoot = this.XamlRoot
-                    };
-                    await errorDialog.ShowAsync();
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Có lỗi khi cập nhật nguyên liệu. Vui lòng thử lại.", this.XamlRoot);
                 }
             }
             else
             {
-                var errorDialog = new ContentDialog
-                {
-                    Title = "Lỗi",
-                    Content = "Vui lòng chọn một nguyên liệu.",
-                    CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
-                };
-                await errorDialog.ShowAsync();
+                await DialogHelper.ShowErrorDialog("Lỗi", "Vui lòng chọn một nguyên liệu.", this.XamlRoot);
             }
         }
 
@@ -102,16 +133,12 @@ namespace CafePOS
         {
             if (ProductListView.SelectedItem is Material selectedMaterial)
             {
-                ContentDialog confirmDialog = new ContentDialog
-                {
-                    Title = "Xác nhận",
-                    Content = $"Bạn có chắc chắn muốn xóa nguyên liệu '{selectedMaterial.Name}' không?",
-                    PrimaryButtonText = "Xóa",
-                    CloseButtonText = "Hủy",
-                    XamlRoot = this.XamlRoot
-                };
-
-                ContentDialogResult result = await confirmDialog.ShowAsync();
+                ContentDialogResult result = await DialogHelper.ShowConfirmDialog(
+                    "Xác nhận",
+                    $"Bạn có chắc chắn muốn xóa nguyên liệu '{selectedMaterial.Name}' không?",
+                    "Xóa",
+                    "Hủy",
+                    this.XamlRoot);
 
                 if (result == ContentDialogResult.Primary)
                 {
@@ -125,14 +152,7 @@ namespace CafePOS
                     }
                     else
                     {
-                        ContentDialog dialog = new ContentDialog
-                        {
-                            Title = "Lỗi",
-                            Content = "Không thể xóa nguyên liệu. Vui lòng thử lại!",
-                            CloseButtonText = "OK",
-                            XamlRoot = this.XamlRoot
-                        };
-                        await dialog.ShowAsync();
+                        await DialogHelper.ShowErrorDialog("Lỗi", "Không thể xóa nguyên liệu. Vui lòng thử lại!", this.XamlRoot);
                     }
                 }
             }
@@ -151,22 +171,55 @@ namespace CafePOS
 
         private async void btnAdd_Click(object sender, RoutedEventArgs e)
         {
-            string materialName = ProductNameBox.Text;
+            string materialName = ProductNameBox.Text?.Trim();
             int currentStock = (int)CurrentStockBox.Value;
             int minStock = (int)MinStockBox.Value;
-            string unit = UnitBox.Text;
+            string unit = UnitBox.Text?.Trim();
             double price = (double)PriceBox.Value;
 
-            if (string.IsNullOrWhiteSpace(materialName) || string.IsNullOrWhiteSpace(unit) || price <= 0)
+            // Validate empty data
+            if (string.IsNullOrWhiteSpace(materialName))
             {
-                var dialog = new ContentDialog
-                {
-                    Title = "Lỗi",
-                    Content = "Vui lòng điền đầy đủ thông tin nguyên liệu!",
-                    CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
-                };
-                await dialog.ShowAsync();
+                await DialogHelper.ShowErrorDialog("Lỗi", "Tên nguyên liệu không được để trống!", this.XamlRoot);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(unit))
+            {
+                await DialogHelper.ShowErrorDialog("Lỗi", "Đơn vị tính không được để trống!", this.XamlRoot);
+                return;
+            }
+
+            // Validate value range
+            if (currentStock < 0)
+            {
+                await DialogHelper.ShowErrorDialog("Lỗi", "Số lượng tồn kho không được âm!", this.XamlRoot);
+                return;
+            }
+
+            if (minStock < 0)
+            {
+                await DialogHelper.ShowErrorDialog("Lỗi", "Số lượng tồn kho tối thiểu không được âm!", this.XamlRoot);
+                return;
+            }
+
+            if (price <= 0)
+            {
+                await DialogHelper.ShowErrorDialog("Lỗi", "Giá nguyên liệu phải lớn hơn 0!", this.XamlRoot);
+                return;
+            }
+
+            // Validate data consistency
+            if (minStock > currentStock)
+            {
+                await DialogHelper.ShowErrorDialog("Lỗi", "Số lượng tồn kho tối thiểu không được lớn hơn số lượng hiện tại!", this.XamlRoot);
+                return;
+            }
+
+            // Check for duplicate name
+            if (allMaterials.Any(m => m.Name.Equals(materialName, StringComparison.OrdinalIgnoreCase)))
+            {
+                await DialogHelper.ShowErrorDialog("Lỗi", "Tên nguyên liệu đã tồn tại trong hệ thống!", this.XamlRoot);
                 return;
             }
 
@@ -177,32 +230,16 @@ namespace CafePOS
                 unit,
                 price,
                 selectedImagePath);
-            //int isAdded = 1;
 
             if (isAdded != -1)
             {
-                var successDialog = new ContentDialog
-                {
-                    Title = "Thành công",
-                    Content = "Nguyên liệu đã được thêm thành công!",
-                    CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
-                };
-                await successDialog.ShowAsync();
-
+                await DialogHelper.ShowSuccessDialog("Thành công", "Nguyên liệu đã được thêm thành công!", this.XamlRoot);
                 await LoadMaterial();
                 ClearFormFields();
             }
             else
             {
-                var errorDialog = new ContentDialog
-                {
-                    Title = "Lỗi",
-                    Content = "Có lỗi khi thêm nguyên liệu vào cơ sở dữ liệu. Vui lòng thử lại.",
-                    CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
-                };
-                await errorDialog.ShowAsync();
+                await DialogHelper.ShowErrorDialog("Lỗi", "Có lỗi khi thêm nguyên liệu vào cơ sở dữ liệu. Vui lòng thử lại.", this.XamlRoot);
             }
         }
 
@@ -226,8 +263,8 @@ namespace CafePOS
 
         public async Task LoadMaterial()
         {
-            List<Material> materialList = await MaterialDAO.Instance.GetListMaterialAsync();
-            ProductListView.ItemsSource = materialList;
+            allMaterials = await MaterialDAO.Instance.GetListMaterialAsync();
+            ProductListView.ItemsSource = allMaterials;
         }
 
         void AddMaterialBinding()
@@ -349,14 +386,7 @@ namespace CafePOS
                 }
                 catch (Exception ex)
                 {
-                    ContentDialog dialog = new ContentDialog
-                    {
-                        Title = "Lỗi",
-                        Content = $"Không thể sao chép tệp hình ảnh: {ex.Message}",
-                        CloseButtonText = "OK",
-                        XamlRoot = this.XamlRoot
-                    };
-                    await dialog.ShowAsync();
+                    await DialogHelper.ShowErrorDialog("Lỗi", $"Không thể sao chép tệp hình ảnh: {ex.Message}", this.XamlRoot);
                 }
             }
         }

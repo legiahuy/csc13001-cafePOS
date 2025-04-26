@@ -22,6 +22,7 @@ using Windows.Storage.Pickers;
 using Windows.Storage;
 using System.Diagnostics;
 using ClosedXML.Excel;
+using CafePOS.Utilities;
 
 namespace CafePOS
 {
@@ -68,49 +69,49 @@ namespace CafePOS
         {
             if (ProductListView.SelectedItem is Drink selectedDrink)
             {
-                string name = ProductNameBox.Text;
+                string name = ProductNameBox.Text?.Trim();
                 string description = "Updated description";
                 int categoryId = (int)CategoryComboBox.SelectedValue;
                 int price = (int)PriceBox.Value;
                 bool isAvailable = true; 
                 string imagePath = string.IsNullOrEmpty(selectedImagePath) ? selectedDrink.ImageUrl : selectedImagePath;
 
+                // Validate empty data
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Tên sản phẩm không được để trống!", this.XamlRoot);
+                    return;
+                }
+
+                // Validate price range
+                if (price <= 0)
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Giá sản phẩm phải lớn hơn 0!", this.XamlRoot);
+                    return;
+                }
+
+                // Validate data consistency - check if product name already exists (excluding current product)
+                if (allProducts.Any(p => p.ID != selectedDrink.ID && p.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Tên sản phẩm đã tồn tại trong hệ thống!", this.XamlRoot);
+                    return;
+                }
+
                 bool success = await DrinkDAO.Instance.UpdateProductAsync(selectedDrink.ID, name, description, categoryId, price, isAvailable, imagePath);
 
                 if (success)
                 {
-                    await LoadProduct(); 
-                    var successDialog = new ContentDialog
-                    {
-                        Title = "Thành công",
-                        Content = "Sửa món thành công!",
-                        CloseButtonText = "OK",
-                        XamlRoot = this.XamlRoot
-                    };
-                    await successDialog.ShowAsync();
+                    await LoadProduct();
+                    await DialogHelper.ShowSuccessDialog("Thành công", "Sửa món thành công!", this.XamlRoot);
                 }
                 else
                 {
-                    var errorDialog = new ContentDialog
-                    {
-                        Title = "Lỗi",
-                        Content = "Có lỗi khi chỉnh sửa món. Vui lòng thử lại.",
-                        CloseButtonText = "OK",
-                        XamlRoot = this.XamlRoot
-                    };
-                    await errorDialog.ShowAsync();
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Có lỗi khi chỉnh sửa món. Vui lòng thử lại.", this.XamlRoot);
                 }
             }
             else
             {
-                var errorDialog = new ContentDialog
-                {
-                    Title = "Lỗi",
-                    Content = "Vui lòng chọn một món.",
-                    CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
-                };
-                await errorDialog.ShowAsync();
+                await DialogHelper.ShowErrorDialog("Lỗi", "Vui lòng chọn một món.", this.XamlRoot);
             }
         }
 
@@ -144,20 +145,34 @@ namespace CafePOS
 
         private async void btnAdd_Click(object sender, RoutedEventArgs e)
         {
-            string productName = ProductNameBox.Text;
+            string productName = ProductNameBox.Text?.Trim();
             int? categoryId = (int?)CategoryComboBox.SelectedValue;
             int price = (int)PriceBox.Value;
 
-            if (string.IsNullOrWhiteSpace(productName) || categoryId == null || price <= 0)
+            // Validate empty data
+            if (string.IsNullOrWhiteSpace(productName))
             {
-                var dialog = new ContentDialog
-                {
-                    Title = "Lỗi",
-                    Content = "Vui lòng điền đầy đủ thông tin và chọn danh mục hợp lệ!",
-                    CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
-                };
-                await dialog.ShowAsync();
+                await DialogHelper.ShowErrorDialog("Lỗi", "Tên sản phẩm không được để trống!", this.XamlRoot);
+                return;
+            }
+
+            if (categoryId == null || categoryId <= 0)
+            {
+                await DialogHelper.ShowErrorDialog("Lỗi", "Vui lòng chọn danh mục sản phẩm!", this.XamlRoot);
+                return;
+            }
+
+            // Validate price range
+            if (price <= 0)
+            {
+                await DialogHelper.ShowErrorDialog("Lỗi", "Giá sản phẩm phải lớn hơn 0!", this.XamlRoot);
+                return;
+            }
+
+            // Validate data consistency - check if product name already exists
+            if (allProducts.Any(p => p.Name.Equals(productName, StringComparison.OrdinalIgnoreCase)))
+            {
+                await DialogHelper.ShowErrorDialog("Lỗi", "Tên sản phẩm đã tồn tại trong hệ thống!", this.XamlRoot);
                 return;
             }
 
@@ -165,27 +180,12 @@ namespace CafePOS
 
             if (isAdded != -1)
             {
-                var successDialog = new ContentDialog
-                {
-                    Title = "Thành công",
-                    Content = "Món đã được thêm thành công!",
-                    CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
-                };
-                await successDialog.ShowAsync();
-
+                await DialogHelper.ShowSuccessDialog("Thành công", "Món đã được thêm thành công!", this.XamlRoot);
                 await LoadProduct();
             }
             else
             {
-                var errorDialog = new ContentDialog
-                {
-                    Title = "Lỗi",
-                    Content = "Có lỗi khi thêm món vào cơ sở dữ liệu. Vui lòng thử lại.",
-                    CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
-                };
-                await errorDialog.ShowAsync();
+                await DialogHelper.ShowErrorDialog("Lỗi", "Có lỗi khi thêm món vào cơ sở dữ liệu. Vui lòng thử lại.", this.XamlRoot);
             }
         }
 
@@ -345,14 +345,7 @@ namespace CafePOS
                 }
                 catch (Exception ex)
                 {
-                    ContentDialog dialog = new ContentDialog
-                    {
-                        Title = "Lỗi",
-                        Content = $"Không thể sao chép tệp hình ảnh: {ex.Message}",
-                        CloseButtonText = "OK",
-                        XamlRoot = this.XamlRoot
-                    };
-                    await dialog.ShowAsync();
+                    await DialogHelper.ShowErrorDialog("Lỗi", $"Không thể sao chép tệp hình ảnh: {ex.Message}", this.XamlRoot);
                 }
             }
         }
@@ -436,28 +429,14 @@ namespace CafePOS
                         }
 
                         // Thông báo thành công
-                        var successDialog = new ContentDialog
-                        {
-                            Title = "Thành công",
-                            Content = "Danh sách sản phẩm đã được xuất thành công!",
-                            CloseButtonText = "OK",
-                            XamlRoot = this.XamlRoot
-                        };
-                        await successDialog.ShowAsync();
+                        await DialogHelper.ShowSuccessDialog("Thành công", "Danh sách sản phẩm đã được xuất thành công!", this.XamlRoot);
                     }
                 }
             }
             catch (Exception ex)
             {
                 // Xử lý lỗi
-                var errorDialog = new ContentDialog
-                {
-                    Title = "Lỗi",
-                    Content = $"Có lỗi khi xuất file Excel: {ex.Message}",
-                    CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
-                };
-                await errorDialog.ShowAsync();
+                await DialogHelper.ShowErrorDialog("Lỗi", $"Có lỗi khi xuất file Excel: {ex.Message}", this.XamlRoot);
             }
         }
     }

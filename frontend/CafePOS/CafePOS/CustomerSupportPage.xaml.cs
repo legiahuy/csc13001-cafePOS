@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using CafePOS.DAO;
 using CafePOS.DTO;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
+using System.Linq;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -25,7 +27,6 @@ namespace CafePOS
         {
             this.InitializeComponent();
             FeedbackItems = new ObservableCollection<CustomerFeedback>();
-
             Loaded += FeedbackPage_Loaded;
         }
 
@@ -57,16 +58,7 @@ namespace CafePOS
             }
             catch (Exception ex)
             {
-                // Hiển thị thông báo lỗi
-                ContentDialog errorDialog = new ContentDialog
-                {
-                    Title = "Lỗi",
-                    Content = $"Không thể tải dữ liệu: {ex.Message}",
-                    CloseButtonText = "Đóng",
-                    XamlRoot = this.XamlRoot
-                };
-
-                await errorDialog.ShowAsync();
+                await ShowErrorDialog("Lỗi", $"Không thể tải dữ liệu: {ex.Message}");
             }
         }
 
@@ -77,25 +69,21 @@ namespace CafePOS
 
         private async void FeedbackListView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            var selectedFeedback = (CustomerFeedback)e.ClickedItem;
+            if (e.ClickedItem is not CustomerFeedback selectedFeedback)
+            {
+                await ShowErrorDialog("Lỗi", "Không thể tải thông tin phản hồi");
+                return;
+            }
 
             var feedbackDetail = await CustomerFeedbackDAO.Instance.GetFeedbackByIdAsync(selectedFeedback.Id);
 
             if (feedbackDetail == null)
             {
-                ContentDialog errorDialog = new ContentDialog
-                {
-                    Title = "Lỗi",
-                    Content = "Không thể tải thông tin chi tiết phản hồi",
-                    CloseButtonText = "Đóng",
-                    XamlRoot = this.XamlRoot
-                };
-
-                await errorDialog.ShowAsync();
+                await ShowErrorDialog("Lỗi", "Không thể tải thông tin chi tiết phản hồi");
                 return;
             }
 
-            // Hiển thị dialog chi tiết phản hồi
+            // Show feedback detail dialog
             ContentDialog detailDialog = new ContentDialog
             {
                 Title = $"Phản hồi từ {feedbackDetail.Name}",
@@ -104,27 +92,34 @@ namespace CafePOS
                 XamlRoot = this.XamlRoot
             };
 
-            // Tạo nội dung dialog
+            // Create dialog content
             StackPanel panel = new StackPanel { Spacing = 10 };
 
-            panel.Children.Add(new TextBlock
+            // Validate and add email
+            if (!string.IsNullOrWhiteSpace(feedbackDetail.Email) && IsValidEmail(feedbackDetail.Email))
             {
-                Text = $"Email: {feedbackDetail.Email}",
-                TextWrapping = TextWrapping.Wrap
-            });
+                panel.Children.Add(new TextBlock
+                {
+                    Text = $"Email: {feedbackDetail.Email}",
+                    TextWrapping = TextWrapping.Wrap
+                });
+            }
 
+            // Add submission time
             panel.Children.Add(new TextBlock
             {
                 Text = $"Thời gian: {feedbackDetail.SubmittedAt:dd/MM/yyyy HH:mm}",
                 TextWrapping = TextWrapping.Wrap
             });
 
+            // Add status
             panel.Children.Add(new TextBlock
             {
                 Text = $"Trạng thái: {feedbackDetail.StatusDisplay}",
                 TextWrapping = TextWrapping.Wrap
             });
 
+            // Add feedback content
             panel.Children.Add(new TextBlock
             {
                 Text = "Nội dung phản hồi:",
@@ -137,6 +132,7 @@ namespace CafePOS
                 TextWrapping = TextWrapping.Wrap
             });
 
+            // Add response if exists
             if (!string.IsNullOrEmpty(feedbackDetail.ResponseContent))
             {
                 panel.Children.Add(new TextBlock
@@ -163,20 +159,22 @@ namespace CafePOS
                     });
                 }
 
-                // Thêm thông tin về nhân viên phản hồi
+                // Add staff information if available
                 if (feedbackDetail.StaffId > 0)
                 {
                     int id = (int)feedbackDetail.StaffId;
                     var staffName = await StaffDAO.Instance.GetStaffNameById(id);
-                    panel.Children.Add(new TextBlock
+                    if (!string.IsNullOrWhiteSpace(staffName))
                     {
-                        Text = $"Nhân viên phản hồi: {staffName} (ID: {feedbackDetail.StaffId})",
-                        TextWrapping = TextWrapping.Wrap,
-                        FontSize = 12,
-                        Opacity = 0.7,
-                        Margin = new Thickness(0, 5, 0, 0)
-                    });
-
+                        panel.Children.Add(new TextBlock
+                        {
+                            Text = $"Nhân viên phản hồi: {staffName} (ID: {feedbackDetail.StaffId})",
+                            TextWrapping = TextWrapping.Wrap,
+                            FontSize = 12,
+                            Opacity = 0.7,
+                            Margin = new Thickness(0, 5, 0, 0)
+                        });
+                    }
                 }
                 else if (feedbackDetail.StaffId == null)
                 {
@@ -189,7 +187,6 @@ namespace CafePOS
                         Margin = new Thickness(0, 5, 0, 0)
                     });
                 }
-
             }
 
             detailDialog.Content = panel;
@@ -198,14 +195,19 @@ namespace CafePOS
 
             if (result == ContentDialogResult.Primary)
             {
-                // Hiển thị dialog để nhập phản hồi
                 await ShowResponseDialog(feedbackDetail);
             }
         }
 
         private async Task ShowResponseDialog(CustomerFeedback feedback)
         {
-            // Tạo dialog để nhập phản hồi
+            // Validate feedback status
+            if (feedback.Status == "completed")
+            {
+                await ShowErrorDialog("Lỗi", "Phản hồi này đã được xử lý xong!");
+                return;
+            }
+
             ContentDialog responseDialog = new ContentDialog
             {
                 Title = $"Phản hồi cho {feedback.Name}",
@@ -215,7 +217,6 @@ namespace CafePOS
                 XamlRoot = this.XamlRoot
             };
 
-            // Tạo nội dung dialog
             StackPanel panel = new StackPanel { Spacing = 10 };
 
             TextBox responseTextBox = new TextBox
@@ -226,7 +227,6 @@ namespace CafePOS
                 Height = 150
             };
 
-            // Điền nội dung phản hồi cũ nếu có
             if (!string.IsNullOrEmpty(feedback.ResponseContent))
             {
                 responseTextBox.Text = feedback.ResponseContent;
@@ -237,85 +237,96 @@ namespace CafePOS
 
             var result = await responseDialog.ShowAsync();
 
-            if (result == ContentDialogResult.Primary && !string.IsNullOrWhiteSpace(responseTextBox.Text))
+            if (result == ContentDialogResult.Primary)
             {
-                // Gửi phản hồi và cập nhật trạng thái thành completed
+                string responseText = responseTextBox.Text?.Trim() ?? "";
+
+                // Validate empty response
+                if (string.IsNullOrWhiteSpace(responseText))
+                {
+                    await ShowErrorDialog("Lỗi", "Vui lòng nhập nội dung phản hồi!");
+                    return;
+                }
+
+                // Validate response length
+                if (responseText.Length > 1000)
+                {
+                    await ShowErrorDialog("Lỗi", "Nội dung phản hồi không được vượt quá 1000 ký tự!");
+                    return;
+                }
+
                 int currentStaffId = Account.CurrentUserStaffId;
                 bool success = await CustomerFeedbackDAO.Instance.RespondToFeedbackAsync(
                     feedback.Id,
-                    responseTextBox.Text,
+                    responseText,
                     currentStaffId > 0 ? currentStaffId : null
                 );
 
-
                 if (success)
                 {
-                    // Cập nhật trạng thái thành completed
-                    await CustomerFeedbackDAO.Instance.UpdateFeedbackStatusAsync(feedback.Id, "completed");
-
-                    // Hiển thị thông báo thành công
-                    ContentDialog successDialog = new ContentDialog
-                    {
-                        Title = "Thành công",
-                        Content = "Đã gửi phản hồi cho khách hàng.",
-                        CloseButtonText = "Đóng",
-                        XamlRoot = this.XamlRoot
-                    };
-
-                    await successDialog.ShowAsync();
-
-                    // Tải lại danh sách phản hồi
+                    await ShowSuccessDialog("Thành công", "Đã gửi phản hồi thành công!");
                     await LoadFeedback();
                 }
                 else
                 {
-                    // Hiển thị thông báo lỗi
-                    ContentDialog errorDialog = new ContentDialog
-                    {
-                        Title = "Lỗi",
-                        Content = "Không thể gửi phản hồi. Vui lòng thử lại sau.",
-                        CloseButtonText = "Đóng",
-                        XamlRoot = this.XamlRoot
-                    };
-
-                    await errorDialog.ShowAsync();
+                    await ShowErrorDialog("Lỗi", "Không thể gửi phản hồi. Vui lòng thử lại!");
                 }
             }
             else if (result == ContentDialogResult.Secondary)
             {
-                // Cập nhật trạng thái phản hồi thành "đang xử lý"
-                bool success = await CustomerFeedbackDAO.Instance.UpdateFeedbackStatusAsync(feedback.Id, "in_progress");
+                // Mark as in progress
+                bool success = await CustomerFeedbackDAO.Instance.UpdateFeedbackStatusAsync(
+                    feedback.Id,
+                    "in_progress"
+                );
 
                 if (success)
                 {
-                    // Hiển thị thông báo thành công
-                    ContentDialog successDialog = new ContentDialog
-                    {
-                        Title = "Thành công",
-                        Content = "Đã cập nhật trạng thái phản hồi thành 'Đang xử lý'.",
-                        CloseButtonText = "Đóng",
-                        XamlRoot = this.XamlRoot
-                    };
-
-                    await successDialog.ShowAsync();
-
-                    // Tải lại danh sách phản hồi
+                    await ShowSuccessDialog("Thành công", "Đã đánh dấu phản hồi đang xử lý!");
                     await LoadFeedback();
                 }
                 else
                 {
-                    // Hiển thị thông báo lỗi
-                    ContentDialog errorDialog = new ContentDialog
-                    {
-                        Title = "Lỗi",
-                        Content = "Không thể cập nhật trạng thái phản hồi. Vui lòng thử lại sau.",
-                        CloseButtonText = "Đóng",
-                        XamlRoot = this.XamlRoot
-                    };
-
-                    await errorDialog.ShowAsync();
+                    await ShowErrorDialog("Lỗi", "Không thể cập nhật trạng thái. Vui lòng thử lại!");
                 }
             }
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private async Task ShowErrorDialog(string title, string content)
+        {
+            var dialog = new ContentDialog
+            {
+                Title = title,
+                Content = content,
+                CloseButtonText = "OK",
+                XamlRoot = this.XamlRoot
+            };
+            await dialog.ShowAsync();
+        }
+
+        private async Task ShowSuccessDialog(string title, string content)
+        {
+            var dialog = new ContentDialog
+            {
+                Title = title,
+                Content = content,
+                CloseButtonText = "OK",
+                XamlRoot = this.XamlRoot
+            };
+            await dialog.ShowAsync();
         }
 
         private void ApplyFilters()
@@ -373,5 +384,4 @@ namespace CafePOS
             await LoadFeedback();
         }
     }
-
 }

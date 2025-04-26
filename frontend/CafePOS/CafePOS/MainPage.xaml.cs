@@ -97,7 +97,7 @@ namespace CafePOS
                         ContentDialog dialog = new ContentDialog
                         {
                             Title = "Không có quyền",
-                            Content = "Bạn không có quyền truy cập trang quản lý nhân viên.",
+                            Content = "Bạn không có quyền truy cập trang quản lý khách hàng.",
                             CloseButtonText = "Đóng",
                             XamlRoot = this.XamlRoot
                         };

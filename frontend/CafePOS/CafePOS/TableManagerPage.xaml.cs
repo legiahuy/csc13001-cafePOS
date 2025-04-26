@@ -32,6 +32,7 @@ using Windows.Foundation.Collections;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 using StrawberryShake;
+using CafePOS.Utilities;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -50,7 +51,7 @@ namespace CafePOS
 
         public ObservableCollection<ProductDTO> RecommendedProducts { get; } = new();
         public ObservableCollection<ProductDTO> Recommendations { get; private set; }
-        
+
         private string _currentTemperature;
         public string CurrentTemperature
         {
@@ -78,7 +79,7 @@ namespace CafePOS
                 });
             }
         }
-        
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public TableManagerPage()
@@ -157,7 +158,7 @@ namespace CafePOS
         {
             if (OrderListView.Tag is not CafeTable table)
             {
-                await ShowDialog("Lỗi", "Vui lòng chọn một bàn trước.");
+                await DialogHelper.ShowErrorDialog("Lỗi", "Vui lòng chọn một bàn trước.", this.XamlRoot);
                 Debug.WriteLine("Lỗi chọn bàn: OrderListView.Tag là null hoặc không đúng.");
                 return;
             }
@@ -170,7 +171,7 @@ namespace CafePOS
 
             if (foodID == -1)
             {
-                await ShowDialog("Lỗi", "Vui lòng chọn món ăn hợp lệ.");
+                await DialogHelper.ShowErrorDialog("Lỗi", "Vui lòng chọn món ăn hợp lệ.", this.XamlRoot);
                 return;
             }
 
@@ -193,19 +194,6 @@ namespace CafePOS
 
             ShowBill(table.Id);
             await LoadTable();
-        }
-
-
-        private async Task ShowDialog(string title, string content)
-        {
-            ContentDialog dialog = new ContentDialog
-            {
-                Title = title,
-                Content = content,
-                CloseButtonText = "Đóng",
-                XamlRoot = this.XamlRoot
-            };
-            await dialog.ShowAsync();
         }
         private float GetUnitPrice(int foodID)
         {
@@ -238,81 +226,18 @@ namespace CafePOS
                 Debug.WriteLine("Nút đã được nhấn: Không tìm thấy bàn trong DataContext.");
             }
         }
-
-
-        //private async void btnCheckOut_Click(object sender, RoutedEventArgs e)
-        //{
-        //    if (OrderListView.Tag is not CafeTable table)
-        //    {
-        //        await ShowDialog("Thông báo", "Vui lòng chọn bàn để thanh toán.");
-        //        return;
-        //    }
-
-        //    int idBill = await BillDAO.Instance.GetUncheckBillIDByTableID(table.Id, 0);
-        //    if (idBill == -1)
-        //    {
-        //        await ShowDialog("Thông báo", $"Không tìm thấy hóa đơn chưa thanh toán cho bàn {table.Name}.");
-        //        return;
-        //    }
-
-        //    float discount = (float)DiscountBox.Value;
-        //    double originalTotal = 0;
-        //    if (OrderListView.ItemsSource is IEnumerable<Menu> items)
-        //    {
-        //        originalTotal = items.Sum(item => item.TotalPrice);
-        //    }
-        //    double finalTotal = originalTotal * (100 - discount) / 100;
-        //    var culture = new System.Globalization.CultureInfo("vi-VN");
-        //    string originalStr = originalTotal.ToString("C0", culture);
-        //    string finalStr = finalTotal.ToString("C0", culture);
-
-        //    string content = $"Bạn có chắc chắn muốn thanh toán hóa đơn cho bàn {table.Name}?\n" +
-        //                     $"Tổng tiền: {originalStr}\n" +
-        //                     $"Giảm giá: {discount}%\n" +
-        //                     $"Thanh toán: {finalStr}";
-
-        //    var dialogResult = await new ContentDialog
-        //    {
-        //        Title = "Xác nhận thanh toán",
-        //        Content = content,
-        //        PrimaryButtonText = "OK",
-        //        CloseButtonText = "Hủy",
-        //        XamlRoot = this.XamlRoot
-        //    }.ShowAsync();
-
-        //    if (dialogResult == ContentDialogResult.Primary)
-        //    {
-        //        bool success = await BillDAO.Instance.CheckOutAsync(idBill, discount);
-
-        //        if (success)
-        //        {
-        //            OrderListView.ItemsSource = null;
-        //            OrderListView.Tag = null;
-        //            TotalPriceTextBlock.Text = "0 ₫";
-        //            DiscountBox.Value = 0;
-
-        //            await LoadTable();
-
-        //            await ShowDialog("Thành công", $"Đã thanh toán cho bàn {table.Name}.");
-        //        }
-        //        else
-        //        {
-        //            await ShowDialog("Lỗi", "Không thể cập nhật trạng thái hóa đơn.");
-        //        }
-        //    }
-        //}
         private async void btnCheckOut_Click(object sender, RoutedEventArgs e)
         {
             if (OrderListView.Tag is not CafeTable table)
             {
-                await ShowDialog("Thông báo", "Vui lòng chọn bàn để thanh toán.");
+                await DialogHelper.ShowErrorDialog("Thông báo", "Vui lòng chọn bàn để thanh toán.", this.XamlRoot);
                 return;
             }
 
             int idBill = await BillDAO.Instance.GetUncheckBillIDByTableID(table.Id, 0);
             if (idBill == -1)
             {
-                await ShowDialog("Thông báo", $"Không tìm thấy hóa đơn chưa thanh toán cho bàn {table.Name}.");
+                await DialogHelper.ShowErrorDialog("Thông báo", $"Không tìm thấy hóa đơn chưa thanh toán cho bàn {table.Name}.", this.XamlRoot);
                 return;
             }
 
@@ -353,27 +278,23 @@ namespace CafePOS
         {
             if (OrderListView.Tag is not CafeTable table)
             {
-                await ShowDialog("Thông báo", "Vui lòng chọn bàn để hủy.");
+                await DialogHelper.ShowErrorDialog("Thông báo", "Vui lòng chọn bàn để hủy.", this.XamlRoot);
                 return;
             }
 
             int idBill = await BillDAO.Instance.GetUncheckBillIDByTableID(table.Id, 0);
             if (idBill == -1)
             {
-                await ShowDialog("Thông báo", $"Không tìm thấy hóa đơn chưa thanh toán cho bàn {table.Name}.");
+                await DialogHelper.ShowErrorDialog("Thông báo", $"Không tìm thấy hóa đơn chưa thanh toán cho bàn {table.Name}.", this.XamlRoot);
                 return;
             }
 
-            string content = $"Bạn có chắc chắn muốn hủy hóa đơn cho bàn {table.Name}?";
-
-            var dialogResult = await new ContentDialog
-            {
-                Title = "Xác nhận hủy",
-                Content = content,
-                PrimaryButtonText = "OK",
-                CloseButtonText = "Thoát",
-                XamlRoot = this.XamlRoot
-            }.ShowAsync();
+            ContentDialogResult dialogResult = await DialogHelper.ShowConfirmDialog(
+                "Xác nhận hủy",
+                $"Bạn có chắc chắn muốn hủy hóa đơn cho bàn {table.Name}?",
+                "OK",
+                "Thoát",
+                this.XamlRoot);
 
             if (dialogResult == ContentDialogResult.Primary)
             {
@@ -386,11 +307,11 @@ namespace CafePOS
 
                     await LoadTable();
 
-                    await ShowDialog("Thành công", $"Đã hủy thanh toán cho bàn {table.Name}.");
+                    await DialogHelper.ShowSuccessDialog("Thành công", $"Đã hủy thanh toán cho bàn {table.Name}.", this.XamlRoot);
                 }
                 else
                 {
-                    await ShowDialog("Lỗi", "Không thể cập nhật trạng thái hóa đơn.");
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Không thể cập nhật trạng thái hóa đơn.", this.XamlRoot);
                 }
             }
         }
@@ -398,58 +319,55 @@ namespace CafePOS
         {
             if (OrderListView.Tag is not CafeTable currentTable)
             {
-                await ShowDialog("Thông báo", "Vui lòng chọn bàn hiện tại để chuyển.");
+                await DialogHelper.ShowErrorDialog("Thông báo", "Vui lòng chọn bàn hiện tại để chuyển.", this.XamlRoot);
                 return;
             }
 
             if (MoveTableComboBox.SelectedItem is not CafeTable targetTable)
             {
-                await ShowDialog("Thông báo", "Vui lòng chọn bàn đích.");
+                await DialogHelper.ShowErrorDialog("Thông báo", "Vui lòng chọn bàn đích.", this.XamlRoot);
                 return;
             }
 
             if (currentTable.Id == targetTable.Id)
             {
-                await ShowDialog("Thông báo", "Không thể chuyển sang cùng một bàn.");
+                await DialogHelper.ShowErrorDialog("Thông báo", "Không thể chuyển sang cùng một bàn.", this.XamlRoot);
                 return;
             }
 
             if (targetTable.Status == "Có khách")
             {
-                await ShowDialog("Không thể chuyển bàn", $"Bàn {targetTable.Name} hiện đang có khách. Vui lòng chọn bàn trống.");
+                await DialogHelper.ShowErrorDialog("Không thể chuyển bàn", $"Bàn {targetTable.Name} hiện đang có khách. Vui lòng chọn bàn trống.", this.XamlRoot);
                 return;
             }
 
-            var confirmDialog = new ContentDialog
-            {
-                Title = "Xác nhận chuyển bàn",
-                Content = $"Bạn có thật sự muốn chuyển bàn {currentTable.Name} → {targetTable.Name}?",
-                PrimaryButtonText = "Chuyển",
-                CloseButtonText = "Hủy",
-                XamlRoot = this.XamlRoot
-            };
+            ContentDialogResult result = await DialogHelper.ShowConfirmDialog(
+                "Xác nhận chuyển bàn",
+                $"Bạn có thật sự muốn chuyển bàn {currentTable.Name} → {targetTable.Name}?",
+                "Chuyển",
+                "Hủy",
+                this.XamlRoot);
 
-            var result = await confirmDialog.ShowAsync();
             if (result != ContentDialogResult.Primary) return;
 
             int billId = await BillDAO.Instance.GetUncheckBillIDByTableID(currentTable.Id, 0);
             if (billId == -1)
             {
-                await ShowDialog("Thông báo", $"Không có hóa đơn đang mở trên {currentTable.Name}.");
+                await DialogHelper.ShowErrorDialog("Thông báo", $"Không có hóa đơn đang mở trên {currentTable.Name}.", this.XamlRoot);
                 return;
             }
 
             bool success = await BillDAO.Instance.ChangeTableAsync(billId, targetTable.Id);
             if (success)
             {
-                await ShowDialog("Thành công", $"Đã chuyển hóa đơn từ {currentTable.Name} sang {targetTable.Name}.");
+                await DialogHelper.ShowSuccessDialog("Thành công", $"Đã chuyển hóa đơn từ {currentTable.Name} sang {targetTable.Name}.", this.XamlRoot);
                 await LoadTable();
                 ShowBill(targetTable.Id);
                 OrderListView.Tag = targetTable;
             }
             else
             {
-                await ShowDialog("Lỗi", "Không thể chuyển bàn.");
+                await DialogHelper.ShowErrorDialog("Lỗi", "Không thể chuyển bàn.", this.XamlRoot);
             }
         }
 
@@ -468,17 +386,17 @@ namespace CafePOS
                     // Reload the table status
                     await LoadTable();
 
-                    await ShowDialog("Thành công", "Đã hủy hóa đơn thành công.");
+                    await DialogHelper.ShowSuccessDialog("Thành công", "Đã hủy hóa đơn thành công.", this.XamlRoot);
                 }
                 else
                 {
-                    await ShowDialog("Lỗi", "Không thể hủy hóa đơn. Vui lòng thử lại.");
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Không thể hủy hóa đơn. Vui lòng thử lại.", this.XamlRoot);
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error in CancelBill: {ex.Message}");
-                await ShowDialog("Lỗi", "Đã xảy ra lỗi khi hủy hóa đơn. Vui lòng thử lại.");
+                await DialogHelper.ShowErrorDialog("Lỗi", "Đã xảy ra lỗi khi hủy hóa đơn. Vui lòng thử lại.", this.XamlRoot);
             }
         }
 
@@ -486,18 +404,18 @@ namespace CafePOS
         {
             try
             {
-                Recommendations.Clear(); 
-                RecommendedProducts.Clear(); 
-                AiRecommendation = "Đang lấy gợi ý từ AI..."; 
+                Recommendations.Clear();
+                RecommendedProducts.Clear();
+                AiRecommendation = "Đang lấy gợi ý từ AI...";
 
                 // Fetch real temperature directly
                 double temperature = await _weatherService.GetCurrentTemperatureAsync();
                 Debug.WriteLine($"[REAL WEATHER] Fetched temperature: {temperature}°C");
-                
-                CurrentTemperature = $"{temperature:F1}°C"; 
+
+                CurrentTemperature = $"{temperature:F1}°C";
 
                 // Fetch ALL products using GraphQL client
-                IOperationResult<IGetAllProductsResult> allProductsResult = 
+                IOperationResult<IGetAllProductsResult> allProductsResult =
                     await _cafePOSClient.GetAllProducts.ExecuteAsync();
 
                 // Check for general operation errors (network, etc.)
@@ -519,7 +437,7 @@ namespace CafePOS
                         .Select(p => new ProductDTO
                         {
                             Id = p.Id,
-                            Name = p.Name ?? "N/A", 
+                            Name = p.Name ?? "N/A",
                             Description = p.Description ?? "",
                             Price = p.Price,
                             ImageUrl = p.ImageUrl ?? "",
@@ -534,8 +452,8 @@ namespace CafePOS
 
                 if (!allProducts.Any())
                 {
-                     // ... (error handling as before) ...
-                     return;
+                    // ... (error handling as before) ...
+                    return;
                 }
 
                 // Get AI recommendations using Gemini with ALL product names
@@ -546,66 +464,66 @@ namespace CafePOS
                 Debug.WriteLine($"Temperature Sent: {temperature}°C");
                 // Debug.WriteLine($"Products Sent ({allProductNames.Count}): {string.Join(", ", allProductNames)}"); 
 
-                string aiSuggestionText = "Error: Service call did not complete."; 
+                string aiSuggestionText = "Error: Service call did not complete.";
                 try
                 {
                     Debug.WriteLine("[LoadRecommendations] Calling _geminiService.GetDrinkRecommendationsAsync...");
-                    aiSuggestionText = await _geminiService.GetDrinkRecommendationsAsync(temperature, allProductNames); 
+                    aiSuggestionText = await _geminiService.GetDrinkRecommendationsAsync(temperature, allProductNames);
                     Debug.WriteLine("[LoadRecommendations] Call to _geminiService.GetDrinkRecommendationsAsync completed.");
                     Debug.WriteLine($"Gemini Raw Response Text received in Page: {aiSuggestionText}");
                 }
-                catch(Exception serviceEx)
+                catch (Exception serviceEx)
                 {
-                     // ... (error handling as before) ...
+                    // ... (error handling as before) ...
                 }
 
 
                 // Construct the display message using the real temperature
-                string displayMessage = $"Với thời tiết {CurrentTemperature}, gợi ý cho bạn:"; 
+                string displayMessage = $"Với thời tiết {CurrentTemperature}, gợi ý cho bạn:";
                 if (temperature < 18) // Using the actual temperature now
                 {
                     displayMessage = $"Với thời tiết lạnh {CurrentTemperature}, gợi ý đồ uống ấm nóng cho bạn:";
                 }
                 else if (temperature > 28) // Using the actual temperature now
                 {
-                     displayMessage = $"Với thời tiết nóng {CurrentTemperature}, gợi ý đồ uống mát lạnh cho bạn:";
+                    displayMessage = $"Với thời tiết nóng {CurrentTemperature}, gợi ý đồ uống mát lạnh cho bạn:";
                 }
                 AiRecommendation = displayMessage;
 
                 // --- Populate the Recommendations ListView based on AI suggestion text --- 
-                Recommendations.Clear(); 
+                Recommendations.Clear();
                 var suggestedNames = aiSuggestionText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
                                                   .Select(name => name.Trim())
                                                   .Where(name => !string.IsNullOrWhiteSpace(name))
                                                   .ToList();
-                
+
                 Debug.WriteLine($"AI suggested names ({suggestedNames.Count}): {string.Join(", ", suggestedNames)}");
 
                 foreach (var suggestedName in suggestedNames)
                 {
-                    var productToAdd = allProducts.FirstOrDefault(p => 
+                    var productToAdd = allProducts.FirstOrDefault(p =>
                         p.Name.Equals(suggestedName, StringComparison.OrdinalIgnoreCase) ||
                         p.Name.Equals(suggestedName.Replace("đá", "Đá"), StringComparison.OrdinalIgnoreCase) // Handle case variations like 'da' vs 'Đá'
                     );
-                    
+
                     if (productToAdd != null)
                     {
-                         if (!Recommendations.Any(r => r.Id == productToAdd.Id)) // Avoid duplicates
-                         {
-                             Recommendations.Add(productToAdd);
-                         }
+                        if (!Recommendations.Any(r => r.Id == productToAdd.Id)) // Avoid duplicates
+                        {
+                            Recommendations.Add(productToAdd);
+                        }
                     }
                     else
                     {
                         Debug.WriteLine($"AI suggested product not found in master list: '{suggestedName}'");
                     }
                 }
-                 Debug.WriteLine($"Populated Recommendations list with {Recommendations.Count} items based on AI suggestion.");
+                Debug.WriteLine($"Populated Recommendations list with {Recommendations.Count} items based on AI suggestion.");
                 // --- End of populating ListView --- 
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                 // ... (outer error handling as before) ...
+                // ... (outer error handling as before) ...
             }
         }
 
@@ -629,44 +547,44 @@ namespace CafePOS
                         }
                         else
                         {
-                            _ = ShowDialog("Số lượng không hợp lệ", "Vui lòng nhập số lượng lớn hơn 0.");
+                            _ = DialogHelper.ShowErrorDialog("Số lượng không hợp lệ", "Vui lòng nhập số lượng lớn hơn 0.", this.XamlRoot);
                         }
                     }
                     else
                     {
                         Debug.WriteLine("Could not find RecommendedQuantityBox within ListViewItem");
-                        _ = ShowDialog("Lỗi", "Không tìm thấy ô nhập số lượng (trong mục).");
+                        _ = DialogHelper.ShowErrorDialog("Lỗi", "Không tìm thấy ô nhập số lượng (trong mục).", this.XamlRoot);
                     }
                 }
                 else
                 {
-                     // Fallback: Try the previous method (searching up to Grid, then down)
+                    // Fallback: Try the previous method (searching up to Grid, then down)
                     var parentGrid = FindParent<Grid>(addButton);
                     if (parentGrid != null)
                     {
                         var quantityBox = FindChild<NumberBox>(parentGrid, "RecommendedQuantityBox");
                         if (quantityBox != null)
                         {
-                             int quantity = (int)quantityBox.Value;
-                             if (quantity > 0)
-                             {
-                                 AddFoodToOrder(product, quantity); // Pass quantity
-                             }
-                             else
-                             {
-                                 _ = ShowDialog("Số lượng không hợp lệ", "Vui lòng nhập số lượng lớn hơn 0.");
-                             }
+                            int quantity = (int)quantityBox.Value;
+                            if (quantity > 0)
+                            {
+                                AddFoodToOrder(product, quantity); // Pass quantity
+                            }
+                            else
+                            {
+                                _ = DialogHelper.ShowErrorDialog("Số lượng không hợp lệ", "Vui lòng nhập số lượng lớn hơn 0.", this.XamlRoot);
+                            }
                         }
                         else
                         {
-                             Debug.WriteLine("Could not find RecommendedQuantityBox via Grid fallback");
-                             _ = ShowDialog("Lỗi", "Không tìm thấy ô nhập số lượng (dự phòng).");
+                            Debug.WriteLine("Could not find RecommendedQuantityBox via Grid fallback");
+                            _ = DialogHelper.ShowErrorDialog("Lỗi", "Không tìm thấy ô nhập số lượng (dự phòng).", this.XamlRoot);
                         }
                     }
                     else
                     {
                         Debug.WriteLine("Could not find parent ListViewItem or Grid for recommended item");
-                        _ = ShowDialog("Lỗi", "Không thể xác định mục hoặc ô nhập số lượng.");
+                        _ = DialogHelper.ShowErrorDialog("Lỗi", "Không thể xác định mục hoặc ô nhập số lượng.", this.XamlRoot);
                     }
                 }
             }
@@ -676,13 +594,13 @@ namespace CafePOS
         {
             if (OrderListView.Tag is not CafeTable table)
             {
-                await ShowDialog("Thông báo", "Vui lòng chọn bàn trước khi thêm món.");
+                await DialogHelper.ShowErrorDialog("Thông báo", "Vui lòng chọn bàn trước khi thêm món.", this.XamlRoot);
                 return;
             }
 
             if (count <= 0)
             {
-                await ShowDialog("Số lượng không hợp lệ", "Số lượng phải lớn hơn 0.");
+                await DialogHelper.ShowErrorDialog("Số lượng không hợp lệ", "Số lượng phải lớn hơn 0.", this.XamlRoot);
                 return;
             }
 
@@ -695,17 +613,19 @@ namespace CafePOS
                 if (idBill == -1)
                 {
                     int newBillId = await BillDAO.Instance.InsertBillAsync(table.Id, Account.CurrentUserStaffId);
-                     Debug.WriteLine($"Created new bill with ID: {newBillId} for table {table.Id}");
+                    Debug.WriteLine($"Created new bill with ID: {newBillId} for table {table.Id}");
                     if (newBillId > 0)
                     {
                         await BillInfoDAO.Instance.InsertBillInfoAsync(newBillId, product.Id, count, unitPrice, totalPrice);
-                         Debug.WriteLine($"Inserted {count} of product {product.Id} into new bill {newBillId}");
-                    } else {
-                         Debug.WriteLine($"Failed to create new bill for table {table.Id}");
-                         await ShowDialog("Lỗi", "Không thể tạo hóa đơn mới.");
-                         return; 
+                        Debug.WriteLine($"Inserted {count} of product {product.Id} into new bill {newBillId}");
                     }
-                    idBill = newBillId; 
+                    else
+                    {
+                        Debug.WriteLine($"Failed to create new bill for table {table.Id}");
+                        await DialogHelper.ShowErrorDialog("Lỗi", "Không thể tạo hóa đơn mới.", this.XamlRoot);
+                        return;
+                    }
+                    idBill = newBillId;
                 }
                 else
                 {
@@ -713,13 +633,13 @@ namespace CafePOS
                     Debug.WriteLine($"Inserted {count} of product {product.Id} into existing bill {idBill}");
                 }
 
-                ShowBill(table.Id); 
-                await LoadTable(); 
+                ShowBill(table.Id);
+                await LoadTable();
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error in AddFoodToOrder: {ex}");
-                await ShowDialog("Lỗi", $"Không thể thêm món: {ex.Message}");
+                await DialogHelper.ShowErrorDialog("Lỗi", $"Không thể thêm món: {ex.Message}", this.XamlRoot);
             }
         }
 

@@ -17,11 +17,20 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Globalization;
 using System.Text;
+using CafePOS.Utilities;
 using WinRT.Interop;
 using Microsoft.UI.Xaml.Data;
+using System.Text.RegularExpressions;
 
 namespace CafePOS
 {
+    public enum BillStatus
+    {
+        Unpaid = 0,
+        Paid = 1,
+        Cancelled = 2
+    }
+
     public sealed partial class BillManage : Page, INotifyPropertyChanged
     {
         private readonly ICafePOSClient _client;
@@ -109,7 +118,7 @@ namespace CafePOS
                 // Load payment methods first to ensure they're available
                 if (_cachedPaymentMethods == null)
                 {
-                    _cachedPaymentMethods = await PaymentMethodDAO.Instance.GetAllActivePaymentMethodsAsync();
+                    _cachedPaymentMethods = await PaymentMethodDAO.Instance.GetAllPaymentMethodAsync();
                 }
 
                 var result = await _client.GetAllBills.ExecuteAsync();
@@ -213,34 +222,129 @@ namespace CafePOS
             CurrentPage = TotalPages;
         }
 
-        private void FilterButton_Click(object sender, RoutedEventArgs e)
+        private bool IsValidBillId(string billId)
         {
-            if (StartDatePicker.Date.HasValue && EndDatePicker.Date.HasValue)
-            {
-                // Clear ID search
-                SearchTextBox.Text = string.Empty;
-                _searchText = string.Empty;
+            if (string.IsNullOrWhiteSpace(billId))
+                return false;
+            
+            // Allow simple numeric ID search
+            return int.TryParse(billId, out _);
+        }
 
-                // Set start date to beginning of the day (00:00:00)
-                _startDate = StartDatePicker.Date.Value.DateTime.Date;
-                // Set end date to end of the day (23:59:59.999)
-                _endDate = EndDatePicker.Date.Value.DateTime.Date.AddDays(1).AddTicks(-1);
-                UpdatePagedBills();
+        private bool IsValidDateRange(DateTime? startDate, DateTime? endDate)
+        {
+            if (!startDate.HasValue || !endDate.HasValue)
+                return false;
+            
+            return startDate.Value <= endDate.Value;
+        }
+
+        private bool IsValidAmount(double amount)
+        {
+            return amount >= 0;
+        }
+
+        private bool IsValidCount(int count)
+        {
+            return count > 0;
+        }
+
+        private bool IsValidStatus(int status)
+        {
+            return Enum.IsDefined(typeof(BillStatus), status);
+        }
+
+        private async Task<bool> ValidateBillExists(string billId)
+        {
+            if (!IsValidBillId(billId))
+                return false;
+
+            try
+            {
+                var result = await _client.GetAllBills.ExecuteAsync();
+                return result.Data?.AllBills?.Edges?.Any(e => e.Node?.Id.ToString() == billId) ?? false;
+            }
+            catch
+            {
+                return false;
             }
         }
 
-        private void SearchButton_Click(object sender, RoutedEventArgs e)
+        private async Task<bool> ValidatePaymentMethod(int paymentMethodId)
+        {
+            if (_cachedPaymentMethods == null)
+            {
+                _cachedPaymentMethods = await PaymentMethodDAO.Instance.GetAllPaymentMethodAsync();
+            }
+            return _cachedPaymentMethods.Any(pm => pm.Id == paymentMethodId);
+        }
+
+        private async void FilterButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!StartDatePicker.Date.HasValue)
+            {
+                await DialogHelper.ShowErrorDialog("Lỗi", "Vui lòng chọn ngày bắt đầu", this.XamlRoot);
+                return;
+            }
+
+            // Clear ID search
+            SearchTextBox.Text = string.Empty;
+            _searchText = string.Empty;
+
+            // Set start date to beginning of the day (00:00:00)
+            _startDate = StartDatePicker.Date.Value.DateTime.Date;
+            
+            // If end date is not selected, use current date/time
+            if (EndDatePicker.Date.HasValue)
+            {
+                if (!IsValidDateRange(StartDatePicker.Date.Value.DateTime, EndDatePicker.Date.Value.DateTime))
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Ngày kết thúc phải sau ngày bắt đầu",this.XamlRoot);
+                    return;
+                }
+                // Set end date to end of the day (23:59:59.999)
+                _endDate = EndDatePicker.Date.Value.DateTime.Date.AddDays(1).AddTicks(-1);
+            }
+            else
+            {
+                _endDate = DateTime.Now;
+            }
+
+            UpdatePagedBills();
+        }
+
+        private async void SearchButton_Click(object sender, RoutedEventArgs e)
         {
             // Get search text
             _searchText = SearchTextBox.Text?.Trim() ?? string.Empty;
 
+            if (!string.IsNullOrEmpty(_searchText) && !IsValidBillId(_searchText))
+            {
+                await DialogHelper.ShowErrorDialog("Lỗi", "Mã hóa đơn không hợp lệ. Vui lòng nhập số ID hóa đơn (ví dụ: 1, 2, 13)", this.XamlRoot);
+                return;
+            }
+
             // Get date range if selected
-            if (StartDatePicker.Date.HasValue && EndDatePicker.Date.HasValue)
+            if (StartDatePicker.Date.HasValue)
             {
                 // Set start date to beginning of the day (00:00:00)
                 _startDate = StartDatePicker.Date.Value.DateTime.Date;
-                // Set end date to end of the day (23:59:59.999)
-                _endDate = EndDatePicker.Date.Value.DateTime.Date.AddDays(1).AddTicks(-1);
+                
+                // If end date is selected, validate and use it
+                if (EndDatePicker.Date.HasValue)
+                {
+                    if (!IsValidDateRange(StartDatePicker.Date.Value.DateTime, EndDatePicker.Date.Value.DateTime))
+                    {
+                        await DialogHelper.ShowErrorDialog("Lỗi", "Ngày kết thúc phải sau ngày bắt đầu", this.XamlRoot);
+                        return;
+                    }
+                    // Set end date to end of the day (23:59:59.999)
+                    _endDate = EndDatePicker.Date.Value.DateTime.Date.AddDays(1).AddTicks(-1);
+                }
+                else
+                {
+                    _endDate = DateTime.Now;
+                }
             }
             else
             {
@@ -248,7 +352,6 @@ namespace CafePOS
                 _endDate = null;
             }
 
-            _currentPage = 1;
             UpdatePagedBills();
         }
 
@@ -302,69 +405,89 @@ namespace CafePOS
         {
             if (sender is Button button && button.DataContext is BillViewModel bill)
             {
-                try
+                if (!await ValidateBillExists(bill.Id))
                 {
-                    var billInfos = await GetBillInfosAsync(bill.Id);
-                    var detailsContent = new StringBuilder();
-                    detailsContent.AppendLine($"ID: {bill.Id}");
-                    detailsContent.AppendLine($"Bàn: {bill.IdTable}");
-                    detailsContent.AppendLine($"Ngày vào: {bill.FormattedDateCheckIn}");
-                    detailsContent.AppendLine($"Ngày ra: {bill.FormattedDateCheckOut}");
-                    detailsContent.AppendLine($"Trạng thái: {bill.FormattedStatus}");
-                    detailsContent.AppendLine($"Thanh toán: {bill.FormattedPaymentMethod}");
-                    detailsContent.AppendLine();
-                    detailsContent.AppendLine("Chi tiết đơn hàng:");
-                    detailsContent.AppendLine("----------------------------------------");
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Không tìm thấy thông tin hóa đơn", this.XamlRoot);
+                    return;
+                }
 
-                    double subtotal = 0;
-                    foreach (var item in billInfos)
+                var billInfos = await GetBillInfosAsync(bill.Id);
+                if (billInfos == null || !billInfos.Any())
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Không tìm thấy chi tiết hóa đơn", this.XamlRoot);
+                    return;
+                }
+
+                // Validate bill details
+                foreach (var info in billInfos)
+                {
+                    if (!IsValidCount(info.Count))
                     {
-                        detailsContent.AppendLine($"{item.ProductName}");
-                        detailsContent.AppendLine($"Số lượng: {item.Count}");
-                        detailsContent.AppendLine($"Đơn giá: {item.UnitPrice:N0}đ");
-                        var itemTotal = item.TotalPrice;
-                        subtotal += itemTotal;
-                        detailsContent.AppendLine($"Thành tiền: {itemTotal:N0}đ");
-                        detailsContent.AppendLine("----------------------------------------");
+                        await DialogHelper.ShowErrorDialog("Lỗi", $"Số lượng sản phẩm không hợp lệ: {info.ProductName}", this.XamlRoot);
+                        return;
                     }
 
-                    detailsContent.AppendLine($"Tổng tiền: {subtotal:N0}đ");
-                    detailsContent.AppendLine($"Giảm giá: {bill.FormattedDiscount}");
-                    detailsContent.AppendLine($"Thành tiền: {bill.FormattedFinalAmount}");
-
-                    var scrollViewer = new ScrollViewer
+                    if (!IsValidAmount(info.UnitPrice))
                     {
-                        Content = new TextBlock
-                        {
-                            Text = detailsContent.ToString(),
-                            TextWrapping = TextWrapping.Wrap
-                        },
-                        MaxHeight = 400, // Set maximum height for the ScrollViewer
-                        VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                        HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
-                        Padding = new Thickness(16)
-                    };
+                        await DialogHelper.ShowErrorDialog("Lỗi", $"Đơn giá không hợp lệ: {info.ProductName}", this.XamlRoot);
+                        return;
+                    }
 
-                    var dialog = new ContentDialog
+                    if (!IsValidAmount(info.TotalPrice))
                     {
-                        Title = "Chi tiết hóa đơn",
-                        Content = scrollViewer,
-                        PrimaryButtonText = "Đóng",
-                        XamlRoot = App.MainAppWindow.Content.XamlRoot
-                    };
-                    await dialog.ShowAsync();
+                        await DialogHelper.ShowErrorDialog("Lỗi", $"Thành tiền không hợp lệ: {info.ProductName}", this.XamlRoot);
+                        return;
+                    }
                 }
-                catch (Exception ex)
+
+                var detailsContent = new StringBuilder();
+                detailsContent.AppendLine($"ID: {bill.Id}");
+                detailsContent.AppendLine($"Bàn: {bill.IdTable}");
+                detailsContent.AppendLine($"Ngày vào: {bill.FormattedDateCheckIn}");
+                detailsContent.AppendLine($"Ngày ra: {bill.FormattedDateCheckOut}");
+                detailsContent.AppendLine($"Trạng thái: {bill.FormattedStatus}");
+                detailsContent.AppendLine($"Thanh toán: {bill.FormattedPaymentMethod}");
+                detailsContent.AppendLine();
+                detailsContent.AppendLine("Chi tiết đơn hàng:");
+                detailsContent.AppendLine("----------------------------------------");
+
+                double subtotal = 0;
+                foreach (var item in billInfos)
                 {
-                    var errorDialog = new ContentDialog
-                    {
-                        Title = "Lỗi",
-                        Content = $"Không thể tải chi tiết hóa đơn: {ex.Message}",
-                        PrimaryButtonText = "OK",
-                        XamlRoot = App.MainAppWindow.Content.XamlRoot
-                    };
-                    await errorDialog.ShowAsync();
+                    detailsContent.AppendLine($"{item.ProductName}");
+                    detailsContent.AppendLine($"Số lượng: {item.Count}");
+                    detailsContent.AppendLine($"Đơn giá: {item.UnitPrice:N0}đ");
+                    var itemTotal = item.TotalPrice;
+                    subtotal += itemTotal;
+                    detailsContent.AppendLine($"Thành tiền: {itemTotal:N0}đ");
+                    detailsContent.AppendLine("----------------------------------------");
                 }
+
+                detailsContent.AppendLine($"Tổng tiền: {subtotal:N0}đ");
+                detailsContent.AppendLine($"Giảm giá: {bill.FormattedDiscount}");
+                detailsContent.AppendLine($"Thành tiền: {bill.FormattedFinalAmount}");
+
+                var scrollViewer = new ScrollViewer
+                {
+                    Content = new TextBlock
+                    {
+                        Text = detailsContent.ToString(),
+                        TextWrapping = TextWrapping.Wrap
+                    },
+                    MaxHeight = 400, // Set maximum height for the ScrollViewer
+                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                    HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                    Padding = new Thickness(16)
+                };
+
+                var dialog = new ContentDialog
+                {
+                    Title = "Chi tiết hóa đơn",
+                    Content = scrollViewer,
+                    PrimaryButtonText = "Đóng",
+                    XamlRoot = App.MainAppWindow.Content.XamlRoot
+                };
+                await dialog.ShowAsync();
             }
         }
 
@@ -385,6 +508,18 @@ namespace CafePOS
 
             if (sender is Button button && button.DataContext is BillViewModel bill)
             {
+                if (!await ValidateBillExists(bill.Id))
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Không tìm thấy hóa đơn để xóa", this.XamlRoot);
+                    return;
+                }
+
+                if (!IsValidStatus(bill.Status))
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Trạng thái hóa đơn không hợp lệ", this.XamlRoot);
+                    return;
+                }
+
                 var dialog = new ContentDialog
                 {
                     Title = "Xác nhận xóa",
@@ -405,15 +540,8 @@ namespace CafePOS
                         {
                             _allBills.Remove(bill);
                             UpdatePagedBills();
-                            
-                            var successDialog = new ContentDialog
-                            {
-                                Title = "Thành công",
-                                Content = "Đã xóa hóa đơn thành công!",
-                                PrimaryButtonText = "OK",
-                                XamlRoot = App.MainAppWindow.Content.XamlRoot
-                            };
-                            await successDialog.ShowAsync();
+
+                            await DialogHelper.ShowSuccessDialog("Thành công", "Đã xóa hóa đơn thành công!", this.XamlRoot);
                         }
                         else
                         {
@@ -422,14 +550,7 @@ namespace CafePOS
                     }
                     catch (Exception ex)
                     {
-                        var errorDialog = new ContentDialog
-                        {
-                            Title = "Lỗi",
-                            Content = $"Không thể xóa hóa đơn: {ex.Message}",
-                            PrimaryButtonText = "OK",
-                            XamlRoot = App.MainAppWindow.Content.XamlRoot
-                        };
-                        await errorDialog.ShowAsync();
+                        await DialogHelper.ShowErrorDialog("Lỗi", $"Không thể xóa hóa đơn: {ex.Message}", this.XamlRoot);
                     }
                 }
             }
@@ -461,6 +582,52 @@ namespace CafePOS
 
         private async Task ExportBillsToExcel(List<BillViewModel> billsToExport)
         {
+            if (billsToExport == null || !billsToExport.Any())
+            {
+                await DialogHelper.ShowErrorDialog("Lỗi", "Không có hóa đơn nào để xuất", this.XamlRoot);
+                return;
+            }
+
+            // Validate all bills before export
+            foreach (var bill in billsToExport)
+            {
+                if (!IsValidBillId(bill.Id))
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", $"Mã hóa đơn không hợp lệ: {bill.Id}", this.XamlRoot);
+                    return;
+                }
+
+                if (!IsValidStatus(bill.Status))
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", $"Trạng thái hóa đơn không hợp lệ: {bill.Id}", this.XamlRoot);
+                    return;
+                }
+
+                if (!IsValidAmount(bill.TotalAmount))
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", $"Tổng tiền không hợp lệ: {bill.Id}", this.XamlRoot);
+                    return;
+                }
+
+                if (!IsValidAmount(bill.Discount))
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", $"Giảm giá không hợp lệ: {bill.Id}", this.XamlRoot);
+                    return;
+                }
+
+                if (!IsValidAmount(bill.FinalAmount))
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", $"Thành tiền không hợp lệ: {bill.Id}", this.XamlRoot);
+                    return;
+                }
+
+                if (!await ValidatePaymentMethod(bill.PaymentMethod))
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", $"Phương thức thanh toán không hợp lệ: {bill.Id}", this.XamlRoot);
+                    return;
+                }
+            }
+
             try
             {
                 using var workbook = new XLWorkbook();
@@ -562,26 +729,12 @@ namespace CafePOS
                     using var windowsStream = stream.AsStream();
                     workbook.SaveAs(windowsStream);
 
-                    ContentDialog dialog = new ContentDialog
-                    {
-                        Title = "Thành công",
-                        Content = "Xuất file Excel thành công!",
-                        CloseButtonText = "Ok",
-                        XamlRoot = App.MainAppWindow.Content.XamlRoot
-                    };
-                    await dialog.ShowAsync();
+                    await DialogHelper.ShowSuccessDialog("Thành công", "Xuất file Excel thành công!", this.XamlRoot);
                 }
             }
             catch (Exception ex)
             {
-                ContentDialog dialog = new ContentDialog
-                {
-                    Title = "Lỗi",
-                    Content = $"Có lỗi xảy ra khi xuất file: {ex.Message}",
-                    CloseButtonText = "Ok",
-                    XamlRoot = App.MainAppWindow.Content.XamlRoot
-                };
-                await dialog.ShowAsync();
+                await DialogHelper.ShowErrorDialog("Lỗi", $"Có lỗi xảy ra khi xuất file: {ex.Message}", this.XamlRoot);
             }
         }
 

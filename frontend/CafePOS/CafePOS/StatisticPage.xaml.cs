@@ -26,6 +26,7 @@ using WinRT.Interop;
 using System.Diagnostics;
 using Microsoft.UI;
 using Microsoft.UI.Xaml.Media;
+using CafePOS.Utilities;
 
 namespace CafePOS
 {
@@ -234,7 +235,7 @@ namespace CafePOS
         {
             if (StartDatePicker.Date == null || EndDatePicker.Date == null)
             {
-                await ShowErrorDialog("Lỗi", "Vui lòng chọn khoảng thời gian");
+                await DialogHelper.ShowErrorDialog("Lỗi", "Vui lòng chọn khoảng thời gian", this.XamlRoot);
                 return;
             }
 
@@ -251,7 +252,7 @@ namespace CafePOS
             {
                 if (startDate > endDate)
                 {
-                    await ShowErrorDialog("Lỗi", "Ngày bắt đầu không thể sau ngày kết thúc");
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Ngày bắt đầu không thể sau ngày kết thúc", this.XamlRoot);
                     return;
                 }
                 _startDate = startDate.Date;
@@ -472,13 +473,13 @@ namespace CafePOS
                 else
                 {
                     System.Diagnostics.Debug.WriteLine("No bills data available");
-                    await ShowErrorDialog("Thông báo", "Không có dữ liệu hóa đơn trong khoảng thời gian này");
+                    await DialogHelper.ShowErrorDialog("Thông báo", "Không có dữ liệu hóa đơn trong khoảng thời gian này", this.XamlRoot);
                 }
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error in LoadDataAsync: {ex}");
-                await ShowErrorDialog("Lỗi", $"Không thể tải dữ liệu thống kê: {ex.Message}");
+                await DialogHelper.ShowErrorDialog("Lỗi", $"Không thể tải dữ liệu thống kê: {ex.Message}", this.XamlRoot);
             }
         }
 
@@ -723,7 +724,7 @@ namespace CafePOS
                             workbook.SaveAs(stream);
                         }
 
-                        await ShowDialog("Thành công", "Đã xuất báo cáo thành công!");
+                        await DialogHelper.ShowSuccessDialog("Thành công", "Đã xuất báo cáo thành công!", this.XamlRoot);
                     }
                 }
             }
@@ -731,57 +732,7 @@ namespace CafePOS
             {
                 System.Diagnostics.Debug.WriteLine($"Export error: {ex.Message}");
                 System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
-                await ShowErrorDialog("Lỗi khi xuất báo cáo", ex.Message);
-            }
-        }
-
-        private async Task ShowDialog(string title, string content)
-        {
-            try
-            {
-                await _dialogSemaphore.WaitAsync();
-                var dialog = new ContentDialog
-                {
-                    Title = title,
-                    Content = content,
-                    CloseButtonText = "OK",
-                    XamlRoot = App.MainAppWindow.Content.XamlRoot
-                };
-                
-                await dialog.ShowAsync();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error showing dialog: {ex.Message}");
-            }
-            finally
-            {
-                _dialogSemaphore.Release();
-            }
-        }
-
-        private async Task ShowErrorDialog(string title, string content)
-        {
-            try
-            {
-                await _dialogSemaphore.WaitAsync();
-                var dialog = new ContentDialog
-                {
-                    Title = title,
-                    Content = content,
-                    CloseButtonText = "OK",
-                    XamlRoot = App.MainAppWindow.Content.XamlRoot
-                };
-                
-                await dialog.ShowAsync();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error showing dialog: {ex.Message}");
-            }
-            finally
-            {
-                _dialogSemaphore.Release();
+                await DialogHelper.ShowErrorDialog("Lỗi khi xuất báo cáo", ex.Message, this.XamlRoot);
             }
         }
 

@@ -20,6 +20,7 @@ using Windows.Storage.Pickers;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System.Threading;
 using System.Diagnostics;
+using CafePOS.Utilities;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -47,6 +48,18 @@ namespace CafePOS
             ClearFormFields();
         }
 
+        private async Task<bool> ValidatePaymentMethodExists(int id)
+        {
+            var payments = await PaymentMethodDAO.Instance.GetAllPaymentMethodAsync();
+            return payments.Any(p => p.Id == id);
+        }
+
+        private async Task<bool> ValidatePaymentNameExists(string name, int? excludeId = null)
+        {
+            var payments = await PaymentMethodDAO.Instance.GetAllPaymentMethodAsync();
+            return payments.Any(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase) && p.Id != excludeId);
+        }
+
         private async void btnView_Click(object sender, RoutedEventArgs e)
         {
             await LoadPaymentMethod();
@@ -56,10 +69,55 @@ namespace CafePOS
         {
             if (PaymentListView.SelectedItem is PaymentMethod selectedPayment)
             {
-                string name = PaymentNameBox.Text;
+                string name = PaymentNameBox.Text.Trim();
                 string imagePath = string.IsNullOrEmpty(selectedImagePath) ? selectedPayment.IconUrl! : selectedImagePath;
-                string description = PaymentDescriptionBox.Text;
+                string description = PaymentDescriptionBox.Text.Trim();
                 bool isActive = (bool)StatusComboBox.SelectedValue;
+
+                // Empty data validation
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Vui lòng nhập tên phương thức thanh toán", this.XamlRoot);
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(description))
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Vui lòng nhập mô tả phương thức thanh toán", this.XamlRoot);
+                    return;
+                }
+
+                // Data type validation
+                if (!ValidationHelper.IsValidName(name))
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Tên phương thức thanh toán không hợp lệ. Chỉ được chứa chữ cái, số và khoảng trắng", this.XamlRoot);
+                    return;
+                }
+
+                if (!ValidationHelper.IsValidLength(description, 200))
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Mô tả không được vượt quá 200 ký tự", this.XamlRoot);
+                    return;
+                }
+
+                if (!await ValidationHelper.IsValidImagePath(imagePath))
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Đường dẫn hình ảnh không hợp lệ", this.XamlRoot);
+                    return;
+                }
+
+                // Data consistency validation
+                if (!await ValidatePaymentMethodExists(selectedPayment.Id))
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Không tìm thấy phương thức thanh toán", this.XamlRoot);
+                    return;
+                }
+
+                if (await ValidatePaymentNameExists(name, selectedPayment.Id))
+                {
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Tên phương thức thanh toán đã tồn tại", this.XamlRoot);
+                    return;
+                }
 
                 bool success = await PaymentMethodDAO.Instance.UpdatePaymentMethodAsync(
                     selectedPayment.Id,
@@ -71,37 +129,16 @@ namespace CafePOS
                 if (success)
                 {
                     await LoadPaymentMethod();
-                    var successDialog = new ContentDialog
-                    {
-                        Title = "Thành công",
-                        Content = "Cập nhật phương thức thành công!",
-                        CloseButtonText = "OK",
-                        XamlRoot = this.XamlRoot
-                    };
-                    await successDialog.ShowAsync();
+                    await DialogHelper.ShowSuccessDialog("Thành công", "Cập nhật phương thức thành công!", this.XamlRoot);
                 }
                 else
                 {
-                    var errorDialog = new ContentDialog
-                    {
-                        Title = "Lỗi",
-                        Content = "Có lỗi khi cập nhật phương thức thanh toán. Vui lòng thử lại.",
-                        CloseButtonText = "OK",
-                        XamlRoot = this.XamlRoot
-                    };
-                    await errorDialog.ShowAsync();
+                    await DialogHelper.ShowErrorDialog("Lỗi", "Có lỗi khi cập nhật phương thức thanh toán. Vui lòng thử lại.", this.XamlRoot);
                 }
             }
             else
             {
-                var errorDialog = new ContentDialog
-                {
-                    Title = "Lỗi",
-                    Content = "Vui lòng chọn một phương thức.",
-                    CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
-                };
-                await errorDialog.ShowAsync();
+                await DialogHelper.ShowErrorDialog("Lỗi", "Vui lòng chọn một phương thức.", this.XamlRoot);
             }
         }
 
@@ -109,68 +146,89 @@ namespace CafePOS
         {
             if (PaymentListView.SelectedItem is PaymentMethod selectedPayment)
             {
-                ContentDialog confirmDialog = new ContentDialog
-                {
-                    Title = "Xác nhận",
-                    Content = $"Bạn có chắc chắn muốn xóa phương thức thanh toán '{selectedPayment.Name}' không?",
-                    PrimaryButtonText = "Xóa",
-                    CloseButtonText = "Hủy",
-                    XamlRoot = this.XamlRoot
-                };
-
-                ContentDialogResult result = await confirmDialog.ShowAsync();
+                var result = await DialogHelper.ShowConfirmDialog(
+                    "Xác nhận",
+                    $"Bạn có chắc chắn muốn xóa phương thức thanh toán '{selectedPayment.Name}' không?",
+                    "Xóa",
+                    "Hủy",
+                    this.XamlRoot
+                );
 
                 if (result == ContentDialogResult.Primary)
                 {
+                    if (!await ValidatePaymentMethodExists(selectedPayment.Id))
+                    {
+                        await DialogHelper.ShowErrorDialog("Lỗi", "Không tìm thấy phương thức thanh toán", this.XamlRoot);
+                        return;
+                    }
+
                     bool isDeleted = await PaymentMethodDAO.Instance.DeletePaymentMethodAsync(selectedPayment.Id);
-                    Debug.WriteLine(selectedPayment.Id);
 
                     if (isDeleted)
                     {
                         await LoadPaymentMethod();
                         ClearFormFields();
+                        await DialogHelper.ShowSuccessDialog("Thành công", "Xóa phương thức thanh toán thành công!", this.XamlRoot);
                     }
                     else
                     {
-                        ContentDialog dialog = new ContentDialog
-                        {
-                            Title = "Lỗi",
-                            Content = "Không thể xóa phương thức. Vui lòng thử lại!",
-                            CloseButtonText = "OK",
-                            XamlRoot = this.XamlRoot
-                        };
-                        await dialog.ShowAsync();
+                        await DialogHelper.ShowErrorDialog("Lỗi", "Không thể xóa phương thức. Vui lòng thử lại!", this.XamlRoot);
                     }
                 }
             }
             else
             {
-                var errorDialog = new ContentDialog
-                {
-                    Title = "Lỗi",
-                    Content = "Vui lòng chọn một phương thức để xóa.",
-                    CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
-                };
-                await errorDialog.ShowAsync();
+                await DialogHelper.ShowErrorDialog("Lỗi", "Vui lòng chọn một phương thức để xóa.", this.XamlRoot);
             }
         }
 
         private async void btnAdd_Click(object sender, RoutedEventArgs e)
         {
-            string name = PaymentNameBox.Text;
-            string description = PaymentDescriptionBox.Text;
+            string name = PaymentNameBox.Text.Trim();
+            string description = PaymentDescriptionBox.Text.Trim();
 
-            if (string.IsNullOrWhiteSpace(name) || name.Equals(""))
+            // Empty data validation
+            if (string.IsNullOrWhiteSpace(name))
             {
-                var dialog = new ContentDialog
-                {
-                    Title = "Lỗi",
-                    Content = "Vui lòng điền đầy đủ thông tin cho phương thức!",
-                    CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
-                };
-                await dialog.ShowAsync();
+                await DialogHelper.ShowErrorDialog("Lỗi", "Vui lòng nhập tên phương thức thanh toán", this.XamlRoot);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(description))
+            {
+                await DialogHelper.ShowErrorDialog("Lỗi", "Vui lòng nhập mô tả phương thức thanh toán", this.XamlRoot);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(selectedImagePath))
+            {
+                await DialogHelper.ShowErrorDialog("Lỗi", "Vui lòng chọn hình ảnh cho phương thức thanh toán", this.XamlRoot);
+                return;
+            }
+
+            // Data type validation
+            if (!ValidationHelper.IsValidName(name))
+            {
+                await DialogHelper.ShowErrorDialog("Lỗi", "Tên phương thức thanh toán không hợp lệ. Chỉ được chứa chữ cái, số và khoảng trắng", this.XamlRoot);
+                return;
+            }
+
+            if (!ValidationHelper.IsValidLength(description, 200))
+            {
+                await DialogHelper.ShowErrorDialog("Lỗi", "Mô tả không được vượt quá 200 ký tự", this.XamlRoot);
+                return;
+            }
+
+            if (!await ValidationHelper.IsValidImagePath(selectedImagePath))
+            {
+                await DialogHelper.ShowErrorDialog("Lỗi", "Đường dẫn hình ảnh không hợp lệ", this.XamlRoot);
+                return;
+            }
+
+            // Data consistency validation
+            if (await ValidatePaymentNameExists(name))
+            {
+                await DialogHelper.ShowErrorDialog("Lỗi", "Tên phương thức thanh toán đã tồn tại", this.XamlRoot);
                 return;
             }
 
@@ -182,28 +240,13 @@ namespace CafePOS
 
             if (isAdded != -1)
             {
-                var successDialog = new ContentDialog
-                {
-                    Title = "Thành công",
-                    Content = "Phương thức đã được thêm thành công!",
-                    CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
-                };
-                await successDialog.ShowAsync();
-
+                await DialogHelper.ShowSuccessDialog("Thành công", "Phương thức đã được thêm thành công!", this.XamlRoot);
                 await LoadPaymentMethod();
                 ClearFormFields();
             }
             else
             {
-                var errorDialog = new ContentDialog
-                {
-                    Title = "Lỗi",
-                    Content = "Có lỗi khi thêm phương thức vào cơ sở dữ liệu. Vui lòng thử lại.",
-                    CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
-                };
-                await errorDialog.ShowAsync();
+                await DialogHelper.ShowErrorDialog("Lỗi", "Có lỗi khi thêm phương thức vào cơ sở dữ liệu. Vui lòng thử lại.", this.XamlRoot);
             }
         }
 
@@ -216,9 +259,7 @@ namespace CafePOS
 
         private Task SetCategoryComboBoxAsync(bool isActive)
         {
-
             StatusComboBox.SelectedValue = isActive;
-
             return Task.CompletedTask;
         }
 
@@ -339,14 +380,7 @@ namespace CafePOS
                 }
                 catch (Exception ex)
                 {
-                    ContentDialog dialog = new ContentDialog
-                    {
-                        Title = "Lỗi",
-                        Content = $"Không thể sao chép tệp hình ảnh: {ex.Message}",
-                        CloseButtonText = "OK",
-                        XamlRoot = this.XamlRoot
-                    };
-                    await dialog.ShowAsync();
+                    await DialogHelper.ShowErrorDialog("Lỗi", $"Không thể sao chép tệp hình ảnh: {ex.Message}", this.XamlRoot);
                 }
             }
         }
