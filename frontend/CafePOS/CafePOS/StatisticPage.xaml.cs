@@ -174,10 +174,6 @@ namespace CafePOS
             CompareMonthButton.Opacity = isDailyView ? 1.0 : 0.5;
 
             // Hide trend indicators only for non-daily views
-            if (!isDailyView)
-            {
-                HideAllTrendIndicators();
-            }
 
             switch (selectedItem.Content.ToString())
             {
@@ -208,29 +204,6 @@ namespace CafePOS
             EndDatePicker.Date = _endDate;
         }
 
-        private void HideAllTrendIndicators()
-        {
-            // Revenue trends
-            RevenueTrendPanel.Visibility = Visibility.Collapsed;
-            RevenueTrendIcon.Visibility = Visibility.Collapsed;
-            RevenueTrendText.Visibility = Visibility.Collapsed;
-
-            // Bills trends
-            BillsTrendPanel.Visibility = Visibility.Collapsed;
-            BillsTrendIcon.Visibility = Visibility.Collapsed;
-            BillsTrendText.Visibility = Visibility.Collapsed;
-
-            // Average trends
-            AverageTrendPanel.Visibility = Visibility.Collapsed;
-            AverageTrendIcon.Visibility = Visibility.Collapsed;
-            AverageTrendText.Visibility = Visibility.Collapsed;
-
-            // Cancelled trends
-            CancelledTrendPanel.Visibility = Visibility.Collapsed;
-            CancelledTrendIcon.Visibility = Visibility.Collapsed;
-            CancelledTrendText.Visibility = Visibility.Collapsed;
-        }
-
         private async void SearchButton_Click(object sender, RoutedEventArgs e)
         {
             if (StartDatePicker.Date == null || EndDatePicker.Date == null)
@@ -238,15 +211,12 @@ namespace CafePOS
                 await DialogHelper.ShowErrorDialog("Lỗi", "Vui lòng chọn khoảng thời gian", this.XamlRoot);
                 return;
             }
-
             var startDate = StartDatePicker.Date.Value.DateTime;
             var endDate = EndDatePicker.Date.Value.DateTime;
-
-            // If dates are the same (theo ngay), set time range for the whole day
             if (startDate.Date == endDate.Date)
             {
-                _startDate = startDate.Date; // 00:00:00
-                _endDate = startDate.Date.AddDays(1).AddSeconds(-1); // 23:59:59
+                _startDate = startDate.Date;
+                _endDate = startDate.Date.AddDays(1).AddSeconds(-1);
             }
             else
             {
@@ -258,8 +228,8 @@ namespace CafePOS
                 _startDate = startDate.Date;
                 _endDate = endDate.Date.AddDays(1).AddSeconds(-1);
             }
-
             await LoadDataAsync();
+            HideComparisonSummary();
         }
 
         private async void CompareButton_Click(object sender, RoutedEventArgs e)
@@ -738,19 +708,14 @@ namespace CafePOS
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
-            // Set default dates
             var today = DateTime.Now;
             _startDate = today.Date;
             _endDate = today.Date.AddDays(1).AddSeconds(-1);
-
             StartDatePicker.Date = _startDate;
             EndDatePicker.Date = _endDate;
-
-            // Set default filter
-            TimeRangeComboBox.SelectedIndex = 0; // "Theo ngày"
-
+            TimeRangeComboBox.SelectedIndex = 0;
             _ = LoadDataAsync();
+            HideComparisonSummary();
         }
 
         private void ShowComparison(string compareText, double difference, FontIcon trendIcon, TextBlock trendText)
@@ -784,6 +749,158 @@ namespace CafePOS
             }
         }
 
+        private void ShowComparisonChart(List<IGetAllBills_AllBills_Edges_Node> currentBills, List<IGetAllBills_AllBills_Edges_Node> comparisonBills, string currentLabel, string comparisonLabel, string mode = "date")
+        {
+            if (mode == "month")
+            {
+                // Show only two bars: this month and last month
+                var currentTotal = currentBills.Where(b => !string.IsNullOrEmpty(b.DateCheckOut)).Sum(b => b.TotalAmount);
+                var comparisonTotal = comparisonBills.Where(b => !string.IsNullOrEmpty(b.DateCheckOut)).Sum(b => b.TotalAmount);
+                ComparisonChart.Series = new ISeries[]
+                {
+                    new ColumnSeries<double>
+                    {
+                        Values = new[] { currentTotal, comparisonTotal },
+                        Name = "Doanh thu",
+                        Fill = new SolidColorPaint(SKColors.DodgerBlue),
+                        MaxBarWidth = 60
+                    }
+                };
+                ComparisonChart.XAxes = new Axis[]
+                {
+                    new Axis
+                    {
+                        Name = "Tháng",
+                        Labels = new[] { currentLabel, comparisonLabel },
+                        MinStep = 1
+                    }
+                };
+                ComparisonChart.YAxes = new Axis[]
+                {
+                    new Axis
+                    {
+                        Name = "Doanh thu (VND)",
+                        Labeler = value => value.ToString("N0", new CultureInfo("vi-VN")) + " đ"
+                    }
+                };
+                ComparisonChart.Visibility = Visibility.Visible;
+                ComparisonChartLabel.Visibility = Visibility.Visible;
+                return;
+            }
+            if (mode == "week")
+            {
+                // Show only two bars: this week and last week
+                var currentTotal = currentBills.Where(b => !string.IsNullOrEmpty(b.DateCheckOut)).Sum(b => b.TotalAmount);
+                var comparisonTotal = comparisonBills.Where(b => !string.IsNullOrEmpty(b.DateCheckOut)).Sum(b => b.TotalAmount);
+                ComparisonChart.Series = new ISeries[]
+                {
+                    new ColumnSeries<double>
+                    {
+                        Values = new[] { currentTotal, comparisonTotal },
+                        Name = "Doanh thu",
+                        Fill = new SolidColorPaint(SKColors.DodgerBlue),
+                        MaxBarWidth = 60
+                    }
+                };
+                ComparisonChart.XAxes = new Axis[]
+                {
+                    new Axis
+                    {
+                        Name = "Tuần",
+                        Labels = new[] { currentLabel, comparisonLabel },
+                        MinStep = 1
+                    }
+                };
+                ComparisonChart.YAxes = new Axis[]
+                {
+                    new Axis
+                    {
+                        Name = "Doanh thu (VND)",
+                        Labeler = value => value.ToString("N0", new CultureInfo("vi-VN")) + " đ"
+                    }
+                };
+                ComparisonChart.Visibility = Visibility.Visible;
+                ComparisonChartLabel.Visibility = Visibility.Visible;
+                return;
+            }
+            if (mode == "date")
+            {
+                // Show only two bars: today and yesterday
+                var currentTotal = currentBills.Where(b => !string.IsNullOrEmpty(b.DateCheckOut)).Sum(b => b.TotalAmount);
+                var comparisonTotal = comparisonBills.Where(b => !string.IsNullOrEmpty(b.DateCheckOut)).Sum(b => b.TotalAmount);
+                ComparisonChart.Series = new ISeries[]
+                {
+                    new ColumnSeries<double>
+                    {
+                        Values = new[] { currentTotal, comparisonTotal },
+                        Name = "Doanh thu",
+                        Fill = new SolidColorPaint(SKColors.DodgerBlue),
+                        MaxBarWidth = 60
+                    }
+                };
+                ComparisonChart.XAxes = new Axis[]
+                {
+                    new Axis
+                    {
+                        Name = "Ngày",
+                        Labels = new[] { currentLabel, comparisonLabel },
+                        MinStep = 1
+                    }
+                };
+                ComparisonChart.YAxes = new Axis[]
+                {
+                    new Axis
+                    {
+                        Name = "Doanh thu (VND)",
+                        Labeler = value => value.ToString("N0", new CultureInfo("vi-VN")) + " đ"
+                    }
+                };
+                ComparisonChart.Visibility = Visibility.Visible;
+                ComparisonChartLabel.Visibility = Visibility.Visible;
+                return;
+            }
+            // ... existing code ...
+        }
+
+        private void ShowComparisonSummary(double currentRevenue, double comparisonRevenue)
+        {
+            CurrentPeriodRevenueText.Text = currentRevenue.ToString("C0", new CultureInfo("vi-VN"));
+            ComparisonPeriodRevenueText.Text = comparisonRevenue.ToString("C0", new CultureInfo("vi-VN"));
+            double percentChange = 0;
+            if (comparisonRevenue > 0)
+                percentChange = (currentRevenue - comparisonRevenue) / comparisonRevenue * 100;
+            if (percentChange > 0)
+            {
+                ComparisonTrendIcon.Glyph = "\uE74A"; // Up arrow
+                ComparisonTrendIcon.Foreground = new SolidColorBrush(Colors.Green);
+                ComparisonTrendText.Foreground = new SolidColorBrush(Colors.Green);
+                ComparisonTrendText.Text = $"+{percentChange:F1}%";
+            }
+            else if (percentChange < 0)
+            {
+                ComparisonTrendIcon.Glyph = "\uE74B"; // Down arrow
+                ComparisonTrendIcon.Foreground = new SolidColorBrush(Colors.Red);
+                ComparisonTrendText.Foreground = new SolidColorBrush(Colors.Red);
+                ComparisonTrendText.Text = $"{percentChange:F1}%";
+            }
+            else
+            {
+                ComparisonTrendIcon.Glyph = "\uE73E"; // Equal sign
+                ComparisonTrendIcon.Foreground = new SolidColorBrush(Colors.Gray);
+                ComparisonTrendText.Foreground = new SolidColorBrush(Colors.Gray);
+                ComparisonTrendText.Text = "0%";
+            }
+            ComparisonSummaryPanel.Visibility = Visibility.Visible;
+        }
+
+        private void HideComparisonSummary()
+        {
+            ComparisonSummaryPanel.Visibility = Visibility.Collapsed;
+            ComparisonChart.Visibility = Visibility.Collapsed;
+            ComparisonChartLabel.Visibility = Visibility.Collapsed;
+            ComparisonDateRangeText.Visibility = Visibility.Collapsed;
+        }
+
         private async void CompareDayButton_Click(object sender, RoutedEventArgs e)
         {
             var today = DateTime.Today;
@@ -792,23 +909,20 @@ namespace CafePOS
             var todayStats = await GetStatistics(today, today);
             var yesterdayStats = await GetStatistics(yesterday, yesterday);
 
+            var todayBills = await GetBillsByDateRange(today, today);
+            var yesterdayBills = await GetBillsByDateRange(yesterday, yesterday);
+
             if (todayStats != null && yesterdayStats != null)
             {
-                // Compare Revenue
-                var revenueDiff = (todayStats.TotalRevenue - yesterdayStats.TotalRevenue) / (yesterdayStats.TotalRevenue == 0 ? 1 : yesterdayStats.TotalRevenue);
-                ShowComparison("So với hôm qua", revenueDiff, RevenueTrendIcon, RevenueTrendText);
+                // Show comparison date range
+                ComparisonDateRangeText.Text = $"So sánh: {today:dd/MM/yyyy} với {yesterday:dd/MM/yyyy}";
+                ComparisonDateRangeText.Visibility = Visibility.Visible;
 
-                // Compare Bills Count
-                var billsDiff = (todayStats.TotalBills - yesterdayStats.TotalBills) / (double)(yesterdayStats.TotalBills == 0 ? 1 : yesterdayStats.TotalBills);
-                ShowComparison("So với hôm qua", billsDiff, BillsTrendIcon, BillsTrendText);
+                // Show comparison summary
+                ShowComparisonSummary(todayStats.TotalRevenue, yesterdayStats.TotalRevenue);
 
-                // Compare Average Bill Value
-                var avgDiff = (todayStats.AverageBillValue - yesterdayStats.AverageBillValue) / (yesterdayStats.AverageBillValue == 0 ? 1 : yesterdayStats.AverageBillValue);
-                ShowComparison("So với hôm qua", avgDiff, AverageTrendIcon, AverageTrendText);
-
-                // Compare Cancelled Bills
-                var cancelledDiff = (todayStats.CancelledBills - yesterdayStats.CancelledBills) / (double)(yesterdayStats.CancelledBills == 0 ? 1 : yesterdayStats.CancelledBills);
-                ShowComparison("So với hôm qua", cancelledDiff, CancelledTrendIcon, CancelledTrendText);
+                // Show comparison chart
+                ShowComparisonChart(todayBills, yesterdayBills, "Hôm nay", "Hôm qua");
             }
         }
 
@@ -816,29 +930,27 @@ namespace CafePOS
         {
             var today = DateTime.Today;
             var thisWeekStart = today.AddDays(-(int)today.DayOfWeek);
+            var thisWeekEnd = thisWeekStart.AddDays(6);
             var lastWeekStart = thisWeekStart.AddDays(-7);
-            var lastWeekEnd = thisWeekStart.AddDays(-1);
+            var lastWeekEnd = lastWeekStart.AddDays(6);
 
-            var thisWeekStats = await GetStatistics(thisWeekStart, today);
+            var thisWeekStats = await GetStatistics(thisWeekStart, thisWeekEnd);
             var lastWeekStats = await GetStatistics(lastWeekStart, lastWeekEnd);
+
+            var thisWeekBills = await GetBillsByDateRange(thisWeekStart, thisWeekEnd);
+            var lastWeekBills = await GetBillsByDateRange(lastWeekStart, lastWeekEnd);
 
             if (thisWeekStats != null && lastWeekStats != null)
             {
-                // Compare Revenue
-                var revenueDiff = (thisWeekStats.TotalRevenue - lastWeekStats.TotalRevenue) / (lastWeekStats.TotalRevenue == 0 ? 1 : lastWeekStats.TotalRevenue);
-                ShowComparison("So với tuần trước", revenueDiff, RevenueTrendIcon, RevenueTrendText);
+                // Show comparison date range
+                ComparisonDateRangeText.Text = $"So sánh: {thisWeekStart:dd/MM/yyyy} - {thisWeekEnd:dd/MM/yyyy} với {lastWeekStart:dd/MM/yyyy} - {lastWeekEnd:dd/MM/yyyy}";
+                ComparisonDateRangeText.Visibility = Visibility.Visible;
 
-                // Compare Bills Count
-                var billsDiff = (thisWeekStats.TotalBills - lastWeekStats.TotalBills) / (double)(lastWeekStats.TotalBills == 0 ? 1 : lastWeekStats.TotalBills);
-                ShowComparison("So với tuần trước", billsDiff, BillsTrendIcon, BillsTrendText);
+                // Show comparison summary
+                ShowComparisonSummary(thisWeekStats.TotalRevenue, lastWeekStats.TotalRevenue);
 
-                // Compare Average Bill Value
-                var avgDiff = (thisWeekStats.AverageBillValue - lastWeekStats.AverageBillValue) / (lastWeekStats.AverageBillValue == 0 ? 1 : lastWeekStats.AverageBillValue);
-                ShowComparison("So với tuần trước", avgDiff, AverageTrendIcon, AverageTrendText);
-
-                // Compare Cancelled Bills
-                var cancelledDiff = (thisWeekStats.CancelledBills - lastWeekStats.CancelledBills) / (double)(lastWeekStats.CancelledBills == 0 ? 1 : lastWeekStats.CancelledBills);
-                ShowComparison("So với tuần trước", cancelledDiff, CancelledTrendIcon, CancelledTrendText);
+                // Show comparison chart
+                ShowComparisonChart(thisWeekBills, lastWeekBills, "Tuần này", "Tuần trước", "week");
             }
         }
 
@@ -846,29 +958,57 @@ namespace CafePOS
         {
             var today = DateTime.Today;
             var thisMonthStart = new DateTime(today.Year, today.Month, 1);
+            var thisMonthEnd = thisMonthStart.AddMonths(1).AddDays(-1);
             var lastMonthStart = thisMonthStart.AddMonths(-1);
             var lastMonthEnd = thisMonthStart.AddDays(-1);
 
-            var thisMonthStats = await GetStatistics(thisMonthStart, today);
+            var thisMonthStats = await GetStatistics(thisMonthStart, thisMonthEnd);
             var lastMonthStats = await GetStatistics(lastMonthStart, lastMonthEnd);
+
+            var thisMonthBills = await GetBillsByDateRange(thisMonthStart, thisMonthEnd);
+            var lastMonthBills = await GetBillsByDateRange(lastMonthStart, lastMonthEnd);
 
             if (thisMonthStats != null && lastMonthStats != null)
             {
-                // Compare Revenue
-                var revenueDiff = (thisMonthStats.TotalRevenue - lastMonthStats.TotalRevenue) / (lastMonthStats.TotalRevenue == 0 ? 1 : lastMonthStats.TotalRevenue);
-                ShowComparison("So với tháng trước", revenueDiff, RevenueTrendIcon, RevenueTrendText);
+                // Show comparison date range
+                ComparisonDateRangeText.Text = $"So sánh: {thisMonthStart:dd/MM/yyyy} - {thisMonthEnd:dd/MM/yyyy} với {lastMonthStart:dd/MM/yyyy} - {lastMonthEnd:dd/MM/yyyy}";
+                ComparisonDateRangeText.Visibility = Visibility.Visible;
 
-                // Compare Bills Count
-                var billsDiff = (thisMonthStats.TotalBills - lastMonthStats.TotalBills) / (double)(lastMonthStats.TotalBills == 0 ? 1 : lastMonthStats.TotalBills);
-                ShowComparison("So với tháng trước", billsDiff, BillsTrendIcon, BillsTrendText);
+                // Show comparison summary
+                ShowComparisonSummary(
+                    thisMonthStats.TotalRevenue, lastMonthStats.TotalRevenue);
 
-                // Compare Average Bill Value
-                var avgDiff = (thisMonthStats.AverageBillValue - lastMonthStats.AverageBillValue) / (lastMonthStats.AverageBillValue == 0 ? 1 : lastMonthStats.AverageBillValue);
-                ShowComparison("So với tháng trước", avgDiff, AverageTrendIcon, AverageTrendText);
-
-                // Compare Cancelled Bills
-                var cancelledDiff = (thisMonthStats.CancelledBills - lastMonthStats.CancelledBills) / (double)(lastMonthStats.CancelledBills == 0 ? 1 : lastMonthStats.CancelledBills);
-                ShowComparison("So với tháng trước", cancelledDiff, CancelledTrendIcon, CancelledTrendText);
+                // Show comparison chart: only two bars
+                ComparisonChart.Series = new ISeries[]
+                {
+                    new ColumnSeries<double>
+                    {
+                        Values = new[] { thisMonthStats.TotalRevenue, lastMonthStats.TotalRevenue },
+                        Name = "Doanh thu",
+                        Fill = new SolidColorPaint(SKColors.DodgerBlue),
+                        MaxBarWidth = 60
+                    }
+                };
+                ComparisonChart.XAxes = new Axis[]
+                {
+                    new Axis
+                    {
+                        Name = "Tháng",
+                        Labels = new[] { $"{thisMonthStart:MM/yyyy}", $"{lastMonthStart:MM/yyyy}" },
+                        MinStep = 1
+                    }
+                };
+                ComparisonChart.YAxes = new Axis[]
+                {
+                    new Axis
+                    {
+                        Name = "Doanh thu (VND)",
+                        Labeler = value => value.ToString("N0", new CultureInfo("vi-VN")) + " đ"
+                    }
+                };
+                ComparisonChart.Visibility = Visibility.Visible;
+                ComparisonChartLabel.Visibility = Visibility.Visible;
+                ComparisonLegendPanel.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -903,14 +1043,6 @@ namespace CafePOS
                 Debug.WriteLine($"Error getting statistics: {ex.Message}");
                 return null;
             }
-        }
-
-        private void UpdateAverageTrend(decimal currentAverage, decimal previousAverage)
-        {
-            if (previousAverage == 0) return;
-
-            var percentChange = ((currentAverage - previousAverage) / previousAverage) * 100;
-            ShowComparison("", (double)percentChange / 100, AverageTrendIcon, AverageTrendText);
         }
 
         private async Task<List<IGetAllBills_AllBills_Edges_Node>> GetBillsByDateRange(DateTime startDate, DateTime endDate)

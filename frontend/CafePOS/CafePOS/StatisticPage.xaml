@@ -21,6 +21,8 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
                 <!-- Filter Section -->
@@ -29,6 +31,7 @@
 
                     <Grid RowSpacing="8">
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
@@ -114,6 +117,13 @@
                                 </StackPanel>
                             </Button>
                         </StackPanel>
+                        
+                        <!-- Comparison Date Range Display -->
+                        <TextBlock x:Name="ComparisonDateRangeText"
+                                   Grid.Row="2"
+                                   Margin="0,8,0,0"
+                                   TextWrapping="Wrap"
+                                   Visibility="Collapsed"/>
                     </Grid>
                 </StackPanel>
 
@@ -140,22 +150,7 @@
                             <TextBlock x:Name="TotalRevenueText" 
                                      Text="0đ"
                                      Style="{ThemeResource TitleTextBlockStyle}"
-                                     Foreground="Red"
                                      FontWeight="Bold"/>
-                            <StackPanel x:Name="RevenueTrendPanel" 
-                                        Orientation="Horizontal" 
-                                        Spacing="4"
-                                        Margin="0,4,0,0">
-                                <FontIcon x:Name="RevenueTrendIcon" 
-                                         FontFamily="Segoe MDL2 Assets" 
-                                         Glyph="&#xE74A;"
-                                         Foreground="Green"
-                                         Visibility="Collapsed"/>
-                                <TextBlock x:Name="RevenueTrendText"
-                                          Foreground="Green"
-                                          VerticalAlignment="Center"
-                                          Visibility="Collapsed"/>
-                            </StackPanel>
                         </StackPanel>
                     </Border>
 
@@ -172,20 +167,6 @@
                             <TextBlock x:Name="TotalBillsText" 
                                      Text="0" 
                                      Style="{ThemeResource TitleTextBlockStyle}"/>
-                            <StackPanel x:Name="BillsTrendPanel" 
-                                        Orientation="Horizontal" 
-                                        Spacing="4"
-                                        Margin="0,4,0,0">
-                                <FontIcon x:Name="BillsTrendIcon" 
-                                         FontFamily="Segoe MDL2 Assets" 
-                                         Glyph="&#xE74A;"
-                                         Foreground="Green"
-                                         Visibility="Collapsed"/>
-                                <TextBlock x:Name="BillsTrendText"
-                                          Foreground="Green"
-                                          VerticalAlignment="Center"
-                                          Visibility="Collapsed"/>
-                            </StackPanel>
                         </StackPanel>
                     </Border>
 
@@ -202,20 +183,6 @@
                             <TextBlock x:Name="AverageBillValueText" 
                                      Text="0đ" 
                                      Style="{ThemeResource TitleTextBlockStyle}"/>
-                            <StackPanel x:Name="AverageTrendPanel" 
-                                        Orientation="Horizontal" 
-                                        Spacing="4"
-                                        Margin="0,4,0,0">
-                                <FontIcon x:Name="AverageTrendIcon" 
-                                         FontFamily="Segoe MDL2 Assets" 
-                                         Glyph="&#xE74A;"
-                                         Foreground="Green"
-                                         Visibility="Collapsed"/>
-                                <TextBlock x:Name="AverageTrendText"
-                                          Foreground="Green"
-                                          VerticalAlignment="Center"
-                                          Visibility="Collapsed"/>
-                            </StackPanel>
                         </StackPanel>
                     </Border>
 
@@ -248,26 +215,53 @@
                             <TextBlock x:Name="CancelledBillsText" 
                                      Text="0" 
                                      Style="{ThemeResource TitleTextBlockStyle}"/>
-                            <StackPanel x:Name="CancelledTrendPanel" 
-                                        Orientation="Horizontal" 
-                                        Spacing="4"
-                                        Margin="0,4,0,0">
-                                <FontIcon x:Name="CancelledTrendIcon" 
-                                         FontFamily="Segoe MDL2 Assets" 
-                                         Glyph="&#xE74A;"
-                                         Foreground="Green"
-                                         Visibility="Collapsed"/>
-                                <TextBlock x:Name="CancelledTrendText"
-                                          Foreground="Green"
-                                          VerticalAlignment="Center"
-                                          Visibility="Collapsed"/>
-                            </StackPanel>
                         </StackPanel>
                     </Border>
                 </Grid>
 
+                <!-- Comparison Summary Section -->
+                <StackPanel Grid.Row="2" x:Name="ComparisonSummaryPanel" Orientation="Horizontal" Margin="0,0,0,20" Visibility="Collapsed" Spacing="40">
+                    <StackPanel Margin="0,0,40,0">
+                        <TextBlock Text="Tổng doanh thu kỳ này" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                        <TextBlock x:Name="CurrentPeriodRevenueText" Text="0đ" Style="{ThemeResource TitleTextBlockStyle}" FontWeight="Bold"/>
+                    </StackPanel>
+                    <StackPanel Margin="0,0,40,0">
+                        <TextBlock Text="Tổng doanh thu kỳ so sánh" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                        <TextBlock x:Name="ComparisonPeriodRevenueText" Text="0đ" Style="{ThemeResource TitleTextBlockStyle}" FontWeight="Bold"/>
+                    </StackPanel>
+                    <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="8">
+                        <FontIcon x:Name="ComparisonTrendIcon" FontFamily="Segoe MDL2 Assets" FontSize="32"/>
+                        <TextBlock x:Name="ComparisonTrendText" FontSize="28" FontWeight="Bold"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Comparison Chart Section -->
+                <StackPanel Grid.Row="3" Margin="0,0,0,20">
+                    <TextBlock x:Name="ComparisonChartLabel"
+                               Text="Biểu đồ so sánh"
+                               Style="{ThemeResource SubtitleTextBlockStyle}"
+                               Visibility="Collapsed"
+                               Margin="0,0,0,8"/>
+                    <StackPanel x:Name="ComparisonLegendPanel" Orientation="Horizontal" Spacing="24" Margin="0,0,0,8" Visibility="Collapsed">
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <Rectangle Width="20" Height="20" Fill="#1E90FF"/> <!-- Blue for current -->
+                            <TextBlock x:Name="LegendCurrentText" Text="Tuần này" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <Rectangle Width="20" Height="20" Fill="#FF4500"/> <!-- OrangeRed for comparison -->
+                            <TextBlock x:Name="LegendComparisonText" Text="Tuần trước" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                        <chart:CartesianChart x:Name="ComparisonChart"
+                                              Height="300"
+                                              Width="1200"
+                                              Visibility="Collapsed"/>
+                    </ScrollViewer>
+                </StackPanel>
+
                 <!-- Charts and Tables -->
-                <Grid Grid.Row="2" Margin="0,20,0,0">
+                <Grid Grid.Row="4" Margin="0,20,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
