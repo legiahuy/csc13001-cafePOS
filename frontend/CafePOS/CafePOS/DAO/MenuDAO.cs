@@ -30,6 +30,7 @@ namespace CafePOS.DAO
                     .SelectMany(bill =>
                         bill!.BillInfosByIdBill.Nodes.Select(billInfo => new Menu
                         {
+                            ProductId = billInfo!.ProductByIdProduct!.Id,
                             ProductName = billInfo!.ProductByIdProduct!.Name,
                             Count = billInfo.Count,
                             Price = billInfo.ProductByIdProduct.Price,

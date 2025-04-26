@@ -40,3 +40,40 @@ mutation InsertBillInfo($idBill: Int!, $idProduct: Int!, $count: Int!, $unitPric
     }
   }
 }
+
+query FindBillInfo($billId: Int!, $productId: Int!) {
+  allBillInfos(condition: {idBill: $billId, idProduct: $productId}) {
+    nodes {
+      id
+      count
+    }
+  }
+}
+
+
+mutation DeleteBillInfoById($id: Int!) {
+  deleteBillInfoById(input: {id: $id}) {
+    clientMutationId
+    billInfo {
+      id
+    }
+  }
+}
+
+mutation UpdateBillInfo($id: Int!, $count: Int!, $totalPrice: Float!) {
+  updateBillInfoById(
+    input: {
+      id: $id,
+      billInfoPatch: {
+        count: $count,
+        totalPrice: $totalPrice
+      }
+    }
+  ) {
+    billInfo {
+      id
+      count
+      totalPrice
+    }
+  }
+}
